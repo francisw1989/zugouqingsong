@@ -6,7 +6,7 @@ export default new Router({
     routes: [
         {
             path: '/login',
-            component: resolve => require(['../view/index/Login.vue'], resolve)
+            component: resolve => require(['../view/common/Login.vue'], resolve)
         },
         {
             path: '*',
@@ -23,16 +23,8 @@ export default new Router({
             meta: { title: '403' }
         },
         {
-            path: '/va',
-            component: resolve => require(['../view/index/Home.vue'], resolve),
-            meta: { title: '平台管理' },
-            children:[
-                
-            ]
-        },
-        {
             path: '/demo',
-            redirect: '/demo/dashboard', 
+            redirect: '/demo/dashboard',
             component: resolve => require(['../components/common/Home.vue'], resolve),
             meta: { title: '自述文件' },
             children:[

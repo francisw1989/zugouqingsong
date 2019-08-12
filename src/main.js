@@ -14,6 +14,8 @@ import "babel-polyfill";
 
 import {common} from './service/common'
 
+import vaRouter from './router/vaRouter'
+
 Vue.config.productionTip = false
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
@@ -48,10 +50,7 @@ router.beforeEach((to, from, next) => {
 
 common.GD().then((res)=>{
     Vue.prototype.$GD = res;
-    router.addRoutes([{
-        path: '/',
-        redirect: res.sysRoute
-    }])
+    router.addRoutes(vaRouter)
     new Vue({
         router,
         i18n,

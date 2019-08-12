@@ -101,7 +101,7 @@
         mounted(){
             const t = this;
             if(document.body.clientWidth < 1500){
-                this.collapseChage();
+                // this.collapseChage();
             }
             t.title = t.$GD.sysName;
         }

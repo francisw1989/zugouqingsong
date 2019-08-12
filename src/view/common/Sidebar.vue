@@ -1,7 +1,6 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -40,9 +39,70 @@
                 items: [
                     {
                         icon: 'el-icon-lx-home',
-                        index: 'va',
+                        index: '/va/dashboard',
                         title: '首页'
                     },
+                    {
+                        icon: 'el-icon-picture-outline',
+                        index: '/va/banner',
+                        title: 'banner管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-shop',
+                        index: '/va/storeManage',
+                        title: '门店管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-goods',
+                        index: '/va/orderManage',
+                        title: '订单管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-friend',
+                        index: '/va/staffManage',
+                        title: '员工管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-group',
+                        index: '/va/customerManage',
+                        title: '客户管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-global',
+                        index: '/va/materielManage',
+                        title: '物料管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-recharge',
+                        index: '/va/couponlManage',
+                        title: '优惠卷管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-present',
+                        index: '/va/activity',
+                        title: '常规活动'
+                    },
+                    {
+                        icon: 'el-icon-lx-message',
+                        index: '/va/evaluateManage',
+                        title: '评价管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-profile',
+                        index: '/va/accountManage',
+                        title: '账号管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-lock',
+                        index: '/va/jurisdictionManage',
+                        title: '权限管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-settings',
+                        index: '/va/systemManage',
+                        title: '系统配置'
+                    },
+
                 ]
             }
         },
