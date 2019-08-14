@@ -12,9 +12,13 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import "babel-polyfill";
 
-import {common} from './service/common'
+import {commonService} from './service/common';
+import { Loading } from 'element-ui';
 
 import vaRouter from './router/vaRouter'
+
+Vue.prototype.$commonService = commonService;
+Vue.prototype.$Loading = Loading;
 
 Vue.config.productionTip = false
 Vue.use(VueI18n);
@@ -48,7 +52,7 @@ router.beforeEach((to, from, next) => {
     }
 })
 
-common.GD().then((res)=>{
+commonService.GD().then((res)=>{
     Vue.prototype.$GD = res;
     router.addRoutes(vaRouter)
     new Vue({

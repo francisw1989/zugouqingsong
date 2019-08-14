@@ -124,16 +124,7 @@ a {
 }
 
 .el-upload--text {
-    background-color: #fff;
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    box-sizing: border-box;
-    width: 360px;
-    height: 180px;
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+
 }
 
 .el-upload--text .el-icon-upload {
@@ -287,7 +278,7 @@ a {
 
 .left2{ margin-left:2px;}
 .left5{ margin-left:5px;}
-.left10{ margin-left:10px;}
+.left10{ margin-left:10px!important;}
 .left13{ margin-left:13px;}
 .left15{ margin-left:15px;}
 .left20{ margin-left:20px;}
@@ -381,10 +372,10 @@ a {
 .colfff,.colfff a:link,.colfff a:visited,a.colfff:link, a.colfff:visited{color:#fff;text-decoration: none;}
 .colfff a:hover,.colfff a:active,a.colfff:hover, a.colfff:active{color:#fff;text-decoration: none;}
 
-.colblue,.colblue a:link,.colblue a:visited,a.colblue:link, a.colblue:visited{color:#079BE8;text-decoration: none;}
+.colblue,.colblue a:link,.colblue a:visited,a.colblue:link, a.colblue:visited{color:#459E8C;text-decoration: none;}
 .colblue a:hover,.colblue a:active,a.colblue:hover, a.colblue:active{color:#0885BC;text-decoration: underline;}
 
-.colred,.colred a:link,.colred a:visited,a.colred:link, a.colred:visited{color:#C5061B!important;text-decoration: none;}
+.colred,.colred a:link,.colred a:visited,a.colred:link, a.colred:visited{color:#ff0000!important;text-decoration: none;}
 .colred a:hover,.colred a:active,a.colred:hover, a.colred:active{color:#c52424;text-decoration: underline;}
 
 .col000,.col000 a:link,.col000 a:visited,a.col000:link, a.col000:visited{color:#000;text-decoration: none;}
@@ -393,6 +384,9 @@ a {
 .colPink,.colPink a:link,.colPink a:visited,a.colPink:link, a.colPink:visited{color:#ffa188;text-decoration: none;}
 .colPink a:hover,.colPink a:active,a.colPink:hover, a.colPink:active{color:#cb1100;text-decoration: none;}
 
+.clearfix { *zoom: 1;}
+.clearfix:before,.clearfix:after { display: table;line-height: 0;content: "";}
+.clearfix:after { clear: both;}
 .colblue2{ color: #83ABCE }
 .colpurple{ color: #cc72c5 }
 .colye{ color:#ff8c47;}
@@ -414,6 +408,38 @@ a {
 .align-left{ text-align:left }
 .underline{ text-decoration:underline !important}
 
-.el-card__header{ padding: 15px!important;}
+.el-card__header{ padding: 15px!important; }
 .el-card__body{ padding: 15px!important;}
 .el-menu-item, .el-submenu__title{ height: 50px!important; line-height: 50px!important;}
+
+.handle-select {
+    width: 120px!important;
+}
+
+.handle-input {
+    width: 300px!important;
+    display: inline-block;
+}
+.del-dialog-cnt{
+    font-size: 16px;
+    text-align: center
+}
+.table{
+    width: 100%;
+    font-size: 14px;
+}
+
+.el-upload .el-icon-plus{ font-size: 28px; line-height: 100px!important;}
+.el-upload-img{ max-width: 400px;}
+
+.el-upload-list--picture-card .el-upload-list__item{ width: 100px!important; height: 100px!important;}
+.el-upload--picture-card{ width: 100px!important; height: 100px!important; line-height: 100px!important;}
+
+
+
+
+
+
+
+
+
