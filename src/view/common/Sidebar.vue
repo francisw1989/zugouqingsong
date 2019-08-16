@@ -88,6 +88,14 @@
                                 index: '/va/staffWorktime',
                                 title: '员工考勤'
                             },
+                            {
+                                index: '/va/positionSetting',
+                                title: '岗位与等级设置'
+                            },
+                            {
+                                index: '/va/schedulingSetting',
+                                title: '排班规则设置'
+                            },
                         ]
                     },
                     {

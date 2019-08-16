@@ -7,6 +7,13 @@
             </el-breadcrumb>
         </div>
         <div class="container">
+            <div class="center ">
+                <p class="font20 col000"> 
+                    <i class="el-icon-caret-left pointer" @click="prevMouth"></i>
+                    <span class="left20 right20 ">{{year}}年{{mouth}}月排班计划表</span>
+                    <i class="el-icon-caret-right pointer" @click="nextMouth"></i>
+                </p>
+            </div>
             <div class=" clearfix top10">
                 <el-input v-model="select_word" placeholder="请输入员工姓" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
@@ -14,17 +21,41 @@
                     <el-checkbox :label="v.shopId"  v-for="(v, i) in shopList" :key="i">{{v.shopName}}</el-checkbox>
                 </el-checkbox-group>
             </div>
-            <table class="m-table">
-                <tr>
+            
+            <table class="m-table top20">
+                <tr class="tr2">
                     <td>姓名</td><td>职务</td>
-                    <td v-for="(v, i) in dayList" :key="i">{{i+1}}</td>
+                    <td v-for="(v, i) in dayList" :key="i" class="td">{{i+1}}</td>
                 </tr>
-                <template v-for="(shopItem, shopIndex) in list">
-                    <tr><td :colspan="dayLength+2">{{shopItem.shopName}}</td></tr>
+            </table>
+            <table class="m-table" v-for="(shopItem, shopIndex) in list" :key="shopIndex">
+                <tr class="tr"><td :colspan="dayLength+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.shopName}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
+                <template  v-if='shopItem.showAll' >
                     <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
                         <td>{{peopleItem.name}}</td>
                         <td>{{peopleItem.position}}</td>
-                        <td v-for="(dayItem, dayIndex) in peopleItem.dayList" :key="dayIndex">{{dayItem}}</td>
+                        <template  v-for="(dayItem, dayIndex) in peopleItem.dayList">
+                            <td v-if="dayItem.indexOf(',')>0"  class="td td2" :key="dayIndex">
+                                <el-dropdown trigger="click" placement='bottom-start'>
+                                    <span class="pointer">{{dayItem.split(',')[0]}}</span>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',上'">上</el-dropdown-item>
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',下'">下</el-dropdown-item>
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',晚'">晚</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </td>
+                            <td v-else  class="td" :key="dayIndex">
+                                <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
+                                    <span class="pointer">{{dayItem}}</span>
+                                    <el-dropdown-menu slot="dropdown">
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',上'">上</el-dropdown-item>
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',下'">下</el-dropdown-item>
+                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',晚'">晚</el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </el-dropdown>
+                            </td>
+                        </template>
                     </tr>
                 </template>
             </table>
@@ -44,14 +75,44 @@
                 checkList:[],
                 shopList: [],
                 dayLength: 0,
-                dayList: []
+                dayList: [],
+                year: '2019',
+                mouth: '8'
             }
         },
         components:{
             StaffDetail
         },
         methods:{
-           
+            prevMouth(){
+                const t = this;
+                if(t.mouth==1){
+                    t.mouth = 12;
+                    t.year --;
+                    return
+                }
+                t.mouth --;
+            },
+            nextMouth(){
+                const t = this;
+                if(t.mouth==12){
+                    t.mouth = 1;
+                    t.year ++;
+                    return
+                }
+                t.mouth ++;
+            },
+            handleCommand(res){
+                const t = this;
+                let d = res.split(',');
+                t.list[d[0]].peopleList[d[1]].dayList[d[2]] = d[3];
+                t.$set(t.list,d[0],t.list[d[0]])
+            },
+            showAll(shopIndex){
+                const t = this;
+                t.list[shopIndex].showAll ? t.list[shopIndex].showAll = false : t.list[shopIndex].showAll = true;
+                t.$set(t.list,shopIndex,t.list[shopIndex])
+            },
             checkBoxChange(){
                 const t = this;
                 console.log(t.checkList)

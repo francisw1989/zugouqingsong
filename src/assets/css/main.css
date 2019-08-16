@@ -456,5 +456,11 @@ a {
 .tx2{ width: 40px; height: 40px; border-radius: 50%;}
 .ghWap{ position: absolute; bottom: 0; left: 0; width: 100%; line-height: 20px; background-color: rgba(0,0,0,0.5); text-align: center; color: #fff;}
 
-.m-table{ width: 100%;}
-.m-table td{border: 1px solid #ddd;}
+.m-table{ width: 100%; border-spacing: 0; border-collapse: collapse;}
+.m-table td{border: 1px solid #ddd; text-align: center; vertical-align: middle; padding: 8px 0;}
+.m-table .td{ width: 40px;}
+.m-table .td2{ background-color: rgba(0,0,0,0.15)}
+
+.m-table .tr td{ border-top: none; padding: 10px 0;}
+.m-table .tr2 td{ background-color: rgba(0,0,0,0.05)}
+

@@ -86,5 +86,33 @@ let commonService = {
         })
         return p;
     },
+    // 获取项目列表
+     getJbList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = ['一级','二级','三级','四级']
+            resolve(data)
+        })
+        return p;
+    },
+    // 获取项目列表
+    getXsList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = ['1','1.1','1.2','1.3']
+            resolve(data)
+        })
+        return p;
+    },
+    // 获取排班
+    getPbgzList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = [
+                {a: '早班', b: '8:00-14:00'},
+                {a: '中班', b: '13:30-21:30'},
+                {a: '晚班', b: '21:00-2:30'}
+            ]
+            resolve(data)
+        })
+        return p;
+    }
 }
 export { commonService }

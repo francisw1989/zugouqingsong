@@ -20,7 +20,7 @@
                 </el-select>
                 <span class="left20">岗位</span>
                 <el-select class="left10" v-model="gw" placeholder="" filterable>
-                    <el-option v-for="(v, i) in gwList" :key="i" :label="v" :value="v"></el-option>
+                    <el-option v-for="(v, i) in gwList" :key="i" :label="v.a" :value="v.a"></el-option>
                 </el-select>
                 <span class="left20">可服务项目</span>
                 <el-select class="left10" v-model="project" placeholder="" filterable>

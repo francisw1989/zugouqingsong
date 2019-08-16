@@ -53,6 +53,16 @@ let vaRouter = [
                 path: 'staffWorktime',
                 component: resolve => require(['../view/va/staff/staffWorktime.vue'], resolve),
                 meta: { title: '员工考勤' },
+            },
+            {
+                path: 'positionSetting',
+                component: resolve => require(['../view/va/staff/positionSetting.vue'], resolve),
+                meta: { title: '岗位与等级设置' },
+            },
+            {
+                path: 'schedulingSetting',
+                component: resolve => require(['../view/va/staff/schedulingSetting.vue'], resolve),
+                meta: { title: '排班规则设置' },
             }
 
         ]
