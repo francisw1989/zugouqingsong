@@ -9,12 +9,13 @@ body,
 .wrapper {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden;color: #333;
 }
 
 body {
     font-family: 'PingFang SC', "Helvetica Neue", Helvetica, "microsoft yahei", arial, STHeiTi, sans-serif;
     font-size: 14px;
+    color: #333;
 }
 
 a {
@@ -372,27 +373,24 @@ a {
 .colfff,.colfff a:link,.colfff a:visited,a.colfff:link, a.colfff:visited{color:#fff;text-decoration: none;}
 .colfff a:hover,.colfff a:active,a.colfff:hover, a.colfff:active{color:#fff;text-decoration: none;}
 
-.colblue,.colblue a:link,.colblue a:visited,a.colblue:link, a.colblue:visited{color:#459E8C;text-decoration: none;}
+.colblue,.colblue a:link,.colblue a:visited,a.colblue:link, a.colblue:visited{color:#2d8fec;text-decoration: none;}
 .colblue a:hover,.colblue a:active,a.colblue:hover, a.colblue:active{color:#0885BC;text-decoration: underline;}
 
-.colred,.colred a:link,.colred a:visited,a.colred:link, a.colred:visited{color:#ff0000!important;text-decoration: none;}
+.colred,.colred a:link,.colred a:visited,a.colred:link, a.colred:visited{color:#f15d48!important;text-decoration: none;}
 .colred a:hover,.colred a:active,a.colred:hover, a.colred:active{color:#c52424;text-decoration: underline;}
 
 .col000,.col000 a:link,.col000 a:visited,a.col000:link, a.col000:visited{color:#000;text-decoration: none;}
 .col000 a:hover,.col000 a:active,a.col000:hover, a.col000:active{color:#a37c1a;text-decoration: none;}
 
-.colPink,.colPink a:link,.colPink a:visited,a.colPink:link, a.colPink:visited{color:#ffa188;text-decoration: none;}
-.colPink a:hover,.colPink a:active,a.colPink:hover, a.colPink:active{color:#cb1100;text-decoration: none;}
 
 .clearfix { *zoom: 1;}
 .clearfix:before,.clearfix:after { display: table;line-height: 0;content: "";}
 .clearfix:after { clear: both;}
-.colblue2{ color: #83ABCE }
-.colpurple{ color: #cc72c5 }
-.colye{ color:#ff8c47;}
-.colGreen{ color:#b8d38f;}
 
-.pointer{ cursor:pointer}
+.colye{ color:#ff8c47;}
+.colgreen{ color:#00d1b2;}
+
+.pointer{  -webkit-user-select:none; user-select:none;  cursor:pointer}
 .bor_btm_da{ border-bottom:1px dashed #ccc;}
 .bor_btm_so{ border-bottom:1px solid #ddd;}
 .disInline{ display:inline;}
@@ -435,11 +433,28 @@ a {
 .el-upload-list--picture-card .el-upload-list__item{ width: 100px!important; height: 100px!important;}
 .el-upload--picture-card{ width: 100px!important; height: 100px!important; line-height: 100px!important;}
 
+.sInfoWap .img{ width: 100%;}
+
+.table1{ border: 1px solid #ddd;  padding: 8px 0;}
+.table1 .el-col{ border-right: 1px solid #ddd;}
+.table1 .el-col:last-child{ border: none}
+
+/* 弹框相关 */
+.el-dialog__body{ padding: 15px 20px!important}
+.el-dialog__header{ padding: 10px 20px!important; background: #07c4a8; }
+.el-dialog__title{color: #fff!important;}
+.el-dialog__headerbtn{ top: 15px!important}
+.el-dialog__headerbtn .el-dialog__close{ color: #fff!important}
 
 
+.el-switch__core:after{content: "";position: absolute;top: 1px;left: 1px;border-radius: 100%;-webkit-transition: all .3s;transition: all .3s;width: 16px;height: 16px;background-color: #fff}
+.el-switch.is-checked .el-switch__core:after{ left: 100%;margin-left: -17px}
 
+.yhBoard{ background: #eef1f6; height: 100%;}
 
+.tx1{ width: 80px; height: 80px; border-radius: 50%;}
+.tx2{ width: 40px; height: 40px; border-radius: 50%;}
+.ghWap{ position: absolute; bottom: 0; left: 0; width: 100%; line-height: 20px; background-color: rgba(0,0,0,0.5); text-align: center; color: #fff;}
 
-
-
-
+.m-table{ width: 100%;}
+.m-table td{border: 1px solid #ddd;}

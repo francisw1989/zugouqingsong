@@ -219,12 +219,11 @@
 <script>
     var img = require('../../../assets/img/mark.png');
     var echarts = require('echarts');
-    import Schart from 'vue-schart';
     import bus from '../../../bus';
     import {dashboardService} from '../../../service/dashboard.js'
     export default {
         components: {
-            Schart
+            
         },
         data() {
             return {
@@ -235,7 +234,6 @@
                 numsB: [],
                 numsC: [],
                 numsD: [],
-                numsData: [],
                 radio_income: '今日',
                 radio_nums: '今日',
                 selShopId_income: '-10000',

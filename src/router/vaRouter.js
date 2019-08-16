@@ -23,6 +23,36 @@ let vaRouter = [
                 path: 'storeManage',
                 component: resolve => require(['../view/va/storeManage/index.vue'], resolve),
                 meta: { title: '门店管理' },
+            },
+            {
+                path: 'orderList',
+                component: resolve => require(['../view/va/order/orderList.vue'], resolve),
+                meta: { title: '订单列表' },
+            },
+            {
+                path: 'project',
+                component: resolve => require(['../view/va/order/project.vue'], resolve),
+                meta: { title: '服务项目' },
+            },
+            {
+                path: 'projectCat',
+                component: resolve => require(['../view/va/order/projectCat.vue'], resolve),
+                meta: { title: '服务分类' },
+            },
+            {
+                path: 'staffList',
+                component: resolve => require(['../view/va/staff/staffList.vue'], resolve),
+                meta: { title: '员工列表' },
+            },
+            {
+                path: 'staffScheduling',
+                component: resolve => require(['../view/va/staff/staffScheduling.vue'], resolve),
+                meta: { title: '员工排班' },
+            },
+            {
+                path: 'staffWorktime',
+                component: resolve => require(['../view/va/staff/staffWorktime.vue'], resolve),
+                meta: { title: '员工考勤' },
             }
 
         ]

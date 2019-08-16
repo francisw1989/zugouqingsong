@@ -54,13 +54,41 @@
                     },
                     {
                         icon: 'el-icon-lx-goods',
-                        index: '/va/orderManage',
-                        title: '订单管理'
+                        index: '1',
+                        title: '订单管理',
+                        subs: [
+                            {
+                                index: '/va/orderList',
+                                title: '订单列表'
+                            },
+                            {
+                                index: '/va/project',
+                                title: '服务项目'
+                            },
+                            {
+                                index: '/va/projectCat',
+                                title: '项目分类'
+                            },
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-friend',
-                        index: '/va/staffManage',
-                        title: '员工管理'
+                        index: '2',
+                        title: '员工管理',
+                        subs: [
+                            {
+                                index: '/va/staffList',
+                                title: '员工列表'
+                            },
+                            {
+                                index: '/va/staffScheduling',
+                                title: '员工排班'
+                            },
+                            {
+                                index: '/va/staffWorktime',
+                                title: '员工考勤'
+                            },
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-group',
@@ -108,7 +136,7 @@
         },
         computed:{
             onRoutes(){
-                return this.$route.path.replace('/','');
+                return this.$route.path;
             }
         },
         created(){

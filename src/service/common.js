@@ -64,5 +64,27 @@ let commonService = {
         })
         return p;
     },
+    // 获取项目列表
+    getProjectList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = [
+                {a: '2地方32131',b:'但是',c:'水电费',d:'地方',e:'df'},
+                {a: '23213df1',b:'但是',c:'水电费',d:'地方',e:'df'},
+                {a: '2dsfd32131',b:'但是',c:'水电费',d:'地方',e:'df'},
+                {a: '2321dsf31',b:'但是',c:'水电费',d:'地方',e:'df'},
+                {a: '23dfd2131',b:'但是',c:'水电费',d:'地方',e:'df'},
+            ]
+            resolve(data)
+        })
+        return p;
+    },
+    // 获取项目列表
+    getTagsTypeList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = ['','success','info','warning','danger','','success','info','warning','danger']
+            resolve(data)
+        })
+        return p;
+    },
 }
 export { commonService }

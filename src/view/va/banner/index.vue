@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="handle-box align-right">
-                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del" @click="add">新增</el-button>
+                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del" @click="handleEdit">新增</el-button>
                 <!-- <el-button type="danger" icon="el-icon-delete" class="handle-del left10" @click="delAll">批量删除</el-button> -->
             </div>
             <el-table :data="list"  border class="table top10" ref="multipleTable" @selection-change="handleSelectionChange">
@@ -151,25 +151,27 @@
             handlePublish(index, row){
 
             },
-            add() {
-                this.idx = '-1';
-                this.id = '';
-                this.imageUrl = '';
-                this.form = {
-                    a: '',
-                    b: '',
-                    c: '',
-                }
-                this.editVisible = true;
-            },
+
             handleEdit(index, row) {
-                this.idx = index;
-                this.id = row.id;
-                this.form = {
-                    a: row.a,
-                    b: row.b,
-                    c: row.c,
+                if(row){
+                    this.idx = index;
+                    this.id = row.id;
+                    this.form = {
+                        a: row.a,
+                        b: row.b,
+                        c: row.c,
+                    }
+                }else{
+                    this.idx = '-1';
+                    this.id = '';
+                    this.imageUrl = '';
+                    this.form = {
+                        a: '',
+                        b: '',
+                        c: '',
+                    }
                 }
+                
                 this.editVisible = true;
             },
             handleDelete(index, row) {

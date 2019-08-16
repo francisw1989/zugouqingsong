@@ -10,7 +10,7 @@
             <div class="handle-box">
                 <el-input v-model="select_word" placeholder="输入门店名称" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="add">新增</el-button>
+                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handle2">新增</el-button>
             </div>
             <el-table :data="list"  border class="table top10" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="index" label="序号"  width="50"  align='center'></el-table-column>
@@ -116,11 +116,20 @@
                 <el-button type="primary" @click="deleteRow">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 查看 -->
+        <el-dialog title="门店详情" :visible.sync="viewVisible" width="40%">
+            <StoreDetail></StoreDetail>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="handle2(idx, row)">编 辑</el-button>
+                <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 <script>
     import bus from '../../../bus';
     import {storeService} from '../../../service/store';
+    import StoreDetail from './detail';
     var img = require('../../../assets/img/mark.png');
     export default {
         data() {
@@ -151,12 +160,14 @@
                 },
                 idx: -1,
                 id: -1,
+                row: {},
                 
-                
-                dialogImageUrl: '',
-                dialogVisible: false,
-                pt: ''
+                pt: '',
+                viewVisible: false
             }
+        },
+        components: {
+            StoreDetail
         },
         computed:{
             
@@ -165,10 +176,7 @@
             handleRemove(file, fileList) {
                 console.log(file, fileList);
             },
-            handlePictureCardPreview(file) {
-                this.dialogImageUrl = file.url;
-                this.dialogVisible = true;
-            },
+
             delAll() {
                 const length = this.multipleSelection.length;
                 let str = '';
@@ -193,35 +201,48 @@
             handlePublish(index, row){
 
             },
-            add() {
+
+            handle1(index, row){
                 const t = this;
-                this.idx = '-1';
-                this.id = '';
-                t.lng = '';
-                t.jwd = '';
-                t.lat = '';
-                this.form = {
-                    a: '',
-                    b: '',
-                    c: '',
+                t.viewVisible = true;
+                this.idx = index;
+                this.id = row.id;
+                this.row = row;
+            },
+            
+            handle2(index, row) {
+                const t = this;
+                if(row){
+                    // 编辑
+                    t.idx = index;
+                    t.id = row.id;
+                    t.lng = row.lng || '';
+                    t.lat =  row.lat || '';
+                    t.jwd = row.jwd ||  '';
+                    t.form = {
+                        a: row.a,
+                        b: row.b,
+                        c: row.c,
+                    }
+                }else{
+                    // 新增
+                    t.idx = '-1';
+                    t.id = '';
+                    t.lng = '';
+                    t.lat = '';
+                    t.jwd = '';
+                    t.form = {
+                        a: '',
+                        b: '',
+                        c: '',
+                    }
+                    
                 }
-                this.editVisible = true;
                 setTimeout(() => {
                     t.initMap();
                 }, 100);
-            },
-            handle1(index, row){
-
-            },
-            handle2(index, row) {
-                this.idx = index;
-                this.id = row.id;
-                this.form = {
-                    a: row.a,
-                    b: row.b,
-                    c: row.c,
-                }
-                this.editVisible = true;
+                t.viewVisible = false;
+                t.editVisible = true;
             },
             handle3(index, row){
 
