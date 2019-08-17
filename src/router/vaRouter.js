@@ -68,6 +68,26 @@ let vaRouter = [
                 path: 'customerList',
                 component: resolve => require(['../view/va/customer/customerList.vue'], resolve),
                 meta: { title: '客户列表' },
+            },
+            {
+                path: 'tagsSetting',
+                component: resolve => require(['../view/va/customer/tagsSetting.vue'], resolve),
+                meta: { title: '用户标签设置' },
+            },
+            {
+                path: 'rightsSetting',
+                component: resolve => require(['../view/va/customer/rightsSetting.vue'], resolve),
+                meta: { title: '会员权益设置' },
+            },
+            {
+                path: 'stockList',
+                component: resolve => require(['../view/va/stockManage/stockList.vue'], resolve),
+                meta: { title: '库存管理' },
+            },
+            {
+                path: 'outStock',
+                component: resolve => require(['../view/va/stockManage/outStock.vue'], resolve),
+                meta: { title: '出库记录' },
             }
 
         ]

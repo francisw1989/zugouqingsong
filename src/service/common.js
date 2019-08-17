@@ -5,7 +5,11 @@ let commonService = {
             let data = {
                 sysRoute: 'va',
                 // sysName: '足够轻松 平台管理',
-                sysName: '后台管理系统'
+                sysName: '后台管理系统',
+                tagFlList: ['基础特征'],
+                rightsList: [
+                    {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
+                ]
             }
             resolve(data)
         })
@@ -109,6 +113,18 @@ let commonService = {
                 {a: '早班', b: '8:00-14:00'},
                 {a: '中班', b: '13:30-21:30'},
                 {a: '晚班', b: '21:00-2:30'}
+            ]
+            resolve(data)
+        })
+        return p;
+    },
+    // 获取排班
+    getTagsList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = [
+                {a: 'sfdsf', b: 'dfsfd', c: '232'},
+                {a: 'fdsd', b: 'sdfs', c: '232'},
+                {a: 'sdfsd', b: 'sdfsf', c: '232'}
             ]
             resolve(data)
         })

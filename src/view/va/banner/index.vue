@@ -104,9 +104,6 @@
             
         },
         methods:{
-            handleRemove(file) {
-                console.log(file);
-            },
             upImgChange(res){
                 this.imageUrl = URL.createObjectURL(res.raw);
             },

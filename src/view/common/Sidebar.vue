@@ -106,14 +106,28 @@
                             {
                                 index:'/va/customerList', title:'客户列表'
                             },
+                            {
+                                index:'/va/tagsSetting', title:'用户标签设置'
+                            },
+                            {
+                                index:'/va/rightsSetting', title:'会员权益设置'
+                            },
                             
 
                         ]
                     },
                     {
                         icon: 'el-icon-lx-global',
-                        index: '/va/materielManage',
-                        title: '物料管理'
+                        index: '4',
+                        title: '物料商品管理',
+                        subs: [
+                            {
+                                index: '/va/stockList', title: '库存管理'
+                            },
+                            {
+                                index: '/va/outStock', title: '出库记录'
+                            }
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-recharge',

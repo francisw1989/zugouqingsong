@@ -49,7 +49,155 @@
             <div class="pad10 ">
                 <div v-if="tabName=='行为统计'">
                     <p class="font20 col000">服务情况</p>
-                    
+                    <el-row class="table1 top10 center" style="border: none">
+                        <el-col :span="6">
+                            <p>服务次数</p>
+                            <p>22次</p>
+                        </el-col>
+                        <el-col :span="6">
+                            <p>服务总额</p>
+                            <p>22323</p>
+                        </el-col>
+                        <el-col :span="6">
+                            <p>平均客单</p>
+                            <p>22次</p>
+                        </el-col>
+                        <el-col :span="6">
+                            <p>消费频次</p>
+                            <p>22次</p>
+                        </el-col>
+                    </el-row>
+                    <p class="font20 col000 top20">服务偏好</p>
+                    <el-form ref="form" :model="form"  :rules="rules"   label-width="60px" class="staffForm top20">
+                        <el-form-item label="标签" >
+                            <el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)" class="right5">
+                            {{tag}}
+                            </el-tag>
+                            <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini" @keyup.enter.native="handleInputConfirm"
+                            @blur="handleInputConfirm">
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="mini" @click="showInput">+ 新增标签</el-button>
+                        </el-form-item>
+                        <el-form-item label="门店" >
+                            <el-tag type="success">弘扬总店</el-tag><el-tag type="success" class="left5">新街口店</el-tag>
+                        </el-form-item>
+                        <el-form-item label="技师" >
+                            <el-tag type="warning">张三</el-tag><el-tag type="warning" class="left5">李四</el-tag>
+                            <p class="font12 col999">自动过滤服务一次的技师</p>
+                        </el-form-item>
+                        
+                    </el-form>
+                </div>
+                <div v-if="tabName=='服务明细'">
+                    <p class="font20 col000  clearfix"><span class="right ">本月共服务8单</span>服务订单</p>
+                    <div class="pad15TB bor_btm_so">
+                        <p class="col999">
+                            <span>2019-08-02 21：00</span>
+                            <span class="left20">颈椎放松</span>
+                            <span class="left20">弘扬总店</span>
+                            <span class="left20">拼团</span>
+                            <span class="left20">120元</span>
+                        </p>
+                        <p class="">
+                            <span class="verMid">张三</span>
+                            <span class="left20 verMid">5分</span>
+                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
+                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
+                        </p>
+                    </div>
+                    <div class="pad15TB bor_btm_so">
+                        <p class="col999">
+                            <span>2019-08-02 21：00</span>
+                            <span class="left20">颈椎放松</span>
+                            <span class="left20">弘扬总店</span>
+                            <span class="left20">拼团</span>
+                            <span class="left20">120元</span>
+                        </p>
+                        <p class="">
+                            <span class="verMid">张三</span>
+                            <span class="left20 verMid">5分</span>
+                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
+                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
+                        </p>
+                    </div>
+                    <div class="pad15TB bor_btm_so">
+                        <p class="col999">
+                            <span>2019-08-02 21：00</span>
+                            <span class="left20">颈椎放松</span>
+                            <span class="left20">弘扬总店</span>
+                            <span class="left20">拼团</span>
+                            <span class="left20">120元</span>
+                        </p>
+                        <p class="">
+                            <span class="verMid">张三</span>
+                            <span class="left20 verMid">5分</span>
+                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
+                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
+                        </p>
+                    </div>
+                    <p  class="center top10"><span class="pointer colblue">查看完整记录</span></p>
+                </div>
+                <div v-if="tabName=='消费明细'">
+                    <p class="font20 col000  clearfix"><span class="right ">本月共消费8元</span>消费明细</p>
+                    <table class="m-table1 top20">
+                        <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">-120元</td>
+                            <td>服务消费</td>
+                            <td>储值卡支付</td>
+                        </tr>
+                         <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">-120元</td>
+                            <td>服务消费</td>
+                            <td>储值卡支付</td>
+                        </tr>
+                         <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">-120元</td>
+                            <td>服务消费</td>
+                            <td>储值卡支付</td>
+                        </tr>
+                         <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">-120元</td>
+                            <td>服务消费</td>
+                            <td>储值卡支付</td>
+                        </tr>
+                    </table>
+                </div>
+                <div v-if="tabName=='充值记录'">
+                    <p class="font20 col000  clearfix">充值记录</p>
+                    <table class="m-table1 top20">
+                        <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">弘扬总店</td>
+                            <td>+3000元</td>
+                            <td>会员充值</td>
+                            <td>微信</td>
+                        </tr>
+                        <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">弘扬总店</td>
+                            <td>+3000元</td>
+                            <td>会员充值</td>
+                            <td>微信</td>
+                        </tr>
+                        <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">弘扬总店</td>
+                            <td>+3000元</td>
+                            <td>会员充值</td>
+                            <td>微信</td>
+                        </tr>
+                        <tr>
+                            <td class="col999">2019-08-02 21:00</td>
+                            <td class="col999">弘扬总店</td>
+                            <td>+3000元</td>
+                            <td>会员充值</td>
+                            <td>微信</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </el-col>
@@ -80,14 +228,33 @@
                 tabsType:[],
                 tabName: '行为统计',
                 hei: false,
-                hong: false
+                hong: false,
+                inputVisible: false,
+                inputValue: ''
             }
         },
         computed:{
             
         },
         methods:{
-            
+            handleClose(tag) {
+                this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+            },
+            showInput() {
+                this.inputVisible = true;
+                this.$nextTick(_ => {
+                    this.$refs.saveTagInput.$refs.input.focus();
+                });
+            },
+
+            handleInputConfirm() {
+                let inputValue = this.inputValue;
+                if (inputValue) {
+                    this.form.tags.push(inputValue);
+                }
+                this.inputVisible = false;
+                this.inputValue = '';
+            },
             tabClick(tab, event){
                 const t = this;
                 console.log(t.tabName)
@@ -118,14 +285,6 @@
                 for(const key in res){
                     t.edit[key] = false;
                 }
-                t.$commonService.getTagsTypeList().then((res)=>{
-                    t.form.tags.forEach(v => {
-                        let i = Math.floor(Math.random() * (10 - 0)) + 0;
-                        console.log(i);
-                        t.tabsType.push(res[i])
-                    });
-                    
-                });
                 t.form = res;
                 console.log(t.form.ssmd)
             })
@@ -135,5 +294,16 @@
     }
 </script>
 <style scoped>
-    
+    .button-new-tag {
+        margin-left: 5px;
+        height: 24px;
+        line-height: 24px;
+        padding-top: 0;
+        padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 5px;
+    vertical-align: bottom;
+  }
 </style>
