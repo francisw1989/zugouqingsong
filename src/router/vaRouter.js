@@ -63,6 +63,11 @@ let vaRouter = [
                 path: 'schedulingSetting',
                 component: resolve => require(['../view/va/staff/schedulingSetting.vue'], resolve),
                 meta: { title: '排班规则设置' },
+            },
+            {
+                path: 'customerList',
+                component: resolve => require(['../view/va/customer/customerList.vue'], resolve),
+                meta: { title: '客户列表' },
             }
 
         ]

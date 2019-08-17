@@ -100,8 +100,15 @@
                     },
                     {
                         icon: 'el-icon-lx-group',
-                        index: '/va/customerManage',
-                        title: '客户管理'
+                        index: '3',
+                        title: '客户管理',
+                        subs: [
+                            {
+                                index:'/va/customerList', title:'客户列表'
+                            },
+                            
+
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-global',
