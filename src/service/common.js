@@ -10,7 +10,9 @@ let commonService = {
                 rightsList: [
                     {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
                 ],
-                goodsCat: ['烟','酒']
+                goodsCat: ['烟','酒'],
+                yhqTypeList: ['满减', '满赠', '抵扣'],
+                yhqFwList: ['通用', '门店', '项目'],
             }
             resolve(data)
         })

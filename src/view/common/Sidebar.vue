@@ -134,8 +134,11 @@
                     },
                     {
                         icon: 'el-icon-lx-recharge',
-                        index: '/va/couponlManage',
-                        title: '优惠卷管理'
+                        index: '5',
+                        title: '优惠卷管理',
+                        subs: [
+                            {index: '/va/couponList',title: '优惠券列表'}
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-present',
