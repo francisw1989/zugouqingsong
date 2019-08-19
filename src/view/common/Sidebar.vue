@@ -126,6 +126,9 @@
                             },
                             {
                                 index: '/va/outStock', title: '出库记录'
+                            },
+                            {
+                                index: '/va/procurementList', title: '采购记录'
                             }
                         ]
                     },

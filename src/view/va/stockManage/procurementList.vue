@@ -9,10 +9,8 @@
         <div class="container">
             <div class=" clearfix top10">
                 <el-button type="primary" class="right" @click="handle1">新增</el-button>
-                <el-input v-model="select_word" placeholder="请输入商品编号或名称" class="handle-input"></el-input>
+                <el-input v-model="select_word" placeholder="订单编号、商品名称、接收员、采购员" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                <el-checkbox v-model="checked1" class="left40">商品</el-checkbox>
-                <el-checkbox v-model="checked2">物料</el-checkbox>
             </div>
 
 
@@ -20,17 +18,20 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="商品编号" sortable width="150"></el-table-column>
+                <el-table-column prop="a" label="编号" sortable width="150"></el-table-column>
                 <el-table-column prop="b" label="商品名称" width="120"></el-table-column>
                 <el-table-column prop="c" label="商品类别"></el-table-column>
-                <el-table-column prop="c" label="成本价格（元）"></el-table-column>
-                <el-table-column prop="c" label="销售价格（元）"></el-table-column>
+                <el-table-column prop="c" label="供货商"></el-table-column>
+                <el-table-column prop="c" label="采购时间"></el-table-column>
+                <el-table-column prop="c" label="采购员"></el-table-column>
+                <el-table-column prop="c" label="接收时间"></el-table-column>
+                <el-table-column prop="c" label="收货员"></el-table-column>
+                <el-table-column prop="c" label="成本单价（元）"></el-table-column>
                 <el-table-column prop="c" label="数量"></el-table-column>
-                <el-table-column prop="c" label="单位"></el-table-column>
+                <el-table-column prop="c" label="总计"></el-table-column>
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
-                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">停用</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -41,7 +42,7 @@
         </div>
 
         <!-- 新增 -->
-        <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="450px">
+        <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="350px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="商品名称" prop="a">
                     <el-input v-model="form.a"></el-input>
@@ -54,10 +55,16 @@
                 <el-form-item label="成本价" prop="a">
                     <el-input v-model="form.a"></el-input>
                 </el-form-item>
-                <el-form-item label="销售价" prop="a">
+                <el-form-item label="单位" prop="a">
+                    瓶
+                </el-form-item>
+                <el-form-item label="退货时间" prop="a">
+                    <el-date-picker v-model="form.a" type="date" placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="数量" prop="a">
                     <el-input v-model="form.a"></el-input>
                 </el-form-item>
-                <el-form-item label="单位" prop="a">
+                <el-form-item label="采购员" prop="a">
                     <el-input v-model="form.a"></el-input>
                 </el-form-item>
                 <el-form-item label="商品图片">
@@ -165,14 +172,12 @@
                 
                 this.editVisible = true;
             },
-            handle2(index, row){
-                
-            }
+            
         },
         mounted(){
             const t = this;
             // 员工列表
-            stockService.getStockList().then((res)=>{
+            stockService.getProcurementList().then((res)=>{
                 t.list = res;
             });
             t.goodsCat = t.$GD.goodsCat;

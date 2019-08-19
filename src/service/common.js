@@ -9,7 +9,8 @@ let commonService = {
                 tagFlList: ['基础特征'],
                 rightsList: [
                     {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
-                ]
+                ],
+                goodsCat: ['烟','酒']
             }
             resolve(data)
         })
