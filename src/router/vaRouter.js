@@ -98,6 +98,11 @@ let vaRouter = [
                 path: 'couponList',
                 component: resolve => require(['../view/va/couponManage/couponList.vue'], resolve),
                 meta: { title: '优惠券列表' },
+            },
+            {
+                path: 'lingquList',
+                component: resolve => require(['../view/va/couponManage/lingquList.vue'], resolve),
+                meta: { title: '领用记录' },
             }
 
         ]
