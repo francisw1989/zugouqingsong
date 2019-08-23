@@ -8,6 +8,9 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
+                <el-radio-group v-model="type" class="right">
+                    <el-radio-button :label="i"  v-for="(v, i) in typeList" :key="i" >{{v}}</el-radio-button>
+                </el-radio-group>
                 <el-input v-model="select_word" placeholder="优惠券名称、领取人、手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 
@@ -75,6 +78,8 @@
                 goodsCat:[],
                 shopList: [],
                 ffTypeList: [],
+                typeList:['所有订单', '未支付','进行中','待评价','已完成'],
+                type: '0',
             }
         },
         components:{

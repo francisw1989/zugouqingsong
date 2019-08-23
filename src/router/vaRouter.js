@@ -103,6 +103,16 @@ let vaRouter = [
                 path: 'lingquList',
                 component: resolve => require(['../view/va/couponManage/lingquList.vue'], resolve),
                 meta: { title: '领用记录' },
+            },
+            {
+                path: 'activityList',
+                component: resolve => require(['../view/va/activity/activityList.vue'], resolve),
+                meta: { title: '活动数据列表' },
+            },
+            {
+                path: 'activityRule',
+                component: resolve => require(['../view/va/activity/activityRule.vue'], resolve),
+                meta: { title: '活动规则列表' },
             }
 
         ]

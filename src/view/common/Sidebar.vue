@@ -143,8 +143,12 @@
                     },
                     {
                         icon: 'el-icon-lx-present',
-                        index: '/va/activity',
-                        title: '常规活动'
+                        index: '6',
+                        title: '常规活动',
+                        subs: [
+                            {index: '/va/activityList',title: '活动数据列表'},
+                            {index: '/va/activityRule',title: '活动规则列表'},
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-message',
