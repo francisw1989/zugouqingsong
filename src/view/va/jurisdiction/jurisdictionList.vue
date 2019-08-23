@@ -29,34 +29,38 @@
             </div>
         </div>
         <el-dialog :title="idx==-1?'新增权限':'编辑权限'" :visible.sync="editVisible" width="1000px">
-            <el-row :gutter='20'>
+            <el-row style="border: 1px solid #ebeef5">
                 <el-col :span="10">
-                    <p class="center font16">权限信息</p>
-                    <el-form ref="form" :model="form" :rules="rules" label-width="90px" class="top20">
-                        <el-form-item label="权限名称" prop="a">
-                            <el-input v-model="form.a"></el-input>
-                        </el-form-item>
-                        <el-form-item label="权限状态" prop="a">
-                            <el-switch v-model="form.isOpen" class="left10"></el-switch>
-                        </el-form-item>
-                        
-                        <el-form-item label="权限描述" prop="a">
-                            <el-input v-model="form.a" type="textarea"></el-input>
-                        </el-form-item>
-                        
-                        
-                    </el-form>
+                    <p class="center pad10" style="background-color: #f1f1f1">权限信息</p>
+                    <div class="pad20">
+                        <el-form ref="form" :model="form" :rules="rules" label-width="90px" class="">
+                            <el-form-item label="权限名称" prop="a">
+                                <el-input v-model="form.a"></el-input>
+                            </el-form-item>
+                            <el-form-item label="权限状态" prop="a">
+                                <el-switch v-model="form.isOpen" class="left10"></el-switch>
+                            </el-form-item>
+                            
+                            <el-form-item label="权限描述" prop="a">
+                                <el-input v-model="form.a" type="textarea"></el-input>
+                            </el-form-item>
+                            
+                            
+                        </el-form>
+                    </div>
                 </el-col>
-                <el-col style="border-left: 1px solid #ddd" :span="14">
-                    <p class="center font16">权限分配</p>
-                    <el-table :data="menuList"  border class="table top20" ref="multipleTable"
-                        row-key="index" default-expand-all
-                        @selection-change="handleSelectionChange"
-                        :tree-props="{children: 'children'}"
-                    >
-                        <el-table-column type="selection" width="55" align="center"></el-table-column>
-                        <el-table-column prop="title" label="菜单名称" width=""></el-table-column>
-                    </el-table>
+                <el-col style="border-left: 1px solid #ebeef5" :span="14">
+                    <p class="center pad10" style="background-color: #f1f1f1">权限分配</p>
+                    <div class="pad20">
+                        <el-table :data="menuList"  border class="table " ref="multipleTable"
+                            row-key="index" default-expand-all
+                            @selection-change="handleSelectionChange"
+                            :tree-props="{children: 'children'}"
+                        >
+                            <el-table-column type="selection" width="55" align="center"></el-table-column>
+                            <el-table-column prop="title" label="菜单名称" width=""></el-table-column>
+                        </el-table>
+                    </div>
                 </el-col>
             </el-row>
             
