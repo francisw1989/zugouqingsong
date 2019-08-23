@@ -82,7 +82,6 @@
                         <el-upload
                         action="https://jsonplaceholder.typicode.com/posts/"
                         list-type="picture-card"
-                        :on-preview="handlePictureCardPreview"
                         :on-remove="handleRemove">
                         <i class="el-icon-plus"></i>
                         </el-upload>
@@ -161,9 +160,10 @@
                 idx: -1,
                 id: -1,
                 row: {},
-                
+                dialogImageUrl: '',
                 pt: '',
-                viewVisible: false
+                viewVisible: false,
+                dialogVisible: false
             }
         },
         components: {

@@ -152,22 +152,26 @@
                     },
                     {
                         icon: 'el-icon-lx-message',
-                        index: '/va/evaluateManage',
-                        title: '评价管理'
+                        index: '7',
+                        title: '评价管理',
+                        subs: [
+                            {index: '/va/evaluateList', title: '评价列表'},
+                            {index: '/va/evaluateTag', title: '评价标签'},
+                        ]
                     },
                     {
                         icon: 'el-icon-lx-profile',
-                        index: '/va/accountManage',
+                        index: '/va/accountList',
                         title: '账号管理'
                     },
                     {
                         icon: 'el-icon-lx-lock',
-                        index: '/va/jurisdictionManage',
+                        index: '/va/jurisdictionList',
                         title: '权限管理'
                     },
                     {
                         icon: 'el-icon-lx-settings',
-                        index: '/va/systemManage',
+                        index: '/va/system',
                         title: '系统配置'
                     },
 

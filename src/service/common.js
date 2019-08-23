@@ -16,7 +16,12 @@ let commonService = {
                 yhqYxqlxList: ['固定日期','自领取起'],
                 ffTypeList: ['新用户注册'],
                 hdTypeList: ['注册'],
-                yhqList: ['满200减50', '颈椎放松7折', '60分钟颈椎放松']
+                yhqList: ['满200减50', '颈椎放松7折', '60分钟颈椎放松'],
+                xmflList: ['职场女性','休闲放松'],
+                pjflList: ['好'],
+                jueseList: ['管理员','开发'],
+                yuangongList: ['章三']
+
             }
             resolve(data)
         })

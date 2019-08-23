@@ -113,6 +113,31 @@ let vaRouter = [
                 path: 'activityRule',
                 component: resolve => require(['../view/va/activity/activityRule.vue'], resolve),
                 meta: { title: '活动规则列表' },
+            },
+            {
+                path: 'evaluateList',
+                component: resolve => require(['../view/va/evaluate/evaluateList.vue'], resolve),
+                meta: { title: '评价列表' },
+            },
+            {
+                path: 'evaluateTag',
+                component: resolve => require(['../view/va/evaluate/evaluateTag.vue'], resolve),
+                meta: { title: '评价标签' },
+            },
+            {
+                path: 'accountList',
+                component: resolve => require(['../view/va/account/accountList.vue'], resolve),
+                meta: { title: '账号管理' },
+            },
+            {
+                path: 'jurisdictionList',
+                component: resolve => require(['../view/va/jurisdiction/jurisdictionList.vue'], resolve),
+                meta: { title: '权限管理' },
+            },
+            {
+                path: 'system',
+                component: resolve => require(['../view/va/system/index.vue'], resolve),
+                meta: { title: '系统配置' },
             }
 
         ]
