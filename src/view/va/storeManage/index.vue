@@ -14,14 +14,14 @@
             </div>
             <el-table :data="list"  border class="table top10" ref="multipleTable" @selection-change="handleSelectionChange">
                 <el-table-column type="index" label="序号"  width="50"  align='center'></el-table-column>
-                <el-table-column prop="a" label="名称" width="150"></el-table-column>
-                <el-table-column prop="b" label="位置" width="120"></el-table-column>
-                <el-table-column prop="c" label="电话"></el-table-column>
-                <el-table-column prop="c" label="开业日期"></el-table-column>
-                <el-table-column prop="c" label="技师数量"></el-table-column>
-                <el-table-column prop="c" label="面积"></el-table-column>
-                <el-table-column prop="c" label="租金(万元/年)"></el-table-column>
-                <el-table-column prop="c" label="店长"></el-table-column>
+                <el-table-column prop="name" label="名称" width="150"></el-table-column>
+                <el-table-column prop="detailAddress" label="位置"></el-table-column>
+                <el-table-column prop="phoneNum" label="电话"></el-table-column>
+                <el-table-column prop="openingDate" label="开业日期"></el-table-column>
+                <el-table-column prop="maxPeopleNum" label="技师数量"></el-table-column>
+                <el-table-column prop="area" label="面积"></el-table-column>
+                <el-table-column prop="rent" label="租金(万元/年)"></el-table-column>
+                <el-table-column prop="shopowner" label="店长"></el-table-column>
                 <el-table-column label="操作" width="330" align="center">
                     <template slot-scope="scope">
                         <el-button  size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
@@ -32,7 +32,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -41,48 +41,51 @@
         <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="40%">
             <el-form ref="form" :model="form"  :rules="rules"   label-width="100px">
                 <div class="clearfix">
-                    <el-form-item label="名称" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder="输入门店名称"></el-input>
+                    <el-form-item label="名称" prop="name" style="width: 50%" class="left">
+                        <el-input v-model="form.name" placeholder="输入门店名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="开业日期" prop="a" style="width: 50%"  class="left">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.a" style="width: 100%;"></el-date-picker>
-                    </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="电话" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder="输入门店电话"></el-input>
-                    </el-form-item>
-                    <el-form-item label="面积" prop="a" style="width: 50%"  class="left">
-                        <el-input v-model="form.a" placeholder="输入面积"></el-input>
+                    <el-form-item label="开业日期" prop="openingDate" style="width: 50%"  class="left">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="form.openingDate" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="店长" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder="店长姓名"></el-input>
+                    <el-form-item label="电话" prop="phoneNum" style="width: 50%" class="left">
+                        <el-input v-model="form.phoneNum" placeholder="输入门店电话"></el-input>
                     </el-form-item>
-                    <el-form-item label="租金" prop="a" style="width: 50%"  class="left">
-                        <el-input v-model="form.a" placeholder="租金(元/年)"></el-input>
-                    </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="店长手机" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder="联系电话"></el-input>
-                    </el-form-item>
-                    <el-form-item label="物业" prop="a" style="width: 50%"  class="left">
-                        <el-input v-model="form.a" placeholder="租金(元/年/平)"></el-input>
+                    <el-form-item label="面积" prop="area" style="width: 50%"  class="left">
+                        <el-input v-model="form.area" placeholder="输入面积"></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="门店标签" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder="英文逗号','隔开"></el-input>
+                    <el-form-item label="店长" style="width: 50%" class="left">
+                        <el-input v-model="form.shopowner" placeholder="店长姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="租金" prop="rent" style="width: 50%"  class="left">
+                        <el-input v-model="form.rent" placeholder="租金(元/年)"></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="门店照片" prop="a">
+                    <el-form-item label="店长手机" style="width: 50%" class="left">
+                        <el-input v-model="form.shopownerPhoneNum" placeholder="联系电话"></el-input>
+                    </el-form-item>
+                    <el-form-item label="物业" style="width: 50%"  class="left">
+                        <el-input v-model="form.propertyCosts" placeholder="租金(元/年/平)"></el-input>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                    <el-form-item label="门店标签" style="width: 50%" class="left">
+                        <el-input v-model="form.tags" placeholder="英文逗号','隔开"></el-input>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                    <el-form-item label="门店照片" prop="imgs">
                         <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :file-list='imgListShow'
+                        :auto-upload='false'
+                        action=""
+                        :on-change="getFile"
                         list-type="picture-card"
-                        :on-remove="handleRemove">
+                        :before-remove="beforeRemove">
                         <i class="el-icon-plus"></i>
                         </el-upload>
                         <el-dialog :visible.sync="dialogVisible">
@@ -91,9 +94,9 @@
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="详细地址" prop="address">
+                    <el-form-item label="详细地址" prop="detailAddress">
                         <div class="clearfix">
-                            <el-input v-model="form.address"  placeholder="请输入详细地址" class="left" style="width: 80%"></el-input>
+                            <el-input v-model="form.detailAddress"  placeholder="请输入详细地址" class="left" style="width: 80%"></el-input>
                             <el-button size="small" class="left left10" @click="searchByStationName" type='primary'>搜索</el-button>
                         </div>
                         <p class="top5">地图定位  {{jwd}}</p>
@@ -117,7 +120,7 @@
         </el-dialog>
         <!-- 查看 -->
         <el-dialog title="门店详情" :visible.sync="viewVisible" width="40%">
-            <StoreDetail></StoreDetail>
+            <StoreDetail :row='row'></StoreDetail>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handle2(idx, row)">编 辑</el-button>
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
@@ -143,19 +146,49 @@
                 editVisible: false,
                 delVisible: false,
                 jwd: '',
+                imgList: [],
+                imgListShow: [],
                 form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    address: ''
+                    name: '',
+                    openingDate: '',
+                    phoneNum: '',
+                    area: '',
+                    shopowner: '',
+                    rent: '',
+                    shopownerPhoneNum: '',
+                    propertyCosts: '',
+                    x:'',
+                    y:'',
+                    imgs: '',
+                    tags:'',
+                    detailAddress: ''
+                    
                 },
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'blur' },
+                    name: [
+                        { required: true, message: '请输入', trigger: 'blur' },
                     ],
-                    address: [
-                        { required: true, message: '请选择类型', trigger: 'blur' },
-                    ]
+                    openingDate: [
+                        { required: true, message: '请选择', trigger: 'blur' },
+                    ],
+                    area: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    shopowner: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    rent: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    shopownerPhoneNum: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    imgs: [
+                        { required: true, message: '请上传门店照片' },
+                    ],
+                    detailAddress: [
+                        { required: true, message: '请输入地址或者点击地图', trigger: 'blur' },
+                    ],
                 },
                 idx: -1,
                 id: -1,
@@ -163,7 +196,10 @@
                 dialogImageUrl: '',
                 pt: '',
                 viewVisible: false,
-                dialogVisible: false
+                dialogVisible: false,
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         components: {
@@ -173,10 +209,24 @@
             
         },
         methods:{
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            getFile(file, fileList){
+                const t = this;
+                t.$commonService.getBase64(file.raw).then((Base64)=>{
+                    t.$commonService.upload(Base64).then((res)=>{
+                        t.imgList.push(res.netUrl)
+                        console.log(t.imgList)
+                    })
+                })
             },
-
+            beforeRemove(file, fileList) {
+                const t = this;
+                for(const i in fileList){
+                    if(fileList[i].uid == file.uid){
+                        t.imgList.splice(i, 1)
+                    }
+                }
+                console.log(t.imgList)
+            },
             delAll() {
                 const length = this.multipleSelection.length;
                 let str = '';
@@ -189,8 +239,8 @@
                 this.multipleSelection = [];
             },
             handleCurrentChange(val) {
-                this.cur_page = val;
-                this.getData();
+                this.pageNumber = val;
+                this.getList();
             },
             search() {
                 this.is_search = true;
@@ -215,28 +265,36 @@
                 if(row){
                     // 编辑
                     t.idx = index;
-                    t.id = row.id;
-                    t.lng = row.lng || '';
-                    t.lat =  row.lat || '';
-                    t.jwd = row.jwd ||  '';
-                    t.form = {
-                        a: row.a,
-                        b: row.b,
-                        c: row.c,
-                    }
+                    t.row = row;
+                    t.form = row;
+                    t.form.imgListShow = [];
+                    t.form.imgs.split(',').forEach((v)=>{
+                        t.form.imgList.push({
+                            url: v
+                        })
+                    })
+                    
+                    console.log(t.form.imgs)
                 }else{
                     // 新增
                     t.idx = '-1';
                     t.id = '';
-                    t.lng = '';
-                    t.lat = '';
                     t.jwd = '';
                     t.form = {
-                        a: '',
-                        b: '',
-                        c: '',
+                        name: '',
+                        openingDate: '',
+                        phoneNum: '',
+                        area: '',
+                        shopowner: '',
+                        rent: '',
+                        shopownerPhoneNum: '',
+                        propertyCosts: '',
+                        x:'',
+                        y:'',
+                        imgs: '',
+                        tags:'',
+                        detailAddress: ''
                     }
-                    
                 }
                 setTimeout(() => {
                     t.initMap();
@@ -252,20 +310,17 @@
             },
              // 保存编辑                
             saveEdit(form) {
-                this.$refs[form].validate((valid) => {
+                const t = this;
+                t.form.imgs = t.imgList.join(',');
+                t.$refs[form].validate((valid) => {
                     if (valid) {
-                        this.editVisible = false;
-                        this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                        if(this.list[this.idx].id === this.id){
-                            this.$set(this.list, this.idx, this.form);
-                        }else{
-                            for(let i = 0; i < this.list.length; i++){
-                                if(this.list[i].id === this.id){
-                                    this.$set(this.list, i, this.form);
-                                    return ;
-                                }
-                            }
-                        }
+                        console.log(t.form)
+
+                        t.editVisible = false;
+                        storeService.add(t.form).then((res)=>{
+                            t.getList()
+                        })
+
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -293,12 +348,12 @@
                     //标注拖拽后的位置
                 t.marker.addEventListener("dragend", function (e) {
                         // alert("当前位置：" + e.point.lng + ", " + e.point.lat);
-                        t.lng = e.point.lng;
-                        t.lat =  e.point.lat;
+                        t.form.x = e.point.lng;
+                        t.form.y =  e.point.lat;
                         t.geoc.getLocation(e.point, function(rs){
-                            var addComp = rs.address;
-                            t.form.address = addComp;
-                            t.jwd = t.lng + "," + t.lat;
+                            var addComp = rs.detailAddress;
+                            t.form.detailAddress = addComp;
+                            t.jwd = t.form.x + "," + t.form.y;
                         });
                 });
             },
@@ -307,12 +362,12 @@
                 let loading = t.$Loading.service({
                     text: 'loading'
                 });
-                var keyword = t.form.address;
+                var keyword = t.form.detailAddress;
                 t.localSearch.setSearchCompleteCallback(function (searchResult) {
                         var poi = searchResult.getPoi(0);
-                        t.lng=poi.point.lng;
-                        t.lat=poi.point.lat;
-                        t.jwd = t.lng + "," + t.lat;
+                        t.form.x = poi.point.lng;
+                        t.form.y = poi.point.lat;
+                        t.jwd = t.form.x + "," + t.form.y;
                         t.map.centerAndZoom(poi.point, 15);
                         //创建标注位置
                         var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
@@ -339,8 +394,8 @@
                 t.map.addEventListener("click",function(e){
                     t.map.clearOverlays();                   
                     console.log(e);
-                    t.lng=e.point.lng;
-                    t.lat=e.point.lat;
+                    t.form.x = e.point.lng;
+                    t.form.y = e.point.lat;
                     //创建标注位置
                     var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
                     t.marker = new BMap.Marker(e.point,{icon:myIcon});  // 创建标注
@@ -349,18 +404,28 @@
                     //alert(e.point.lng + "," + e.point.lat);
                     t.geoc.getLocation(e.point, function(rs){
                         var addComp = rs.address;
-                        t.form.address = addComp;
-                        t.jwd = t.lng + "," + t.lat;
+                        t.form.detailAddress = addComp;
+                        t.jwd = t.form.x + "," + t.form.y;
                     });
                 });
+            },
+            getList(){
+                const t = this;
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber
+                }
+                storeService.list(params).then((res)=>{
+                    t.list = res.records;
+                    t.total = res.total
+                })
             }
         },
         mounted(){
             const t = this;
-            
-            t.$commonService.getShopList().then((res)=>{
-                t.list = res;
-            })
+            t.getList();
+
+
         }
     }
 </script>

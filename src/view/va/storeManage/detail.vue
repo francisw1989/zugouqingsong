@@ -2,7 +2,7 @@
     <div>
         <el-row class="sInfoWap">
             <el-col :span="12">
-                <p class="font24b">陆青交易冬季</p>
+                <p class="font24b">{{row.name}}</p>
                 <p class="top20"><i class="el-icon-phone"></i><span class="left5">025-56565656</span></p>
                 <p class="top10"><i class="el-icon-lx-people"></i><span class="left5">张晓梅</span></p>
                 <p class="top10"><i class="el-icon-lx-mobile"></i><span class="left5">189636363</span></p>
@@ -48,7 +48,7 @@
                 <p class="clearfix">物业/月<span class="right col999">1222.00</span></p>
             </el-col>
         </el-row>
-        <div class="top20">
+        <!-- <div class="top20">
             <div class="clearfix">
                 <span class="font16 col000">各门店收入情况</span>
                 <el-select class="left10" v-model="selShopId_income" placeholder="请选择" filterable @change='onChange_income'>
@@ -63,7 +63,7 @@
             <div id="incomeChart" class="top10" style="height: 250px;">
                                 
             </div>
-        </div>
+        </div> -->
     </div>
    
 </template>
@@ -74,6 +74,7 @@
     var echarts = require('echarts');
     export default {
         name: 'StoreDetail',
+        props: ['row'],
         data() {
             return {
                 shopList: [],
@@ -136,11 +137,12 @@
         },
         mounted(){
             const t = this;
-            t.incomeChart = echarts.init(document.getElementById('incomeChart'));
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
-            })
-            t.getIncomeData();
+            console.log(t.row)
+            // t.incomeChart = echarts.init(document.getElementById('incomeChart'));
+            // t.$commonService.getShopList().then((res)=>{
+            //     t.shopList = res
+            // })
+            // t.getIncomeData();
         }
     }
 </script>

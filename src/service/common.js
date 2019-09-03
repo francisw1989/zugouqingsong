@@ -1,8 +1,10 @@
+import axios from 'axios';
 let commonService = {
     // 公共数据
     GD(){
         let p = new Promise((resolve, reject)=>{
             let data = {
+                url: 'https://zzh.hzysofti.com:8002/api/v1/',
                 sysRoute: 'va',
                 // sysName: '足够轻松 平台管理',
                 sysName: '后台管理系统',
@@ -141,6 +143,47 @@ let commonService = {
             resolve(data)
         })
         return p;
+    },
+    getBase64(file) {
+        return new Promise(function(resolve, reject) {
+          let reader = new FileReader();
+          let imgResult = "";
+          reader.readAsDataURL(file);
+          reader.onload = function() {
+            imgResult = reader.result;
+          };
+          reader.onerror = function(error) {
+            reject(error);
+          };
+          reader.onloadend = function() {
+            resolve(imgResult);
+          };
+        });
+    },
+    upload(Base64){
+        let p = new Promise((resolve, reject)=>{
+            let params = {
+                suffix: 'jpg',
+                dir: 'images'
+            }
+            axios({
+                method: "post",
+                url: "/common/v1/file/upload",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/json;charset=UTF-8"
+                },
+                params: params,
+                data: Base64
+            }).then(res => {
+                resolve(res.data)
+                
+            }).catch((res)=>{
+                reject(res.response.data)
+            });
+        })
+        return p;
+       
     }
 }
 export { commonService }
