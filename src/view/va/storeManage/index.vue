@@ -170,7 +170,7 @@
                 delVisible: false,
                 jwd: '',
                 
-                form: Form,
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     name: [
                         { required: true, message: '请输入', trigger: 'blur' },
@@ -293,7 +293,8 @@
                     t.idx = '-1';
                     t.id = '';
                     t.jwd = '';
-                    t.form = Form;
+                    t.form = JSON.parse(JSON.stringify(Form));
+                    t.form.imgListShow = [];
                 }
                 setTimeout(() => {
                     t.initMap();
@@ -320,14 +321,13 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+                        debugger
                         if(t.idx == '-1'){
                             storeService.add(params).then((res)=>{
-                                t.form = Form;
                                 t.getList()
                             })
                         }else{
                             storeService.edit(params).then((res)=>{
-                                t.form = Form;
                                 t.getList()
                             })
                         }
