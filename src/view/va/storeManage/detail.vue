@@ -3,9 +3,9 @@
         <el-row class="sInfoWap">
             <el-col :span="12">
                 <p class="font24b">{{row.name}}</p>
-                <p class="top20"><i class="el-icon-phone"></i><span class="left5">025-56565656</span></p>
-                <p class="top10"><i class="el-icon-lx-people"></i><span class="left5">张晓梅</span></p>
-                <p class="top10"><i class="el-icon-lx-mobile"></i><span class="left5">189636363</span></p>
+                <p class="top20"><i class="el-icon-phone"></i><span class="left5">{{row.phoneNum}}</span></p>
+                <p class="top10"><i class="el-icon-lx-people"></i><span class="left5">{{row.shopowner}}</span></p>
+                <p class="top10"><i class="el-icon-lx-mobile"></i><span class="left5">{{row.shopownerPhoneNum}}</span></p>
                 <p class="top10"><i class="el-icon-lx-home"></i><span class="left5">105.36平方</span></p>
                 <p class="top10"><i class="el-icon-lx-tag"></i><span class="left5">总店、首家、1000平以上、五星标准</span></p>
             </el-col>
@@ -74,7 +74,7 @@
     var echarts = require('echarts');
     export default {
         name: 'StoreDetail',
-        props: ['row'],
+        props: ['row', 'info'],
         data() {
             return {
                 shopList: [],

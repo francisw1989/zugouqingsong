@@ -1,12 +1,8 @@
 import {$axios} from './axios.js';
 
 let storeService = {
-    list(res){
+    list(params){
         let p = new Promise((resolve, reject)=>{
-            let params = {
-                pageSize: res.pageSize,
-                pageNumber: res.pageNumber
-            }
             let data = {
                 method: 'get',
                 url: '/api/v1/stores/list',
@@ -40,6 +36,36 @@ let storeService = {
                 url: '/api/v1/stores/' + params.id,
                 params: params,
                 loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // 关闭
+    close(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/stores/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // 查询门店数据
+    getData(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/stores/data/',
+                params: params,
+                loading: true,
             }
             $axios(data).then((res)=>{
                 resolve(res)

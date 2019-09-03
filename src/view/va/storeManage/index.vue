@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="select_word" placeholder="输入门店名称" class="handle-input"></el-input>
+                <el-input v-model="name" placeholder="输入门店名称" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handle2">新增</el-button>
             </div>
@@ -26,7 +26,7 @@
                     <template slot-scope="scope">
                         <el-button  size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                         <el-button  size="mini" @click="handle2(scope.$index, scope.row)">编辑</el-button>
-                        <el-button  size="mini" @click="handle4(scope.$index, scope.row)">推荐至banner</el-button>
+                        <el-button  size="mini" @click="handle4(scope.$index, scope.row)">推荐</el-button>
                         <el-button  size="mini" type="danger" @click="handle3(scope.$index, scope.row)">关闭</el-button>
                     </template>
                 </el-table-column>
@@ -120,7 +120,7 @@
         </el-dialog>
         <!-- 查看 -->
         <el-dialog title="门店详情" :visible.sync="viewVisible" width="40%">
-            <StoreDetail :row='row'></StoreDetail>
+            <StoreDetail :row='row' :info='info'></StoreDetail>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handle2(idx, row)">编 辑</el-button>
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
@@ -163,7 +163,7 @@
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                select_word: '',
+                name: '',
                 del_list: [],
                 is_search: false,
                 editVisible: false,
@@ -209,7 +209,8 @@
                 dialogVisible: false,
                 total: 0,
                 pageSize: 10,
-                pageNumber: 1
+                pageNumber: 1,
+                info: {}
             }
         },
         components: {
@@ -255,7 +256,9 @@
                 this.getList();
             },
             search() {
-                this.is_search = true;
+                // this.is_search = true;
+                const t = this;
+                t.getList();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -270,6 +273,12 @@
                 this.idx = index;
                 this.id = row.id;
                 this.row = row;
+                let parmas = {
+                    id: this.id
+                }
+                storeService.getData(parmas).then((res)=>{
+                    t.info = res;
+                })
             },
             
             handle2(index, row) {
@@ -303,7 +312,7 @@
                 t.editVisible = true;
             },
             handle3(index, row){
-
+                
             },
             handle4(index, row){
 
@@ -423,9 +432,11 @@
             },
             getList(){
                 const t = this;
+                t.list = [];
                 let params = {
                     pageSize: t.pageSize,
-                    pageNumber: t.pageNumber
+                    pageNumber: t.pageNumber,
+                    name: t.name
                 }
                 storeService.list(params).then((res)=>{
                     t.list = res.records;
