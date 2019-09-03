@@ -9,7 +9,7 @@ axios.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-let $axios = (data)=>{
+let $axios = (data, otherData)=>{
     let p = new Promise((resolve, reject)=>{
         let loading, loadingText = 'loading...';
         if(data.loadingText){
@@ -27,7 +27,8 @@ let $axios = (data)=>{
                 "Content-Type": "application/json",
                 Accept: "application/json;charset=UTF-8"
             },
-            params: data.params
+            params: data.params,
+            data: otherData
         }).then(res => {
             resolve(res.data)
             loading && loading.close();

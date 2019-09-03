@@ -1,4 +1,4 @@
-import axios from 'axios';
+import {$axios} from './axios.js';
 let commonService = {
     // 公共数据
     GD(){
@@ -166,21 +166,15 @@ let commonService = {
                 suffix: 'jpg',
                 dir: 'images'
             }
-            axios({
+            let data = {
                 method: "post",
                 url: "/common/v1/file/upload",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json;charset=UTF-8"
-                },
                 params: params,
-                data: Base64
-            }).then(res => {
-                resolve(res.data)
-                
-            }).catch((res)=>{
-                reject(res.response.data)
-            });
+                loading: false,
+            }
+            $axios(data, Base64).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
        
