@@ -80,7 +80,7 @@
                 <div class="clearfix">
                     <el-form-item label="门店照片" prop="imgs">
                         <el-upload
-                        :file-list='imgListShow'
+                        :file-list='form.imgListShow'
                         :auto-upload='false'
                         action=""
                         :on-change="getFile"
@@ -133,8 +133,31 @@
     import {storeService} from '../../../service/store';
     import StoreDetail from './detail';
     var img = require('../../../assets/img/mark.png');
+    const Form = {
+        id: '',
+        name: '',
+        openingDate: '',
+        phoneNum: '',
+        area: '',
+        shopowner: '',
+        rent: '',
+        shopownerPhoneNum: '',
+        propertyCosts: '',
+        x:'',
+        y:'',
+        imgs: '',
+        tags:'',
+        detailAddress: ''
+    }
     export default {
         data() {
+            var imgListShowCheck = (rule, value, callback) => {
+                if (!value.length) {
+                    callback(new Error('请上传门店照片'));
+                } else {
+                    callback();
+                }
+            };
             return {
                 list: [],
                 cur_page: 1,
@@ -146,24 +169,8 @@
                 editVisible: false,
                 delVisible: false,
                 jwd: '',
-                imgList: [],
-                imgListShow: [],
-                form: {
-                    name: '',
-                    openingDate: '',
-                    phoneNum: '',
-                    area: '',
-                    shopowner: '',
-                    rent: '',
-                    shopownerPhoneNum: '',
-                    propertyCosts: '',
-                    x:'',
-                    y:'',
-                    imgs: '',
-                    tags:'',
-                    detailAddress: ''
-                    
-                },
+                
+                form: Form,
                 rules: {
                     name: [
                         { required: true, message: '请输入', trigger: 'blur' },
@@ -185,6 +192,9 @@
                     ],
                     imgs: [
                         { required: true, message: '请上传门店照片' },
+                    ],
+                    imgListShow: [
+                        { validator: imgListShowCheck },
                     ],
                     detailAddress: [
                         { required: true, message: '请输入地址或者点击地图', trigger: 'blur' },
@@ -213,8 +223,10 @@
                 const t = this;
                 t.$commonService.getBase64(file.raw).then((Base64)=>{
                     t.$commonService.upload(Base64).then((res)=>{
-                        t.imgList.push(res.netUrl)
-                        console.log(t.imgList)
+                        t.form.imgListShow.push({
+                            url: res.netUrl
+                        })
+                        console.log(t.form.imgListShow)
                     })
                 })
             },
@@ -222,10 +234,10 @@
                 const t = this;
                 for(const i in fileList){
                     if(fileList[i].uid == file.uid){
-                        t.imgList.splice(i, 1)
+                        t.form.imgListShow.splice(i, 1)
                     }
                 }
-                console.log(t.imgList)
+                console.log(t.form.imgListShow)
             },
             delAll() {
                 const length = this.multipleSelection.length;
@@ -266,35 +278,22 @@
                     // 编辑
                     t.idx = index;
                     t.row = row;
-                    t.form = row;
+                    t.form = t.row;
                     t.form.imgListShow = [];
-                    t.form.imgs.split(',').forEach((v)=>{
-                        t.form.imgList.push({
-                            url: v
+                    if(t.form.imgs){
+                        t.form.imgs.split(',').forEach((v)=>{
+                            t.form.imgListShow.push({
+                                url: v
+                            })
                         })
-                    })
-                    
+                    }
                     console.log(t.form.imgs)
                 }else{
                     // 新增
                     t.idx = '-1';
                     t.id = '';
                     t.jwd = '';
-                    t.form = {
-                        name: '',
-                        openingDate: '',
-                        phoneNum: '',
-                        area: '',
-                        shopowner: '',
-                        rent: '',
-                        shopownerPhoneNum: '',
-                        propertyCosts: '',
-                        x:'',
-                        y:'',
-                        imgs: '',
-                        tags:'',
-                        detailAddress: ''
-                    }
+                    t.form = Form;
                 }
                 setTimeout(() => {
                     t.initMap();
@@ -311,15 +310,28 @@
              // 保存编辑                
             saveEdit(form) {
                 const t = this;
-                t.form.imgs = t.imgList.join(',');
+                t.form.imgs = t.form.imgListShow.map((v)=>{
+                    return v.url
+                }).join(',');
                 t.$refs[form].validate((valid) => {
                     if (valid) {
-                        console.log(t.form)
-
+                        let params = {};
                         t.editVisible = false;
-                        storeService.add(t.form).then((res)=>{
-                            t.getList()
-                        })
+                        for(let key in Form){
+                            params[key] = t.form[key]
+                        }
+                        if(t.idx == '-1'){
+                            storeService.add(params).then((res)=>{
+                                t.form = Form;
+                                t.getList()
+                            })
+                        }else{
+                            storeService.edit(params).then((res)=>{
+                                t.form = Form;
+                                t.getList()
+                            })
+                        }
+                        
 
                     } else {
                         console.log('error submit!!');

@@ -32,6 +32,20 @@ let storeService = {
             })
         })
         return p;
+    },
+    edit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/stores/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
     }
 
 }
