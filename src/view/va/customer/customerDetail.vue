@@ -168,7 +168,7 @@
                 </div>
                 <div v-if="tabName=='充值记录'">
                     <p class="font20 col000  clearfix">充值记录</p>
-                    <table class="m-table1 top20">
+                    <table class="m-table2 top20">
                         <tr>
                             <td class="col999">2019-08-02 21:00</td>
                             <td class="col999">弘扬总店</td>

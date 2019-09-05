@@ -36,7 +36,22 @@
         data() {
             return {
                 collapse: false,
-                items: [
+                items: []
+            }
+        },
+        computed:{
+            onRoutes(){
+                return this.$route.path;
+            }
+        },
+        created(){
+            const t = this;
+            // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+            bus.$on('collapse', msg => {
+                this.collapse = msg;
+            })
+            if(localStorage.sysRoute == 'va'){
+                t.items = [
                     {
                         icon: 'el-icon-lx-home',
                         index: '/va/dashboard',
@@ -176,18 +191,102 @@
                     },
 
                 ]
+            }else{
+                t.items = [
+                    {
+                        icon: 'el-icon-lx-home',
+                        index: '/vb/dashboard',
+                        title: '首页'
+                    },
+                    {
+                        icon: 'el-icon-lx-shop',
+                        index: '/vb/room',
+                        title: '房间管理'
+                    },
+                    {
+                        icon: 'el-icon-lx-goods',
+                        index: '1',
+                        title: '订单管理',
+                        subs: [
+                            {
+                                index: '/vb/orderList',
+                                title: '订单列表'
+                            },
+                        ]
+                    },
+                    {
+                        icon: 'el-icon-lx-friend',
+                        index: '2',
+                        title: '员工管理',
+                        subs: [
+                            {
+                                index: '/vb/staffList',
+                                title: '员工列表'
+                            },
+                            {
+                                index: '/vb/staffScheduling',
+                                title: '员工排班'
+                            },
+                            {
+                                index: '/vb/staffWorktime',
+                                title: '员工考勤'
+                            }
+                        ]
+                    },
+                    {
+                        icon: 'el-icon-lx-group',
+                        index: '3',
+                        title: '客户管理',
+                        subs: [
+                            {
+                                index:'/vb/customerList', title:'客户列表'
+                            }
+                            
+
+                        ]
+                    },
+                    {
+                        icon: 'el-icon-lx-global',
+                        index: '4',
+                        title: '物料商品管理',
+                        subs: [
+                            {
+                                index: '/vb/stockList', title: '库存管理'
+                            },
+                            {
+                                index: '/vb/outStock', title: '出库管理'
+                            },
+                            {
+                                index: '/vb/procurementList', title: '入库管理'
+                            }
+                        ]
+                    },
+                    {
+                        icon: 'el-icon-lx-message',
+                        index: '7',
+                        title: '评价管理',
+                        subs: [
+                            {index: '/vb/evaluateList', title: '评价列表'},
+                        ]
+                    },
+                    // {
+                    //     icon: 'el-icon-lx-profile',
+                    //     index: '/vb/accountList',
+                    //     title: '账号管理'
+                    // },
+                    {
+                        icon: 'el-icon-lx-lock',
+                        index: '/vb/jurisdictionList',
+                        title: '权限管理'
+                    },
+                     {
+                        icon: 'el-icon-lx-lock',
+                        index: '/vb/setting',
+                        title: '门店设置'
+                    }
+                ]
             }
-        },
-        computed:{
-            onRoutes(){
-                return this.$route.path;
-            }
-        },
-        created(){
-            // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-            bus.$on('collapse', msg => {
-                this.collapse = msg;
-            })
+
         }
     }
 </script>

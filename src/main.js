@@ -16,6 +16,7 @@ import {commonService} from './service/common';
 import { Loading } from 'element-ui';
 
 import vaRouter from './router/vaRouter'
+import vbRouter from './router/vbRouter'
 
 Vue.prototype.$commonService = commonService;
 Vue.prototype.$Loading = Loading;
@@ -54,7 +55,11 @@ router.beforeEach((to, from, next) => {
 
 commonService.GD().then((res)=>{
     Vue.prototype.$GD = res;
-    router.addRoutes(vaRouter)
+    if(localStorage.sysRoute == 'va'){
+        router.addRoutes(vaRouter)
+    }else{
+        router.addRoutes(vbRouter)
+    }
     new Vue({
         router,
         i18n,
