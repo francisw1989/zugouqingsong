@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class=" clearfix top10">
+            <div class=" clearfix">
                 <el-input v-model="select_word" placeholder="订单编号、项目名称、技师名称、客户名称" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
@@ -35,14 +35,68 @@
                 <el-table-column prop="c" label="服务技师"></el-table-column>
                 <el-table-column prop="c" label="评价标签"></el-table-column>
                 <el-table-column prop="c" label="评价内容"></el-table-column>
-                <el-table-column prop="c" label="项目内容"></el-table-column>
+                <el-table-column prop="c" label="项目名称"></el-table-column>
                 <el-table-column prop="c" label="实际消费"></el-table-column>
+                 <el-table-column label="操作" width="80" align="center">
+                    <template slot-scope="scope">
+                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
                 </el-pagination>
             </div>
         </div>
+        <!-- 详情 -->
+        <el-dialog title="回复详情" :visible.sync="viewVisible" width="400px">
+            <el-row>
+                <el-col :span="7">
+                    <div style="width: 80px" class="relative clearfix">
+                        <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
+                        <div class="ghWap font12">工号:3242342</div>
+                    </div>
+                </el-col>
+                <el-col :span="17">
+                    <p class="font16b top10 ">张三  <span class="left20 font12 col999">男 26岁</span> </p>
+                    <p class="top5">
+                        <el-tag type="success" size="small">¥1213.00</el-tag>
+                        <el-tag type="info" size="small" class="left5">VIP-3</el-tag>
+                        <el-tag type="danger" size="small" class="left5">12</el-tag>
+                    </p>
+                </el-col>
+            </el-row>
+            <div class="bor_btm_so clearfix" style="padding-bottom: 20px;">
+                <p class="top10" >服务项目: 颈椎放松</p>
+                <p class="top10" >服务时间: 2019-09-09</p>
+                <p class="top10" >服务技师: 2019-09-09</p>
+            </div>
+            <div class="clearfix">
+                <p class="top15">您有多大可能性向您的朋友推荐足够轻松的服务？</p>
+                <div class="top10">
+                    <el-checkbox v-model="form.tuijian">会</el-checkbox>
+                </div>
+                <p class="top15">服务标签</p>
+                <div class="top10">
+                    <el-checkbox-group v-model="form.checkList">
+                        <el-checkbox v-for="(v, i) in tags" :key="i" :label="v"></el-checkbox>
+                    </el-checkbox-group>
+                </div>
+                <p class="top15">建议</p>
+                <div class="top10">
+                    <el-input type="textarea" v-model="form.a"></el-input>
+                </div>
+                <p class="top15">回复</p>
+                <div class="top10">
+                    <el-input type="textarea" v-model="form.a"></el-input>
+                </div>
+                
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="viewVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
+            </span>
+        </el-dialog>
 
 
 
@@ -52,7 +106,6 @@
 <script>
     import bus from '../../../bus';
     import {evaluateService} from '../../../service/evaluate';
-
     export default {
         data() {
             return {
@@ -82,11 +135,22 @@
                 showMore: false,
                 xmfl: '',
                 xmflList: [],
-                neirong: '0'
+                neirong: '0',
+                viewVisible: false,
+                form:{
+                    a: '',
+                    tuijian: '',
+                    checkList: []
+                },
+                rules: {
+                    a: [
+                        { required: true, message: '请选择类型', trigger: 'change' },
+                    ]
+                },
+                tags: ['环境好','技术好','服务好']
             }
         },
         components:{
-            
         },
         methods:{
             radioChange(){
@@ -108,6 +172,15 @@
             search() {
                 this.is_search = true;
             },
+            // 评价详情
+            handle1(index, row) {
+                this.idx = index;
+                this.id = row.id;
+                this.viewVisible = true;
+            },
+            saveEdit(){
+                
+            }
 
         },
         mounted(){

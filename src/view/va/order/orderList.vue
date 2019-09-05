@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class=" clearfix top10">
+            <div class=" clearfix">
                 <el-radio-group v-model="type" class="right">
                     <el-radio-button :label="i"  v-for="(v, i) in typeList" :key="i" >{{v}}</el-radio-button>
                 </el-radio-group>

@@ -7,7 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class=" clearfix top10">
+            <div class=" clearfix">
                 <el-input v-model="select_word" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-checkbox v-model="checked1" class="left40">只显示黑名单</el-checkbox>

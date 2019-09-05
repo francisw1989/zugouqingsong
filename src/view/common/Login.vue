@@ -44,13 +44,22 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
+                        localStorage.sysRoute = window.location.href.split('?')[1];
+                        setTimeout(() => {
+                            window.location.href = '/';    
+                        }, 0);
+                        
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
             }
+        },
+        mounted(){
+            
+            
+
         }
     }
 </script>
