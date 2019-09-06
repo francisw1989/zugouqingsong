@@ -58,6 +58,7 @@ commonService.GD().then((res)=>{
     if(localStorage.sysRoute == 'va'){
         router.addRoutes(vaRouter)
     }else{
+        Vue.prototype.$GD.sysName = '足够轻松 门店管理'
         router.addRoutes(vbRouter)
     }
     new Vue({
