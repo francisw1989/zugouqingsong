@@ -6,8 +6,8 @@ let commonService = {
             let data = {
                 url: 'https://zzh.hzysofti.com/api/v1/',
                 sysRoute: 'va',
-                // sysName: '足够轻松 平台管理',
-                sysName: '后台管理系统',
+                sysName: '足够轻松 平台管理',
+                // sysName: '后台管理系统',
                 tagFlList: ['基础特征'],
                 rightsList: [
                     {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
