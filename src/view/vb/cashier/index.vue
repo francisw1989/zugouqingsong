@@ -167,10 +167,17 @@
             <el-tab-pane v-for='(v, i) in tab2List' :key="i" :label="v"></el-tab-pane>
         </el-tabs>
         <div class="clearfix bor_btm_so pad10TB" v-for="(v, i) in jsList" :key="i">
-            <img src="../../../assets/img/img.jpg" width="50" height="50" style="border-radius: 50%" alt="" class="left right10" />
+            <div class="imgWap right10">
+                <img src="../../../assets/img/img.jpg" width="50" height="50" style="border-radius: 50%" alt="" class="" />
+                <div class="xinWap">
+                    <img src="../../../assets/img/2.png" class="xin" />
+                    <img src="../../../assets/img/2.png" class="xin" />
+                </div>
+            </div>
+            
             <p class="col000">
                 <span>张大姐</span>
-                <span class="left10">$1.5/分钟</span>
+                <span class="left10">¥1.5/分钟</span>
                 <span class="col999 right">评分:4.8分</span>
             </p>
             <p class="">擅长:颈部按摩</p>
@@ -410,4 +417,8 @@
 
 .pagination{ position: absolute; width: 100%; left: 0; bottom: 0; box-sizing: border-box; margin: 0; text-align: center;}
 .xzFoot{ width: 100%; box-sizing: border-box; padding: 10px; background-color: #EEEEEE; position: absolute; left: 0; bottom: 0;}
+
+.imgWap{ width: 50px; height: 50px; float: left; position: relative;}
+.imgWap .xinWap{ position: absolute; width: 100%; left: 0; bottom: 0;  }
+.imgWap .xinWap .xin{ width: 10px; height: 10px; float: right; margin-left: 3px;}
 </style>
