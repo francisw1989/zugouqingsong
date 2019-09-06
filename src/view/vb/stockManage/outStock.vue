@@ -146,7 +146,7 @@
 
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.list();
             },
             search() {
                 this.is_search = true;
@@ -177,18 +177,18 @@
             },
             handle2(index, row){
                 
+            },
+            getList(){
+                const t = this;
+                stockService.getOutStockList().then((res)=>{
+                    t.list = res;
+                });
             }
         },
         mounted(){
             const t = this;
-            // 员工列表
-            stockService.getOutStockList().then((res)=>{
-                t.list = res;
-            });
-            t.goodsCat = t.$GD.goodsCat;
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
-            })
+            t.getList()            
+            
         }
     }
 </script>

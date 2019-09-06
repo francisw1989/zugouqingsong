@@ -5,6 +5,11 @@ let vbRouter = [
         meta: { title: '门店管理' },
     },
     {
+        path: '/cashier',
+        component: resolve => require(['../view/vb/cashier/index.vue'], resolve),
+        meta: { title: '收银台' },
+    },
+    {
         path: '/vb',
         redirect: '/vb/dashboard',
         component: resolve => require(['../view/common/Home.vue'], resolve),

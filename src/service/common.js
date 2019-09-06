@@ -4,7 +4,7 @@ let commonService = {
     GD(){
         let p = new Promise((resolve, reject)=>{
             let data = {
-                url: 'https://zzh.hzysofti.com:8002/api/v1/',
+                url: 'https://zzh.hzysofti.com/api/v1/',
                 sysRoute: 'va',
                 // sysName: '足够轻松 平台管理',
                 sysName: '后台管理系统',
@@ -178,6 +178,50 @@ let commonService = {
         })
         return p;
        
+    },
+    getTime(id){
+        let timer = null;//这里设置time为null，用于下面来清除计时器
+        let obj = document.getElementById(id)//获取到放置时间数据的span的id
+        timer = setInterval(function(){//设置定时器，来更新时间
+            let a = new Date((obj.getAttribute("time"))).getTime();
+            //上面这一步可能比较复杂，我们首先来看obj.getAttribute("data-time")这一句。这个是用来获取指定标签的data-time属性，即我们要使用的到期时间，然后来看new Date().getTime(),这一句是用来获取我们所设置到期时间的时间戳，用于下面的计算，这个获取的是固定的数值
+            let b = new Date().getTime();//这是获取当前时间，是一个不固定的数值
+            let d = 0,s=0,h=0,m=0;//定义变量
+            d = Math.floor((a - b)/1000/60/60/24);//获取剩余天数
+            h = Math.floor((a - b)/1000/60/60%24);//获取剩余小时
+            m = Math.floor((a - b)/1000/60%60);//获取剩余分钟
+            s = Math.floor((a - b)/1000%60);//获取剩余秒数
+            //中间这块区域是用来判断，当前时间数值小于10的时候给他前面加个0，这里可以根据具体情况可加可不加，以下同理
+            if(d < 10){
+                d = "0" + d
+            }else if(d < 0){
+                d = 0
+            }
+            if(h < 10){
+                h = "0" + h
+            }else if(h < 0){
+                h = 0
+            }
+            if(m < 10){
+                m = "0" + m;
+            }else if(m < 0){
+                m = 0;
+            }
+            if(s < 10){
+                s = "0" + s;
+            }else if(s < 0){
+                s = 0;
+            }
+            if(d){
+                d = d + '天'
+            }
+            let str = d + ' ' + h +':' + m + ':' +s;
+            obj.innerHTML = str;
+            if(a <= b){//当我们的时间到期的时候，清除计时器，然后把当前标签的内容设置为0；
+                clearInterval(timer);
+                obj.innerHTML = '已到店'
+            }
+        },1000)
     }
 }
 export { commonService }

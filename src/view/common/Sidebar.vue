@@ -199,6 +199,11 @@
                         title: '首页'
                     },
                     {
+                        icon: 'el-icon-lx-recharge',
+                        index: '/cashier',
+                        title: '收银台'
+                    },
+                    {
                         icon: 'el-icon-lx-shop',
                         index: '/vb/room',
                         title: '房间管理'

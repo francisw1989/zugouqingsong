@@ -110,7 +110,7 @@
             initIncomeChart(){
                 const t = this;
                 t.incomeChart.setOption({
-                    color: ['#3398DB', '#f25e43', '#07c4a8'],
+                    color: ['#3398DB', '#f25e43', '#459E8C'],
                     tooltip: {
                         trigger: 'axis'
                     },

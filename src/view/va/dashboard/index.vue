@@ -195,7 +195,7 @@
                                 label="排名"
                                 width="180">
                                 <template slot-scope="scope">
-                                    <span class="colfff" style="padding: 0 5px; background-color: #07c4a8">{{ scope.$index +1 }}</span>
+                                    <span class="colfff" style="padding: 0 5px; background-color: #459E8C">{{ scope.$index +1 }}</span>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -318,7 +318,7 @@
             initIncomeChart(){
                 const t = this;
                 t.incomeChart.setOption({
-                    color: ['#3398DB', '#f25e43', '#07c4a8'],
+                    color: ['#3398DB', '#f25e43', '#459E8C'],
                     tooltip: {
                         trigger: 'axis'
                     },
@@ -366,7 +366,7 @@
             initNumsChart(){
                 const t = this;
                 t.numsChart.setOption({
-                    color: ['#3398DB', '#f25e43', '#07c4a8'],
+                    color: ['#3398DB', '#f25e43', '#459E8C'],
                     tooltip: {
                         trigger: 'axis'
                     },
