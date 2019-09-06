@@ -85,7 +85,7 @@
                         <el-col :span="8">
                             <el-card class="center" style="border-radius: 50%; height: 110px">
                                 <p class="font24b top10">146元</p>
-                                <p class="top10" style="color:#07c4a8">本月商品销售</p>
+                                <p class="top10" style="color:#459E8C">本月商品销售</p>
                             </el-card>
                         </el-col>
                     </el-row>
@@ -391,7 +391,7 @@
                 }
                 t.treeChart = echarts.init(document.getElementById('treeChart'));
                 t.treeChart.setOption({
-                    color: ['#3398DB', '#f25e43', '#07c4a8'],
+                    color: ['#3398DB', '#f25e43', '#459E8C'],
                     tooltip: {
                         trigger: 'item',
                         triggerOn: 'mousemove'

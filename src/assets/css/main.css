@@ -388,7 +388,7 @@ a {
 .clearfix:after { clear: both;}
 
 .colye{ color:#ff8c47;}
-.colgreen{ color:#00d1b2;}
+.colgreen{ color:#459E8C;}
 
 .pointer{  -webkit-user-select:none; user-select:none;  cursor:pointer}
 .bor_btm_da{ border-bottom:1px dashed #ccc;}
@@ -441,7 +441,7 @@ a {
 
 /* 弹框相关 */
 .el-dialog__body{ padding: 15px 20px!important}
-.el-dialog__header{ padding: 10px 20px!important; background: #07c4a8; }
+.el-dialog__header{ padding: 10px 20px!important; background: #459E8C; }
 .el-dialog__title{color: #fff!important;}
 .el-dialog__headerbtn{ top: 15px!important}
 .el-dialog__headerbtn .el-dialog__close{ color: #fff!important}
@@ -470,7 +470,17 @@ a {
 .m-table2{ width: 100%; border-spacing: 0; border-collapse: collapse;}
 .m-table2 td{  padding: 5px; border-bottom: 1px solid #ddd;}
 
+.m-table3{ width: 100%; border-spacing: 0; border-collapse: collapse;}
+.m-table3 td{  padding: 10px;}
+.m-table3 tr:nth-child(2n) td{ background-color: #F8F6F9}
+.m-table3 .tr td{ font-size: 16px;}
+
+.m-table4{ width: 100%; border-spacing: 0; border-collapse: collapse;}
+.m-table4 td{  padding: 10px 0; border-bottom: 1px solid #ddd;}
+
 .el-table__expand-icon{ display: inline-block}
 .roomBox{ margin: 0 15px 15px 0}
 .roomBox .icon{ cursor: pointer;}
 .roomBox .tag{ margin: 5px;}
+
+.xmWap .el-input-number--mini{ width: 100px!important;}
