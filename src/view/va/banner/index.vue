@@ -14,13 +14,13 @@
             <el-table :data="list"  border class="table top10" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
-                <el-table-column prop="a" label="banner大图" sortable width="150">
+                <el-table-column prop="path" label="banner大图" width="150">
                 </el-table-column>
-                <el-table-column prop="b" label="类型" width="120">
+                <el-table-column prop="typeName" label="类型" width="120">
                 </el-table-column>
-                <el-table-column prop="c" label="状态">
+                <el-table-column prop="isPublishName" label="状态">
                 </el-table-column>
-                <el-table-column prop="c" label="创建时间">
+                <el-table-column prop="createTime" label="创建时间">
                 </el-table-column>
                 <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
@@ -31,25 +31,35 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
 
         <!-- 编辑弹出框 -->
         <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" :rules="rules" label-width="60px">
-                <el-form-item label="类型" prop="a">
-                    <el-select v-model="form.a" placeholder="请选择类型" filterable>
-                        <el-option v-for="item in bannerTypeList" :key="item.name" :label="item.name" :value="item.name"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="图片">
-                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="upImgSuccess" :on-change='upImgChange' :before-upload="beforeImgUpload">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form-item label="图片" prop="path">
+                    <el-upload action="" 
+                        :show-file-list="false" 
+                        :on-change='getFile' 
+                        :auto-upload='false'>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
-                    <img v-if="imageUrl" :src="imageUrl" class="el-upload-img top10">
+                    <img v-if="form.path" :src="form.path" class="el-upload-img top10">
                 </el-form-item>
+                <el-form-item label="类型" prop="type">
+                    <el-select v-model="form.type" placeholder="请选择类型" filterable>
+                        <el-option v-for="(v, i) in bannerTypeList" :key="i+1" :label='v.name' :value='i+1'></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item v-if='form.type == 4' label="链接地址" prop="url">
+                    <el-input v-model="form.url"></el-input>
+                </el-form-item>
+                <el-form-item label="是否发布" prop="isPublish">
+                    <el-switch v-model="form.isPublish" class="left10"></el-switch>
+                </el-form-item>
+                
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -68,6 +78,14 @@
     </div>
 </template>
 <script>
+    const Form = {
+        id: '',
+        path: '',
+        type: '',
+        url: '',
+        resourceId: '',
+        isPublish: 0
+    }
     import bus from '../../../bus';
     import {bannerService} from '../../../service/banner';
     export default {
@@ -82,11 +100,7 @@
                 is_search: false,
                 editVisible: false,
                 delVisible: false,
-                form: {
-                    a: '',
-                    b: '',
-                    c: ''
-                },
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     a: [
                         { required: true, message: '请选择类型', trigger: 'change' },
@@ -95,21 +109,22 @@
                 idx: -1,
                 id: -1,
                 bannerTypeList: [],
-                bannerTypeSel: '技师',
-                imageUrl: '',
-                
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         computed:{
             
         },
         methods:{
-            upImgChange(res){
-                this.imageUrl = URL.createObjectURL(res.raw);
-            },
-            upImgSuccess(res, file) {
-                debugger
-                this.imageUrl = URL.createObjectURL(file.raw);
+            getFile(file, fileList){
+                const t = this;
+                t.$commonService.getBase64(file.raw).then((Base64)=>{
+                    t.$commonService.upload(Base64).then((res)=>{
+                        t.form.path = res.netUrl
+                    })
+                })
             },
             beforeImgUpload(file) {
                 console.log(file)
@@ -153,20 +168,10 @@
                 if(row){
                     this.idx = index;
                     this.id = row.id;
-                    this.form = {
-                        a: row.a,
-                        b: row.b,
-                        c: row.c,
-                    }
+                    this.form = row;
                 }else{
                     this.idx = '-1';
-                    this.id = '';
-                    this.imageUrl = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                    }
+                    this.form = JSON.parse(JSON.stringify(Form))
                 }
                 
                 this.editVisible = true;
@@ -178,19 +183,23 @@
             },
              // 保存编辑
             saveEdit(form) {
+                const t = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
+                        let params = {};
                         this.editVisible = false;
-                        this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                        if(this.list[this.idx].id === this.id){
-                            this.$set(this.list, this.idx, this.form);
+                        for(let key in Form){
+                            params[key] = t.form[key]
+                        }
+                        params.isPublish = params.isPublish? '1':'0';
+                        if(t.idx == '-1'){
+                            bannerService.add(params).then((res)=>{
+                                t.getList()
+                            })
                         }else{
-                            for(let i = 0; i < this.list.length; i++){
-                                if(this.list[i].id === this.id){
-                                    this.$set(this.list, i, this.form);
-                                    return ;
-                                }
-                            }
+                            bannerService.edit(params).then((res)=>{
+                                t.getList()
+                            })
                         }
                     } else {
                         console.log('error submit!!');
@@ -213,16 +222,42 @@
                         }
                     }
                 }
+            },
+            getList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber
+                }
+                bannerService.getBannerList(params).then((res)=>{
+                    for(const v of res.records){
+                        v.isPublishName = v.isPublish == 0 ? '未发布' : '已发布';
+                        //  （1 门店,2项目,3技师,4链接5.无链接）
+                        if(v.type==1){
+                            v.typeName = '门店'
+                        }else if(v.type==2){
+                            v.typeName = '项目'
+                        }else if(v.type==3){
+                            v.typeName = '技师'
+                        }else if(v.type==4){
+                            v.typeName = '链接'
+                        }else if(v.type==5){
+                            v.typeName = '无链接'
+                        }
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
+                
             }
         },
         mounted(){
-           const t = this;
-           bannerService.getBannerList().then((res)=>{
-               t.list = res;
-           })
-           bannerService.getBannerTypeList().then((res)=>{
-               t.bannerTypeList = res;
-           })
+            const t = this;
+            t.getList();
+            bannerService.getBannerTypeList().then((res)=>{
+                t.bannerTypeList = res;
+            })
         }
     }
 </script>

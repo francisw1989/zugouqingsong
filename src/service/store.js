@@ -44,10 +44,10 @@ let storeService = {
         return p;
     },
     // 关闭
-    close(params){
+    delete(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
-                method: 'PATCH',
+                method: 'DELETE',
                 url: '/api/v1/stores/' + params.id,
                 params: params,
                 loading: true

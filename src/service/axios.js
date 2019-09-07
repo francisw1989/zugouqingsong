@@ -30,8 +30,13 @@ let $axios = (data, otherData)=>{
             params: data.params,
             data: otherData
         }).then(res => {
-            resolve(res.data)
-            loading && loading.close();
+            if(res.code){
+                alert('系统错误')
+            }else{
+                resolve(res.data)
+                loading && loading.close();
+            }
+            
         }).catch((res)=>{
             reject(res.response.data)
             loading && loading.close();

@@ -112,7 +112,7 @@
             <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="delVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
+                <el-button type="primary" @click="deleteRow()">确 定</el-button>
             </span>
         </el-dialog>
         <!-- 查看 -->
@@ -309,7 +309,11 @@
                 t.editVisible = true;
             },
             handle3(index, row){
-                
+                const t = this;
+                this.idx = index;
+                this.id = row.id;
+                this.row = row;
+                t.delVisible = true;
             },
             handle4(index, row){
 
@@ -347,18 +351,15 @@
             },
             // 确定删除
             deleteRow(){
-                this.$message.success('删除成功');
-                this.delVisible = false;
-                if(this.list[this.idx].id === this.id){
-                    this.list.splice(this.idx, 1);
-                }else{
-                    for(let i = 0; i < this.list.length; i++){
-                        if(this.list[i].id === this.id){
-                            this.list.splice(i, 1);
-                            return ;
-                        }
-                    }
+                const t = this;
+                let parmas = {
+                    id: this.id
                 }
+                storeService.delete(parmas).then((res)=>{
+                    this.$message.success('删除成功');
+                    this.delVisible = false;
+                    t.getList();
+                })
             },
             markerDrag(){
                 const t = this;

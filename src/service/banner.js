@@ -1,24 +1,55 @@
-import axios from 'axios';
-const u = 'https://zzh.hzysofti.com:8002/api/v1/';
+import {$axios} from './axios.js';
 let bannerService = {
-    getBannerList(){
-
+    getBannerList(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/banner/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    add(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'POST',
+                url: '/api/v1/banner',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    edit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/banner/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },
     getBannerTypeList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
-                {name: '技师'},{name: '项目'},{name: '门店'},{name: '无链接'},
+                {name: '门店'},
+                {name: '项目'},
+                {name: '技师'},
+                {name: '链接'},
+                {name: '无链接'}
             ]
             resolve(data)
         })
