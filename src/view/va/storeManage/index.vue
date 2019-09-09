@@ -367,8 +367,8 @@
                     //标注拖拽后的位置
                 t.marker.addEventListener("dragend", function (e) {
                         // alert("当前位置：" + e.point.lng + ", " + e.point.lat);
-                        t.form.x = e.point.lng;
-                        t.form.y =  e.point.lat;
+                        t.form.x = e.point.lat;
+                        t.form.y =  e.point.lng;
                         t.geoc.getLocation(e.point, function(rs){
                             var addComp = rs.detailAddress;
                             t.form.detailAddress = addComp;
@@ -384,8 +384,8 @@
                 var keyword = t.form.detailAddress;
                 t.localSearch.setSearchCompleteCallback(function (searchResult) {
                         var poi = searchResult.getPoi(0);
-                        t.form.x = poi.point.lng;
-                        t.form.y = poi.point.lat;
+                        t.form.x = poi.point.lat;
+                        t.form.y = poi.point.lng;
                         t.jwd = t.form.x + "," + t.form.y;
                         t.map.centerAndZoom(poi.point, 15);
                         //创建标注位置
@@ -413,8 +413,8 @@
                 t.map.addEventListener("click",function(e){
                     t.map.clearOverlays();                   
                     console.log(e);
-                    t.form.x = e.point.lng;
-                    t.form.y = e.point.lat;
+                    t.form.x = e.point.lat;
+                    t.form.y = e.point.lng;
                     //创建标注位置
                     var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
                     t.marker = new BMap.Marker(e.point,{icon:myIcon});  // 创建标注
