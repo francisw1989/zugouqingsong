@@ -170,7 +170,7 @@ let commonService = {
                 method: "post",
                 url: "/common/v1/file/upload",
                 params: params,
-                loading: false,
+                loading: true,
             }
             $axios(data, Base64).then((res)=>{
                 resolve(res)

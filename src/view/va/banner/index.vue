@@ -46,7 +46,7 @@
                         :auto-upload='false'>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
-                    <img v-if="form.path" :src="form.path" class="el-upload-img top10">
+                    <img v-if="form.path" :src="form.path" class=" top10" style="max-width: 100%">
                 </el-form-item>
                 <el-form-item label="类型" prop="type">
                     <el-select v-model="form.type" placeholder="请选择类型" filterable>
