@@ -60,11 +60,11 @@ let bannerService = {
     getBannerTypeList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
-                {name: '门店'},
-                {name: '项目'},
-                {name: '技师'},
-                {name: '链接'},
-                {name: '无链接'}
+                // {name: '门店'},
+                // {name: '项目'},
+                // {name: '技师'},
+                {name: '链接', id: 4},
+                {name: '无链接', id: 5}
             ]
             resolve(data)
         })
