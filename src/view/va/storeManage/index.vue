@@ -370,7 +370,7 @@
                         t.form.x = e.point.lat;
                         t.form.y =  e.point.lng;
                         t.geoc.getLocation(e.point, function(rs){
-                            var addComp = rs.detailAddress;
+                            var addComp = rs.detail;
                             t.form.detailAddress = addComp;
                             t.jwd = t.form.x + "," + t.form.y;
                         });
