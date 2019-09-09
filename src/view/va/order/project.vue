@@ -31,8 +31,8 @@
                 <el-table-column prop="itemClassName" label="所属分类"></el-table-column>
                 <el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
                 <el-table-column prop="defaultPrice" label="价格(元)"></el-table-column>
-                <el-table-column prop="isRecommendc" label="是否推荐"></el-table-column>
-                <el-table-column prop="isAssemble" label="参与拼团"></el-table-column>
+                <el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
+                <el-table-column prop="isAssembleName" label="参与拼团"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="430" align="center">
                     <template slot-scope="scope">
@@ -81,12 +81,12 @@
                 </div>
                 <div class="clearfix">
                     <el-form-item label="是否推荐" prop="isRecommend" style="width: 50%" class="left">
-                        <el-switch v-model="isRecommend" class=""></el-switch>
+                        <el-switch v-model="form.isRecommend" class=""></el-switch>
                     </el-form-item>
                     
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="是否拼团">
+                    <el-form-item label="是否拼团" prop="isAssemble">
                         <el-switch v-model="form.isAssemble" class=""></el-switch>
                         <div class="clear"></div>
                         <div v-if="form.isAssemble" style="border: 1px solid #ddd; display: inline-block; padding: 10px 20px;" class=" top10">
@@ -166,8 +166,8 @@
                     defaultPrice: '',
                     mixDuration: '',
                     maxDuration: '',
-                    isRecommend: false,
-                    isAssemble: false,
+                    isRecommend: 0,
+                    isAssemble: 0,
                     threePrice: '',
                     fivePrice: '',
                     tenPrice: '',
@@ -229,6 +229,8 @@
                 isRecommend: false,
                 isAssemble: false,
                 editVisible: false,
+                isRecommendcName: '',
+                isAssembleName: '',
                 timeList: [3, 10, 5],
                 total: 0,
                 pageSize: 10,
@@ -272,8 +274,8 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
-                        params.isRecommend = t.isRecommend? '1':'0';
-                        params.isAssemble = t.isAssemble? '1':'0';
+                        params.isRecommend = params.isRecommend? '1':'0';
+                        params.isAssemble = params.isAssemble? '1':'0';
                         if(t.idx == '-1'){
                             orderService.itemAdd(params).then((res)=>{
                                 t.getItemList()
@@ -357,6 +359,10 @@
                 params.isAssemble = t.isAssemble? '1':'0';
                 console.log(params);
                 orderService.getItemList(params).then((res)=>{
+                    for(const v of res.records){
+                        v.isRecommendName = v.isRecommend == 0 ? '未推荐' : '已推荐';
+                        v.isAssembleName=v.isAssemble == 0 ? '不参与' : '参与';
+                    }
                     t.list = res.records;
                     t.total = res.total
                 })
