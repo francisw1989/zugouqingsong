@@ -14,7 +14,10 @@
             <el-table :data="list"  border class="table top10" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
-                <el-table-column prop="path" label="banner大图" width="150">
+                <el-table-column label="banner大图" align="center">
+                    <template slot-scope="scope">
+                        <img :src="scope.row.path" style="width: 200px" alt="">
+                    </template>
                 </el-table-column>
                 <el-table-column prop="typeName" label="类型" width="120">
                 </el-table-column>
