@@ -10,10 +10,10 @@
             <div class=" clearfix top10">
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handle3">新增</el-button>
                 <span>项目名称</span>
-                <el-input v-model="select_word" placeholder="输入项目名称" class="handle-input left10"></el-input>
+                <el-input v-model="itemName" placeholder="输入项目名称" class="handle-input left10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                  <span class="left20">项目分类</span>
-                <el-select class="left10" v-model="form.a" placeholder="请选择项目分类" filterable>
+                <el-select class="left10" v-model="form.itemClassId" placeholder="请选择项目分类" filterable>
                     <el-option v-for="(v, i) in xmflList" :key="i" :label="v" :value="v"></el-option>
                 </el-select>
                 <span class="left20">是否推荐</span>
@@ -27,13 +27,13 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
-                <el-table-column prop="a" label="项目名称" sortable width="150"></el-table-column>
-                <el-table-column prop="c" label="所属分类"></el-table-column>
-                <el-table-column prop="c" label="推荐时长(分钟)"></el-table-column>
-                <el-table-column prop="c" label="价格(元)"></el-table-column>
-                <el-table-column prop="c" label="是否推荐"></el-table-column>
-                <el-table-column prop="c" label="参与拼团"></el-table-column>
-                <el-table-column prop="c" label="创建时间"></el-table-column>
+                <el-table-column prop="itemName" label="项目名称" sortable width="150"></el-table-column>
+                <el-table-column prop="itemClassName" label="所属分类"></el-table-column>
+                <el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
+                <el-table-column prop="defaultPrice" label="价格(元)"></el-table-column>
+                <el-table-column prop="isRecommendc" label="是否推荐"></el-table-column>
+                <el-table-column prop="isAssemble" label="参与拼团"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="430" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">推荐</el-button>
@@ -45,7 +45,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -162,7 +162,7 @@
                 list: [],
                 cur_page: 1,
                 multipleSelection: [],
-                select_word: '',
+                itemName: '',
                 is_search: false,
                 form: {
                     a: '',
@@ -183,6 +183,9 @@
                 isPintuan: false,
                 editVisible: false,
                 timeList: [3, 10, 5],
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         components:{
@@ -260,15 +263,27 @@
             },
             handle5(index, row) {
 
+            },getItemList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber
+                }
+                orderService.getItemList(params).then((res)=>{
+                    t.list = res.records;
+                    t.total = res.total
+                })
             }
         },
         mounted(){
            const t = this;
-           t.$commonService.getProjectList().then((res)=>{
-               t.list = res;
-           });
+           t.getItemList()
+
            orderService.getXmflList().then((res)=>{
-               t.xmflList = res;
+               console.log(res);
+               t.xmflList = res.records.itemClassName;
+               t.itemClassId = res.records.id;
            })
 
         }
