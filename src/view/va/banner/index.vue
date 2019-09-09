@@ -25,10 +25,10 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间">
                 </el-table-column>
-                <el-table-column label="操作" width="220" align="center">
+                <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" @click="handlePublish(scope.$index, scope.row)">发布</el-button>
+                        <el-button size="mini" @click="handlePublish(scope.$index, scope.row)">{{scope.row.isPublish==0?'发布':'取消发布'}}</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -164,7 +164,13 @@
                 this.multipleSelection = val;
             },
             handlePublish(index, row){
-
+                const t = this;
+                let params = {
+                    isPublish: row.isPublish==0?'1':'0'
+                };
+                bannerService.publish(params, row.id).then((res)=>{
+                    t.getList()
+                })
             },
 
             handleEdit(index, row) {
@@ -218,18 +224,12 @@
             },
             // 确定删除
             deleteRow(){
-                this.$message.success('删除成功');
-                this.delVisible = false;
-                if(this.list[this.idx].id === this.id){
-                    this.list.splice(this.idx, 1);
-                }else{
-                    for(let i = 0; i < this.list.length; i++){
-                        if(this.list[i].id === this.id){
-                            this.list.splice(i, 1);
-                            return ;
-                        }
-                    }
-                }
+                const t = this;
+                bannerService.delete({id: this.id}).then((res)=>{
+                    t.getList();
+                    t.delVisible = false;
+                    t.$message.success('删除成功');
+                })
             },
             getList(){
                 const t = this;

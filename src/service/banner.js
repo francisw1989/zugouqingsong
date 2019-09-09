@@ -43,6 +43,20 @@ let bannerService = {
         })
         return p;
     },
+    delete(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/banner/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     getBannerTypeList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
@@ -56,5 +70,19 @@ let bannerService = {
         })
         return p;
     },
+    publish(params, id){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/banner/ispublish/' + id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    }
 }
 export { bannerService }
