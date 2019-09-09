@@ -171,6 +171,11 @@
                 if(row){
                     this.idx = index;
                     this.id = row.id;
+                    if(row.isPublish == 0){
+                        row.isPublish = false;
+                    }else{
+                        row.isPublish = true;
+                    }
                     this.form = row;
                 }else{
                     this.idx = '-1';
