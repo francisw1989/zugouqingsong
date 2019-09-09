@@ -16,9 +16,10 @@ let bannerService = {
     },
     add(params){
         let p = new Promise((resolve, reject)=>{
+            delete params.id
             let data = {
                 method: 'POST',
-                url: '/api/v1/banner',
+                url: '/api/v1/banner/',
                 params: params,
                 loading: true,
             }
