@@ -121,6 +121,7 @@
                     <el-form-item label="门店照片" prop="imgs">
                         <el-upload
                         :file-list='form.imgListShow'
+                        :auto-upload='false'
                         action=""
                         :on-change="getFile"
                         list-type="picture-card"
@@ -158,24 +159,24 @@
     import bus from '../../../bus';
     import {orderService} from '../../../service/order';
     const Form= {
-                    id: '',
-                    itemName: '',
-                    itemClassId: '',
-                    itemClassName: '',
-                    defaultDuration: '',
-                    defaultPrice: '',
-                    mixDuration: '',
-                    maxDuration: '',
-                    isRecommend: false,
-                    isAssemble: false,
-                    threePrice: '',
-                    fivePrice: '',
-                    tenPrice: '',
-                    imgs: '',
-                    crowd: '',
-                    conditioningMethod: '',
-                    conditioningProcess: '',
-                    maintenanceMethod: ''
+        id: '',
+        itemName: '',
+        itemClassId: '',
+        itemClassName: '',
+        defaultDuration: '',
+        defaultPrice: '',
+        mixDuration: '',
+        maxDuration: '',
+        isRecommend: false,
+        isAssemble: false,
+        threePrice: '',
+        fivePrice: '',
+        tenPrice: '',
+        imgs: '',
+        crowd: '',
+        conditioningMethod: '',
+        conditioningProcess: '',
+        maintenanceMethod: ''
     }
     export default {
         data() {
