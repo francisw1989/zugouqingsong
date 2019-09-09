@@ -159,26 +159,6 @@
     import bus from '../../../bus';
     import {orderService} from '../../../service/order';
     const Form= {
-<<<<<<< HEAD
-                    id: '',
-                    itemName: '',
-                    itemClassId: '',
-                    itemClassName: '',
-                    defaultDuration: '',
-                    defaultPrice: '',
-                    mixDuration: '',
-                    maxDuration: '',
-                    isRecommend: 0,
-                    isAssemble: 0,
-                    threePrice: '',
-                    fivePrice: '',
-                    tenPrice: '',
-                    imgs: '',
-                    crowd: '',
-                    conditioningMethod: '',
-                    conditioningProcess: '',
-                    maintenanceMethod: ''
-=======
         id: '',
         itemName: '',
         itemClassId: '',
@@ -197,7 +177,6 @@
         conditioningMethod: '',
         conditioningProcess: '',
         maintenanceMethod: ''
->>>>>>> a656c70de0036606bb424216b67f8e78a6df77c3
     }
     export default {
         data() {
