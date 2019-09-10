@@ -13,6 +13,15 @@ let orderService = {
         })
         return p;
     },
+    getOrderDetal(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                a: 'dsfdsf'
+            }
+            resolve(data)
+        })
+        return p;
+    },
     //获取服务项目列表
     getItemList(params){
         let p = new Promise((resolve, reject)=>{
@@ -25,34 +34,6 @@ let orderService = {
             $axios(data).then((res)=>{
                 resolve(res)
             })
-        })
-        return p;
-    },
-    //获取服务项目分类
-    getItemClassList(){
-        let params = {
-            pageSize: 10,
-            pageNumber: 1
-        }
-        let p = new Promise((resolve, reject)=>{
-            let data = {
-                method: 'get',
-                url: '/api/v1/itemClass/list',
-                params: params,
-                loading: true,
-            }
-            $axios(data).then((res)=>{
-                resolve(res)
-            })
-        })
-        return p;
-    },
-    getOrderDetal(){
-        let p = new Promise((resolve, reject)=>{
-            let data = {
-                a: 'dsfdsf'
-            }
-            resolve(data)
         })
         return p;
     },
@@ -94,6 +75,25 @@ let orderService = {
                 url: '/api/v1/item/' + params.id,
                 params: params,
                 loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+     //获取服务项目分类
+     getItemClassList(){
+        let params = {
+            pageSize: 10,
+            pageNumber: 1
+        }
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/itemClass/list',
+                params: params,
+                loading: true,
             }
             $axios(data).then((res)=>{
                 resolve(res)
