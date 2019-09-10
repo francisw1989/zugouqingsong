@@ -12,7 +12,7 @@ let commonService = {
                 rightsList: [
                     {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
                 ],
-                goodsCat: ['烟','酒'],
+                goodsCat: ['商品','物料'],
                 yhqTypeList: ['满减', '满赠', '折扣', '抵扣时间'],
                 yhqFwList: ['通用', '门店', '项目'],
                 yhqYxqlxList: ['固定日期','自领取起'],
@@ -93,7 +93,7 @@ let commonService = {
                 {a: '23dfd2131',b:'但是',c:'水电费',d:'地方',e:'df'},
             ]
             resolve(data)
-        })
+        })   
         return p;
     },
     // 获取项目列表

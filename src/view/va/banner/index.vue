@@ -27,7 +27,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" v-if="scope.row.type==4||scope.row.type==5" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="mini" @click="handlePublish(scope.$index, scope.row)">{{scope.row.isPublish==0?'发布':'取消发布'}}</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
@@ -53,7 +53,7 @@
                 </el-form-item>
                 <el-form-item label="类型" prop="type">
                     <el-select v-model="form.type" placeholder="请选择类型" filterable>
-                        <el-option v-for="(v, i) in bannerTypeList" :key="i+1" :label='v.name' :value='i+1'></el-option>
+                        <el-option v-for="v in bannerTypeList" :key="v.id" :label='v.name' :value='v.id'></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item v-if='form.type == 4' label="链接地址" prop="url">
