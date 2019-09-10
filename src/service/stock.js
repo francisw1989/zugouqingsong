@@ -1,43 +1,37 @@
+import {$axios} from './axios.js';
 let stockService = {
-    getStockList(){
+     //物料库存列表查询
+     getPlatformArticleStockList(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformArticleStock/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },
-    getOutStockList(){
+
+
+    //物料入库列表查询
+    getPlatformInRecordList(){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformInRecord/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
-    },
-    getProcurementList(){
-        let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
-        })
-        return p;
-    },
+    }
     
 
 }

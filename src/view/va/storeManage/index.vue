@@ -261,7 +261,7 @@
                 this.multipleSelection = val;
             },
             handlePublish(index, row){
-
+                
             },
 
             handle1(index, row){

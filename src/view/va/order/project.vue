@@ -8,13 +8,13 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
-                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handle3">新增</el-button>
+                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handleEdit">新增</el-button>
                 <span>项目名称</span>
                 <el-input v-model="itemName" placeholder="输入项目名称" class="handle-input left10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                  <span class="left20">项目分类</span>
                 <el-select class="left10" v-model="form.itemClassId" placeholder="请选择项目分类" filterable>
-                    <el-option v-for="(v, i) in xmflList" :key="i+1" :label="v.itemClassName"  :value="i+1"></el-option>
+                    <el-option v-for="(v, i) in itemClassList" :key="i+1" :label="v.itemClassName"  :value="i+1"></el-option>
                 </el-select>
                 <span class="left20">是否推荐</span>
                 <el-switch v-model="isRecommend" class="left10"></el-switch>
@@ -36,11 +36,10 @@
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="430" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">推荐</el-button>
-                        <el-button size="mini" @click="handle2(scope.$index, scope.row)">参与拼团</el-button>
-                        <el-button size="mini" @click="handle3(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handle5(scope.$index, scope.row)">下架</el-button>
-                        <el-button size="mini" @click="handle4(scope.$index, scope.row)">推荐至banner</el-button>
+                        <el-button size="mini" @click="handleRecommend(scope.$index, scope.row)">{{scope.row.isRecommend==0?'推荐':'取消推荐'}}</el-button>
+                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">下架</el-button>
+                        <el-button size="mini" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,7 +58,7 @@
                     </el-form-item>
                     <el-form-item label="所属分类" prop="itemClassId" style="width: 50%"  class="left">
                         <el-select v-model="form.itemClassId" placeholder="请选择项目分类" filterable>
-                            <el-option v-for="(v, i) in xmflList" :key="i+1" :label="v.itemClassName" :value="i+1"></el-option>
+                            <el-option v-for="(v, i) in itemClassList" :key="i+1" :label="v.itemClassName" :value="i+1"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -118,7 +117,7 @@
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="门店照片" prop="imgs">
+                    <el-form-item label="项目图片" prop="imgs">
                         <el-upload
                         :file-list='form.imgListShow'
                         :auto-upload='false'
@@ -152,12 +151,21 @@
             </span>
         </el-dialog>
 
+          <!-- 删除提示框 -->
+        <el-dialog title="提示" :visible.sync="delVisible" width="300px" left>
+            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="delVisible = false">取 消</el-button>
+                <el-button type="primary" @click="deleteRow()">确 定</el-button>
+            </span>
+        </el-dialog>
 
     </div>
 </template>
 <script>
     import bus from '../../../bus';
     import {orderService} from '../../../service/order';
+    import {bannerService} from '../../../service/banner';
     const Form= {
         id: '',
         itemName: '',
@@ -197,6 +205,7 @@
                 threeT: '3',
                 tenT: '10',
                 is_search: false,
+                delVisible: false,
                 form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     itemName: [
@@ -225,14 +234,12 @@
                 },
                 idx: -1,
                 id: -1,
-                xmfl: '',
-                xmflList: [],
+                itemClassList: [],
                 isRecommend: false,
                 isAssemble: false,
                 editVisible: false,
                 isRecommendcName: '',
                 isAssembleName: '',
-                timeList: [3, 10, 5],
                 total: 0,
                 pageSize: 10,
                 pageNumber: 1
@@ -310,13 +317,18 @@
                 this.multipleSelection = val;
             },
             // 推荐
-            handle1(index, row) {
-                
+            handleRecommend(index, row) {
+                const t = this;
+                let params = {
+                    isRecommend: row.isRecommend==0?'1':'0',
+                    id: row.id
+                };
+                orderService.itemRecommend(params).then((res)=>{
+                    this.$message.success('设置成功');
+                    t.getItemList();
+                })
             },
-            handle2(index, row) {
-
-            },
-            handle3(index, row) {
+            handleEdit(index, row) {
                 const t = this;
                 if(row){
                     // 编辑
@@ -341,12 +353,40 @@
                 }
                 t.editVisible = true;
             },
-            handle4(index, row) {
-
+            handleBanner(index, row) {
+                const t = this;
+                let params = {
+                    path: row.imgs,
+                    type: 2,
+                    resourceId: row.id,
+                    isPublish:0
+                }
+                console.log(params);
+                 bannerService.add(params).then((res)=>{
+                    this.$message.success('推荐成功');
+                    t.getItemList();
+                })
             },
-            handle5(index, row) {
-
-            },getItemList(){
+            handleDelete(index, row) {
+                const t = this;
+                this.idx = index;
+                this.id = row.id;
+                this.row = row;
+                t.delVisible = true;
+            },
+             // 确定删除
+            deleteRow(){
+                const t = this;
+                let parmas = {
+                    id: this.id
+                }
+                orderService.itemDelete(parmas).then((res)=>{
+                    this.$message.success('删除成功');
+                    this.delVisible = false;
+                    t.getItemList();
+                })
+            },
+            getItemList(){
                 const t = this;
                 t.list = [];
                 
@@ -373,8 +413,8 @@
            const t = this;
            t.getItemList()
 
-           orderService.getXmflList().then((res)=>{
-               t.xmflList = res.records;
+           orderService.getItemClassList().then((res)=>{
+               t.itemClassList = res.records;
            })
 
         }
