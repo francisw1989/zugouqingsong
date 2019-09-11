@@ -70,7 +70,12 @@
                 </el-form-item>
                 <el-form-item label="优惠券类型" prop="yhqType">
                     <el-radio-group v-model="form.yhqType">
-                        <el-radio :label="item" v-for="item in yhqTypeList" :key="item"></el-radio>
+                        <template v-if="form.yhqFw=='项目'">
+                            <el-radio  :label="item" v-for="item in yhqTypeList" :key="item"></el-radio>
+                        </template>
+                        <template v-if="form.yhqFw!='项目'">
+                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="v" v-if='i!=yhqTypeList.length-1'></el-radio>
+                        </template>
                     </el-radio-group>
                     <div class="top10" v-if="form.yhqType=='满减'">
                         <p class="col999 top10">满减设置</p>
@@ -179,6 +184,9 @@
             }
         },
         components:{
+            
+        },
+        watch:{
             
         },
         methods:{

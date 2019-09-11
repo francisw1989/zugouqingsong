@@ -18,6 +18,7 @@
                 <el-table-column label="操作" width="100px" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="edit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="del(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -28,9 +29,7 @@
        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="400px">
             <el-form ref="form" :model="form" :rules="rules" label-width="60px">
                 <el-form-item label="分类">
-                    <el-select class="left5" v-model="tagFl" placeholder="" filterable>
-                        <el-option v-for="(item, index) in tagFlList" :key="index" :value="item"  :label="item"></el-option>
-                    </el-select>
+                    <el-input v-model="form.a"></el-input>
                 </el-form-item>
                 <el-form-item label="标签">
                     <el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)" class="right5">
@@ -85,7 +84,9 @@
             
         },
         methods:{
-
+            del(){
+                
+            },
             handleClose(tag) {
                 this.form.tags.splice(this.form.tags.indexOf(tag), 1);
             },

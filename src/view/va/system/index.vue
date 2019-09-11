@@ -13,7 +13,8 @@
                 </el-radio-group>
             </div>
             <div class="pad20" style="" >
-                <el-form ref="form" :model="form"  :rules="rules"   label-width="150px">
+                <p class="pad10TB colblue">标题标题</p>
+                <el-form class='top10' ref="form" :model="form"  :rules="rules"   label-width="150px" label-position='left'>
                     <el-form-item label="活动是否生效">
                         <el-switch v-model="form.isShengxiao" class="left10"></el-switch>
                     </el-form-item>

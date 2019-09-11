@@ -43,10 +43,11 @@
                 <el-table-column prop="c" label="等级"></el-table-column>
                 <el-table-column prop="c" label="是否流动"></el-table-column>
                 <el-table-column prop="c" label="手机号"></el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                         <el-button size="mini" type="danger" @click="handle1(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">重置密码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -214,6 +215,11 @@
                 this.idx = index;
                 this.id = row.id;
                 this.viewVisible = true;
+            },
+            // 重置密码
+            handle2(index, row) {
+                this.idx = index;
+                this.id = row.id;
             },
         },
         mounted(){

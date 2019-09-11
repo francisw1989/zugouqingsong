@@ -37,19 +37,15 @@
        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="600px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="岗位名称">
-                    <el-input v-model="form.a" placeholder="" readonly="" style="width: 80%;"></el-input>
+                    <el-input v-model="form.a" placeholder="" style="width: 80%;"></el-input>
                 </el-form-item>
                 <el-form-item label="此岗位级别" class="clearfix">
                     <div v-for="(gwItem, i) in form.gwjbList" :key="i">
-                        <el-input v-model="form.a" placeholder="" style="width: 80px;" readonly=""></el-input>
+                        <el-input v-model="form.a" placeholder="" style="width: 80px;" ></el-input>
                         <span class="left10">单价系数</span>
-                        <el-select v-model="gwItem.b"  style="width: 80px" class="left5">
-                            <el-option v-for="item in xsList" :key="item" :label="item.a" :value="item"></el-option>
-                        </el-select>
+                        <el-input v-model="form.a" placeholder="" style="width: 80px;" class="left5"></el-input>
                         <span class="left10">佣金系数</span>
-                        <el-select v-model="gwItem.c"  style="width: 80px" class="left5">
-                            <el-option v-for="item in xsList" :key="item" :label="item" :value="item"></el-option>
-                        </el-select>
+                        <el-input v-model="form.a" placeholder="" style="width: 80px;" class="left5"></el-input>
                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd"></i>
                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i)"></i>
 

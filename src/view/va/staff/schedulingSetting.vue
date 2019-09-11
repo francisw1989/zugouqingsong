@@ -25,11 +25,11 @@
        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="600px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="班次名称">
-                    <el-input v-model="form.a" placeholder="" style="width: 80%;" readonly=""></el-input>
+                    <el-input v-model="form.a" placeholder="" style="width: 80%;"></el-input>
                 </el-form-item>
                 <el-form-item label="班次时间">
                     <el-time-select style="width: 130px;" v-model="form.timeStart" :picker-options="{start: '08:30',step: '00:15',end: '24:00'}" placeholder="开始时间"></el-time-select>
-                    <el-time-select style="width: 130px;" class="left10" v-model="form.timeEnd" :picker-options="{start: '08:30',step: '24:00',end: '18:30'}" placeholder="结束时间"></el-time-select>
+                    <el-time-select style="width: 130px;" class="left10" v-model="form.timeEnd" :picker-options="{start: '08:30',step: '00:15',end: '24:00'}" placeholder="结束时间"></el-time-select>
                 </el-form-item>
                 
             </el-form>

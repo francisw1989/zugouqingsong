@@ -7,10 +7,7 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class="clearfix">
-                <el-button type="primary" class="right" @click="handle1">新增</el-button>
-            </div>
-            <el-table :data="list"  border class="table top20" ref="multipleTable">
+            <el-table :data="list"  border class="table" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="a" label="评价" width="150"></el-table-column>
@@ -18,7 +15,7 @@
                 <el-table-column prop="c" label="标签"></el-table-column>
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
+                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">编辑</el-button>
                     </template>
                 </el-table-column>
             </el-table>

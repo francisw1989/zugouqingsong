@@ -7,18 +7,15 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <div class=" clearfix">
-                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="edit">新增</el-button>
-            </div>
-            <el-table :data="list"  border class="table top20" ref="multipleTable">
+
+            <el-table :data="list"  border class="table" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="编号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="a" label="会员等级" width=""></el-table-column>
-                <el-table-column prop="b" label="内容" width="">
-                    <template slot-scope="scope">
-                        <el-rate v-model="scope.row.b" disabled ></el-rate>
-                    </template>
-                </el-table-column>
+                <el-table-column prop="a" label="等级名称" width=""></el-table-column>
+                <el-table-column prop="a" label="金额条件" width=""></el-table-column>
+                <el-table-column prop="a" label="频次条件" width=""></el-table-column>
+                <el-table-column prop="a" label="权益内容" width=""></el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="edit(scope.$index, scope.row)">编辑</el-button>
@@ -29,19 +26,22 @@
         </div>
 
         <!-- 新增 -->
-       <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="400px">
+       <el-dialog title="会员权益" :visible.sync="editVisible" width="400px">
             <el-form ref="form" :model="form" :rules="rules" label-width="80px">
                 <el-form-item label="会员等级">
                     <el-input v-model="form.a"></el-input>
                 </el-form-item>
-                <el-form-item label="等级图标">
-                    <el-upload action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="upImgSuccess" :on-change='upImgChange' :before-upload="beforeImgUpload">
-                        <el-button size="small" type="primary">点击上传</el-button>
-                    </el-upload>
-                    <img v-if="imageUrl" :src="imageUrl" class="el-upload-img top10">
+                <el-form-item label="等级名称">
+                    <el-input v-model="form.a"></el-input>
                 </el-form-item>
-                <el-form-item label="权益等级">
-                    <el-input type="textarea" v-model="form.b"></el-input>
+                <el-form-item label="金额条件">
+                    <el-input v-model="form.a"></el-input>
+                </el-form-item>
+                <el-form-item label="频次名称">
+                    <el-input v-model="form.a"></el-input>
+                </el-form-item>
+                <el-form-item label="权益内容">
+                    <el-input v-model="form.a" type="textarea"></el-input>
                 </el-form-item>
                 
             </el-form>

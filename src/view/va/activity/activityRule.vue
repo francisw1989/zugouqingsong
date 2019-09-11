@@ -13,7 +13,7 @@
                 </el-radio-group>
             </div>
             <div class="pad20" style="" >
-                <el-form ref="form" :model="form"  :rules="rules"   label-width="150px">
+                <el-form ref="form" :model="form"  :rules="rules"   label-width="130px" label-position='left'>
                     <el-form-item label="活动是否生效">
                         <el-switch v-model="form.isShengxiao" class="left10"></el-switch>
                     </el-form-item>
@@ -152,13 +152,15 @@
                             </div>
                         </el-form-item>
                     </div>
-                    <div v-if='type==4 && form.isShengxiao'>
-                        <el-form-item label="拼团须知">
-                            <el-input type="textarea" rows="5" v-model="form.a"></el-input>
-                        </el-form-item>
+                    <div v-if='type==4'>
+                        
                         <el-form-item label="拼团时间限制">
                             <el-input v-model="form.a" class="left5" style="width: 80px" placeholder=""></el-input>
-                            <span class="left10">小时</span>
+                            <span class="left10">拼团期限 </span>
+                        </el-form-item>
+                        <el-form-item label="拼团优惠券有效期">
+                            <el-input v-model="form.a" class="left5" style="width: 80px" placeholder=""></el-input>
+                            <span class='left10'>自领取多少天</span>
                         </el-form-item>
                     </div>
                     <el-form-item label="">

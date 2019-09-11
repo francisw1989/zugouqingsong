@@ -59,11 +59,11 @@
                         <el-option v-for="item in jueseList" :key="item" :label="item" :value="item"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="关联员工" prop="a">
+                <!-- <el-form-item label="关联员工" prop="a">
                     <el-select class="" v-model="form.a" placeholder="请选择员工">
                         <el-option v-for="item in yuangongList" :key="item" :label="item" :value="item"></el-option>
                     </el-select>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="备注" prop="a">
                     <el-input v-model="form.a" type="textarea"></el-input>
                 </el-form-item>
