@@ -69,7 +69,6 @@
                          :auto-upload='false'>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
-                <el-form-item label="商品图片" prop="imgs">
                     <img v-if="form.imgs" :src="form.imgs" class="el-upload-img top10">
                 </el-form-item>
             </el-form>
@@ -81,7 +80,7 @@
 
          <!-- 查看 -->
         <el-dialog title="详情" :visible.sync="viewVisible" width="40%">
-            <StoreDetail :row='row' :info='info'></StoreDetail>
+            <stockService :row='row' :info='info'></stockService>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
             </span>

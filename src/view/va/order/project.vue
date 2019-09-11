@@ -10,14 +10,18 @@
             <div class=" clearfix top10">
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handleEdit">新增</el-button>
                 <span>项目名称</span>
-                <el-input v-model="itemName" placeholder="输入项目名称" class="handle-input left10"></el-input>
+                <el-input v-model="itemName" style='width: 150px!important'  placeholder="输入项目名称" class="handle-input left10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                 <span class="left20">项目分类</span>
-                <el-select class="left10" v-model="form.itemClassId" placeholder="请选择项目分类" filterable>
-                    <el-option v-for="(v, i) in itemClassList" :key="i+1" :label="v.itemClassName"  :value="i+1"></el-option>
+                <span class="left20">项目分类</span>
+                <el-select class="left10" style='width: 150px!important'   clearable v-model="itemClassId" placeholder="请选择项目分类" filterable>
+                    <el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName"  :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">是否推荐</span>
-                <el-switch v-model="isRecommend" class="left10"></el-switch>
+                <el-select class="left10" clearable v-model="isRecommend" placeholder="" style='width: 100px' filterable>
+                    <el-option label="是"  value="1"></el-option>
+                    <el-option label="否"  value="0"></el-option>
+                </el-select>
+
                 <span class="left20">是否拼团</span>
                 <el-switch v-model="isAssemble" class="left10"></el-switch>
 
@@ -57,8 +61,8 @@
                         <el-input v-model="form.itemName" placeholder="输入项目名称"></el-input>
                     </el-form-item>
                     <el-form-item label="所属分类" prop="itemClassId" style="width: 50%"  class="left">
-                        <el-select v-model="form.itemClassId" placeholder="请选择项目分类" filterable>
-                            <el-option v-for="(v, i) in itemClassList" :key="i+1" :label="v.itemClassName" :value="i+1"></el-option>
+                        <el-select v-model="form.itemClassId" @change='itemClassListChange' placeholder="请选择项目分类" filterable>
+                            <el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName"  :value="v.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
@@ -91,26 +95,20 @@
                         <div v-if="form.isAssemble" style="border: 1px solid #ddd; display: inline-block; padding: 10px 20px;" class=" top10">
                             <div>
                                 <span>拼团人数</span>
-                                <el-select class="left5" v-model="form.threeT" placeholder="" filterable style="width: 50px">
-                                    <el-option  :key="threeT" :label="3" :value="3"></el-option>
-                                </el-select>
-                                <span class="left10">价格(元)</span>
+                                <span class='pad10RL'>3</span>
+                                <span class="">价格(元)</span>
                                 <el-input v-model="form.threePrice" style="width: 50px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
-                                <el-select class="left5" v-model="form.fiveT" placeholder="" filterable style="width: 50px">
-                                    <el-option :key="fiveT" :label="5" :value="5"></el-option>
-                                </el-select>
-                                <span class="left10">价格(元)</span>
+                                <span class='pad10RL'>5</span>
+                                <span class="">价格(元)</span>
                                 <el-input v-model="form.fivePrice" style="width: 50px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
-                                <el-select class="left5" v-model="form.tenT" placeholder="" filterable style="width: 50px">
-                                    <el-option  :key="tenT" :label="10" :value="10"></el-option>
-                                </el-select>
-                                <span class="left10">价格(元)</span>
+                                <span class='pad10RL'>10</span>
+                                <span class="">价格(元)</span>
                                 <el-input v-model="form.tenPrice" style="width: 50px;" class="left5"></el-input>
                             </div>
                         </div>
@@ -175,7 +173,7 @@
         defaultPrice: '',
         mixDuration: '',
         maxDuration: '',
-        isRecommend: false,
+        isRecommend: '',
         isAssemble: false,
         threePrice: '',
         fivePrice: '',
@@ -235,7 +233,7 @@
                 idx: -1,
                 id: -1,
                 itemClassList: [],
-                isRecommend: false,
+                isRecommend: '',
                 isAssemble: false,
                 editVisible: false,
                 isRecommendcName: '',
@@ -249,7 +247,14 @@
             orderService
         },
         methods:{
-             getFile(file, fileList){
+            itemClassListChange(val){
+                const t = this;
+                t.form.itemClassName = t.itemClassList.filter((item)=>{
+                    return item.id == val
+                })[0].itemClassName;
+                console.log(t.form.itemClassName)
+            },
+            getFile(file, fileList){
                 const t = this;
                 t.$commonService.getBase64(file.raw).then((Base64)=>{
                     t.$commonService.upload(Base64).then((res)=>{
@@ -282,7 +287,6 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
-                        params.isRecommend = params.isRecommend? '1':'0';
                         params.isAssemble = params.isAssemble? '1':'0';
                         if(t.idx == '-1'){
                             orderService.itemAdd(params).then((res)=>{
@@ -310,7 +314,7 @@
             },
             search() {
                 //this.is_search = true;
-                 const t = this;
+                const t = this;
                 t.getItemList();
             },
             handleSelectionChange(val) {
@@ -394,9 +398,9 @@
                     pageSize: t.pageSize,
                     pageNumber: t.pageNumber,
                     itemName: t.itemName,
-                    itemClassId: t.itemClassId
+                    itemClassId: t.itemClassId,
+                    isRecommend: t.isRecommend
                 }
-                params.isRecommend = t.isRecommend? '1':'0';
                 params.isAssemble = t.isAssemble? '1':'0';
                 console.log(params);
                 orderService.getItemList(params).then((res)=>{
@@ -408,6 +412,15 @@
                     t.total = res.total
                 })
             }
+        },
+        watch:{
+            itemClassId(val){
+                this.getItemList();
+            },
+            isRecommend(){
+                this.getItemList();
+            }
+
         },
         mounted(){
            const t = this;
