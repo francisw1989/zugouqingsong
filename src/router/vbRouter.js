@@ -35,6 +35,11 @@ let vbRouter = [
                 meta: { title: '员工列表' },
             },
             {
+                path: 'setting',
+                component: resolve => require(['../view/va/staff/setting.vue'], resolve),
+                meta: { title: '账号管理' },
+            },
+            {
                 path: 'staffScheduling',
                 component: resolve => require(['../view/va/staff/staffScheduling.vue'], resolve),
                 meta: { title: '员工排班' },

@@ -8,7 +8,7 @@
     <div class="main">
         <el-row style="height: 100%">
             <el-col :span="6" style="height: 100%; padding: 5px">
-                <div class="area relative">
+                <div class="area relative" style='background-color: #f5f5f5'>
                     <div class="center bor_btm_so font18 col000" style="padding-bottom: 15px">会员信息</div>
                     <div class="top15 center">
                         <el-radio-group v-model="tab1">
@@ -100,9 +100,10 @@
                                         </tr>
                                         <tr>
                                             <td colspan="6" class="align-right">
-                                                <el-button v-if="tab1=='检索'" type="primary" size="mini" class="left10" @click="doFpfj(i ,v)">分配房间</el-button>
-                                                <el-button v-if="tab1=='信息'" type="primary" size="mini" class="left10" @click="doChange(i ,v)">更换技师</el-button>
-                                                <el-button type="primary" size="mini">确认到店</el-button>
+                                                <el-button type="primary" size="mini" v-if='!v.isArrived' @click='confirmArrived(v)'>确认到店</el-button>
+                                                <el-button v-if="v.isArrived && !v.isRoomed" type="primary" size="mini" class="left10" @click="doFpfj(i ,v)">分配房间</el-button>
+                                                <el-button v-if="v.isArrived && v.isRoomed" type="primary" size="mini" class="left10" @click="doChangeJishi(i ,v)">更换技师</el-button>
+                                                <el-button v-if="v.isArrived && v.isRoomed" type="primary" size="mini" class="left10" @click="doChangeRoom(i ,v)">更换房间</el-button>
                                             </td>
                                         </tr>
                                     </template>
@@ -162,7 +163,7 @@
                 <el-button type="primary" @click="confirmDoFpfj">确 定</el-button>
             </span>
     </el-dialog>
-    <el-dialog title="更换技师" :visible.sync="changeVisible" width="500px">
+    <el-dialog title="选择技师" :visible.sync="changeVisible" width="500px">
         <el-tabs v-model="tab2" class="" @tab-click="tab2Click">
             <el-tab-pane v-for='(v, i) in tab2List' :key="i" :label="v"></el-tab-pane>
         </el-tabs>
@@ -263,6 +264,8 @@
 </div>
 </template>
 <script>
+// 场景一  线上预约过来的    出现的按钮依次： 确认到店--分配房间 -- 更换技师  更换房间
+// 场景二   直接到店消费       操作步骤：选择项目--选择时长---选择预约时间-- 选择技师 --- 支付  可出现的按钮：分配房间
     const Form = {
         a: '',
         b: '',
@@ -307,6 +310,8 @@
                 successVisible: false,
                 payTypeList:['扫码支付', '现金','支付宝','微信','银联'],
                 payType: '0',
+                onlineBookingStep: 0,
+                underLineBookingStep: 0
             }
         },
         components: {
@@ -316,6 +321,11 @@
             
         },
         methods:{
+            confirmArrived(v){
+                const t = this;
+                v.isArrived = true;
+                t.list = JSON.parse(JSON.stringify(t.list))
+            },
             handleChange(){
 
             },
@@ -336,21 +346,37 @@
             confirmDoFpfj(){
                 const t = this;
                 t.fpfjVisible = false;
-
+                t.list[t.idx].isRoomed = true;
+                t.list = JSON.parse(JSON.stringify(t.list))
             },
+            // 跟换技师确认
             confirmChange(){
                 const t = this;
                 t.changeVisible = false;
+                if(t.directBook){
+                    t.directBook = false;
+                    setTimeout(() => {
+                        t.successVisible = true;
+                        t.$commonService.getTime('payCountTime')
+                    }, 300);
+                }
+                
             },
             // 分配房间
             doFpfj(i, v){
                 const t = this;
-                t.fpfjVisible = true
+                t.fpfjVisible = true;
+                t.idx = i;
             },
             // 更换技师
-            doChange(){
+            doChangeJishi(){
                 const t = this;
                 t.changeVisible = true;
+            },
+            // 更换房间
+            doChangeRoom(){
+                const t = this;
+                t.fpfjVisible = true;
             },
             // 项目时长调整下一步
             timeLengthChangeNext(){
@@ -373,13 +399,11 @@
                 t.serviceTimeVisible = false;
                 
                 setTimeout(() => {
-                    t.successVisible = true;
-                    setTimeout(() => {
-                        
-                        t.$commonService.getTime('payCountTime')
-                    }, 200);
+                    t.directBook = true;
+                    t.doChangeJishi();
                 }, 300);
             },
+            
             back(){
                 window.location.href = '/'
             }
@@ -392,7 +416,7 @@
                     duration: 0
                 });
            }, 3000)
-           document.body.style.zoom = '1.3'
+           document.body.style.zoom = '1'
            cashierService.list().then((res)=>{
                t.list = res;
                setTimeout(() => {
@@ -408,10 +432,10 @@
 <style scoped>
 .el-icon-back{ position: absolute; top:20px; left: 20px; color: #fff; font-size: 20px; cursor: pointer;}
 .currTime{ position: absolute; top: 0; right: 20px; line-height: 60px; color: #fff;}
-.wapper{  width: 100%; height: 100%; background-color: #F3F0F1; position: relative;}
+.wapper{  width: 100%; height: 100%; background-color: #f1f1f1; position: relative;}
 .main{ width: 100%; height: 100%; box-sizing: border-box; padding-top: 60px;  position: relative;}
 .header{ height: 60px; line-height: 60px; color: #fff; text-align: center; background-color: #459E8C; position: absolute; width: 100%; top: 0; left: 0; z-index: 2;}
-.area { width: 100%; height: 100%; overflow: auto; background-color: #fff; box-shadow: 0 0 5px rgba(0,0,0,0.1); box-sizing: border-box; padding: 15px; position: relative;}
+.area { width: 100%; height: 100%; overflow: auto; background-color: #fff; box-shadow: 0 0 5px rgba(0,0,0,0.1); box-sizing: border-box; padding: 30px; position: relative;}
 .btns{ display: inline-block; cursor: pointer; text-align: center; color: #fff}
 .btns1{ width: 100%; line-height: 40px;  background-color: #459E8C}
 

@@ -229,6 +229,10 @@
                                 title: '员工列表'
                             },
                             {
+                                index: '/vb/setting',
+                                title: '账号管理'
+                            },
+                            {
                                 index: '/vb/staffScheduling',
                                 title: '员工排班'
                             },
