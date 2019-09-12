@@ -33,8 +33,13 @@
                         <el-switch v-model="form.isLiudong" class=""></el-switch>
                 </el-form-item>
                 <el-form-item label="所属门店" >
-                    <div v-for="(sItem, i) in form.ssmd" :key="i" class="btm5">
-                        <el-select v-model="form.ssmd[i]"  style="width: 80%">
+                    <el-select v-model="form.ssmd"  style="width: 80%">
+                        <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="服务门店" v-if='form.isLiudong'>
+                    <div v-for="(sItem, i) in form.fwmd" :key="i" class="btm5">
+                        <el-select v-model="form.fwmd[i]"  style="width: 80%">
                             <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option>
                         </el-select>
                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd"></i>
@@ -42,7 +47,7 @@
                     </div>
                     
                 </el-form-item>
-                <el-form-item label="服务项目" >
+                <el-form-item label="服务项目类目" >
                     <div v-for="(sItem, i) in form.fwxm" :key="i" class="btm5">
                         <el-select v-model="form.fwxm[i]"  style="width: 80%">
                             <el-option v-for="item in projectList" :key="item.a" :label="item.a" :value="item.a"></el-option>
@@ -51,6 +56,9 @@
                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove2(i)"></i>
                     </div>
                     
+                </el-form-item>
+                <el-form-item label="擅长技能" >
+                    <el-input  v-model="form.a" ref="a" type='textarea' style="width: 80%"></el-input>
                 </el-form-item>
             </el-form>
             
@@ -442,19 +450,19 @@
             },
             mdAdd(){
                 const t = this;
-                if(t.form.ssmd.length>2){
+                if(t.form.fwmd.length>2){
                     t.$message({
                         message: '最多三条',
                         type: 'warning'
                     });
                     return
                 }
-                t.form.ssmd.push('');
+                t.form.fwmd.push('');
 
             },
             mdRemove(i){
                 const t = this;
-                t.form.ssmd.splice(i, 1)
+                t.form.fwmd.splice(i, 1)
             },
             mdAdd2(){
                 const t = this;
@@ -500,7 +508,7 @@
                     
                 });
                 t.form = res;
-                console.log(t.form.ssmd)
+                console.log(t.form.fwmd)
             })
             t.$commonService.getShopList().then((res)=>{
                 t.shopList = res;
