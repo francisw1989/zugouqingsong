@@ -38,7 +38,7 @@
                 <el-form-item label="分类名称" prop="itemClassName" style="" class="">
                     <el-input v-model="form.itemClassName" placeholder="输入项目名称"></el-input>
                 </el-form-item>
-                <el-form-item label="分类序号" prop="sort" style="" class="">
+                <el-form-item label="分类排序" prop="sort" style="" class="">
                     <el-input v-model="form.sort" placeholder=""></el-input>
                 </el-form-item>
                  <el-form-item label="分类图片" prop="icon">
@@ -87,13 +87,13 @@
                 is_search: false,
                 editVisible: false,
                 delVisible: false,
-               form: JSON.parse(JSON.stringify(Form)),
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     itemClassName: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                        { required: true, message: '请输入项目名称', trigger: 'change' },
                     ],
                     sort: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                        { required: true, message: '请输入分类顺序', trigger: 'change' },
                     ]
                 },
                 idx: -1,

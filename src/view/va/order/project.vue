@@ -10,21 +10,23 @@
             <div class=" clearfix top10">
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handleEdit">新增</el-button>
                 <span>项目名称</span>
-                <el-input v-model="itemName" style='width: 150px!important'  placeholder="输入项目名称" class="handle-input left10"></el-input>
+                <el-input v-model="itemName" style='width: 110px!important'  placeholder="输入项目名称" class="handle-input left10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left20">项目分类</span>
-                <el-select class="left10" style='width: 150px!important'   clearable v-model="itemClassId" placeholder="请选择项目分类" filterable>
+                <el-select class="left10" style='width: 140px!important'   clearable v-model="itemClassId" placeholder="请选择项目分类" filterable>
                     <el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName"  :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">是否推荐</span>
-                <el-select class="left10" clearable v-model="isRecommend" placeholder="" style='width: 100px' filterable>
+                <el-select class="left10" clearable v-model="isRecommend" placeholder="" style='width: 60px' filterable>
                     <el-option label="是"  value="1"></el-option>
                     <el-option label="否"  value="0"></el-option>
                 </el-select>
 
                 <span class="left20">是否拼团</span>
-                <el-switch v-model="isAssemble" class="left10"></el-switch>
-
+                <el-select class="left10" clearable v-model="isAssemble" placeholder="" style='width: 60px' filterable>
+                    <el-option label="是"  value="1"></el-option>
+                    <el-option label="否"  value="0"></el-option>
+                </el-select>
 
             </div>
 
@@ -173,7 +175,7 @@
         defaultPrice: '',
         mixDuration: '',
         maxDuration: '',
-        isRecommend: '',
+        isRecommend: false,
         isAssemble: false,
         threePrice: '',
         fivePrice: '',
@@ -234,7 +236,7 @@
                 id: -1,
                 itemClassList: [],
                 isRecommend: '',
-                isAssemble: false,
+                isAssemble: '',
                 editVisible: false,
                 isRecommendcName: '',
                 isAssembleName: '',
@@ -287,6 +289,7 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+                        params.isRecommend = params.isRecommend? '1':'0';
                         params.isAssemble = params.isAssemble? '1':'0';
                         if(t.idx == '-1'){
                             orderService.itemAdd(params).then((res)=>{
@@ -339,6 +342,8 @@
                     t.idx = index;
                     t.row = row;
                     t.form = t.row;
+                    t.row.isRecommend=="1"?t.form.isRecommend=true:t.form.isRecommend=false;
+                    t.row.isAssemble=="1"?t.form.isAssemble=true:t.form.isAssemble=false;
                     t.form.imgListShow = [];
                     if(t.form.imgs){
                         t.form.imgs.split(',').forEach((v)=>{
@@ -399,9 +404,9 @@
                     pageNumber: t.pageNumber,
                     itemName: t.itemName,
                     itemClassId: t.itemClassId,
-                    isRecommend: t.isRecommend
+                    isRecommend: t.isRecommend,
+                    isAssemble:t.isAssemble
                 }
-                params.isAssemble = t.isAssemble? '1':'0';
                 console.log(params);
                 orderService.getItemList(params).then((res)=>{
                     for(const v of res.records){
@@ -418,6 +423,9 @@
                 this.getItemList();
             },
             isRecommend(){
+                this.getItemList();
+            },
+            isAssemble(){
                 this.getItemList();
             }
 

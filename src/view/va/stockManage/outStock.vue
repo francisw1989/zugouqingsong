@@ -75,14 +75,14 @@
                     <el-input v-model="form.a"></el-input>
                 </el-form-item>
                 
-                <el-form-item label="成本价" prop="a">
-                    2元
+                <el-form-item label="成本价" prop="costPrice">
+                   <el-input v-model="form.costPrice" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="销售价" prop="a">
-                    2元
+                <el-form-item label="销售价" prop="salesPrice">
+                    <el-input v-model="form.salesPrice" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="单位" prop="a">
-                    瓶
+                <el-form-item label="单位" prop="unit">
+                    <el-input v-model="form.unit" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="接收门店" prop="a">
                     <el-select class="" v-model="form.a" placeholder="请选择" filterable >

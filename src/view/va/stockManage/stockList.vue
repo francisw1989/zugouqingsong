@@ -19,20 +19,20 @@
             
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
-                <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="articleId" label="商品编号" sortable width="150"></el-table-column>
+                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
+               <!-- <el-table-column prop="articleId" label="商品编号" sortable width="150"></el-table-column>-->
                 <el-table-column prop="articleName" label="商品名称" width="120"></el-table-column>
                 <el-table-column prop="articleTypeName" label="商品类别"></el-table-column>
                 <el-table-column prop="costPrice" label="成本价格（元）"></el-table-column>
                 <el-table-column prop="salesPrice" label="销售价格（元）"></el-table-column>
                 <el-table-column prop="count" label="数量"></el-table-column>
                 <el-table-column prop="unit" label="单位"></el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+              <!--  <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleDetail(scope.$index, scope.row)">查看</el-button>
                         <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">停用</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column>-->
             </el-table>
             <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
@@ -48,7 +48,7 @@
                 </el-form-item>
                 <el-form-item label="商品类别" prop="articleType">
                     <el-select v-model="form.articleType" placeholder="请选择类型" filterable>
-                        <el-option v-for="item in goodsCat" :key="item" :label="item" :value="item"></el-option>
+                        <el-option v-for="(v,i) in goodsCat" :key="i+1" :label="v" :value="i+1"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="成本价" prop="costPrice">
@@ -65,11 +65,10 @@
                          action="" 
                          :show-file-list="false" 
                          :on-change='getFile'
-                         :before-upload="beforeImgUpload"
                          :auto-upload='false'>
                         <el-button size="small" type="primary">点击上传</el-button>
                     </el-upload>
-                    <img v-if="form.imgs" :src="form.imgs" class="el-upload-img top10">
+                    <img v-if="form.imgs" :src="form.imgs" class="el-upload-img top10" style="max-width: 100%">
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -91,6 +90,15 @@
 <script>
     import bus from '../../../bus';
     import {stockService} from '../../../service/stock';
+    const Form= {
+        id: '',
+        articleName: '',
+        articleType: '',
+        costPrice: '',
+        salesPrice: '',
+        unit: '',
+        imgs: ''
+    }
     export default {
         data() {
             return {
@@ -105,14 +113,19 @@
                 editVisible: false,
                 checked1: false,
                 checked2: false,
-                form: {
-                    a: '',
-                    b: '',
-                    c: ''
-                },
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    articleName: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                     articleType: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                     costPrice: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                     unit: [
+                        { required: true, message: '请输入', trigger: 'blur' },
                     ]
                 },
                 imageUrl: '',
@@ -131,7 +144,7 @@
                 const t = this;
                 t.$commonService.getBase64(file.raw).then((Base64)=>{
                     t.$commonService.upload(Base64).then((res)=>{
-                        t.form.icon = res.netUrl
+                        t.form.imgs = res.netUrl
                     })
                 })
             },
@@ -165,55 +178,47 @@
                 const t = this;
                 t.getPlatformArticleStockList();
             },
-            
-            // 物料库存详情
-            handleDetail(index, row) {
-                if(row){
-                    this.idx = index;
-                    this.id = row.id;
-                    this.form = {
-                        a: row.a,
-                        b: row.b,
-                        c: row.c,
-                    }
-                }else{
-                    this.idx = '-1';
-                    this.id = '';
-                    this.imageUrl = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                    }
-                }
-                
-                this.viewVisible = true;
-            },
              // 物料库存新增
             handleEdit(index, row) {
+                const t = this;
                 if(row){
-                    this.idx = index;
-                    this.id = row.id;
-                    this.form = {
-                        a: row.a,
-                        b: row.b,
-                        c: row.c,
-                    }
+                    // 编辑
+                    t.idx = index;
+                    t.row = row;
+                    t.form = t.row;
                 }else{
-                    this.idx = '-1';
-                    this.id = '';
-                    this.imageUrl = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                    }
+                     // 新增
+                    t.idx = '-1';
+                    t.id = '';
+                    t.form = JSON.parse(JSON.stringify(Form));
+
                 }
-                
                 this.editVisible = true;
             },
-            handle2(index, row){
-                
+            // 保存编辑
+            saveEdit(form) {
+                 const t = this;
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        let params = {};
+                        this.editVisible = false;
+                        for(let key in Form){
+                            params[key] = t.form[key]
+                        }
+                        if(t.idx == '-1'){
+                            stockService.platformArticleStockAdd(params).then((res)=>{
+                                t.getPlatformArticleStockList()
+                            })
+                        }else{
+                            // orderService.itemClassEdit(params).then((res)=>{
+                            //     t.getItemClassList()
+                            // })
+                        }
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
             },
             getPlatformArticleStockList(){
                 const t = this;
@@ -236,6 +241,15 @@
                     t.total = res.total
                 })
             }
+        },
+        watch:{
+            checked1(val){
+                this.getPlatformArticleStockList();
+            },
+            checked2(){
+                this.getPlatformArticleStockList();
+            }
+
         },
         mounted(){
             const t = this;
