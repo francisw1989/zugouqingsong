@@ -38,7 +38,7 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="40%">
+        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="600px">
             <el-form ref="form" :model="form"  :rules="rules"   label-width="100px">
                 <div class="clearfix">
                     <el-form-item label="名称" prop="name" style="width: 50%" class="left">
@@ -73,6 +73,10 @@
                     </el-form-item>
                 </div>
                 <div class="clearfix">
+                    <el-form-item label="营业时间" style="width: 50%" class="left">
+                        <el-time-select style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '08:30',step: '00:30',end: '18:30'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select class="top10" style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                    </el-form-item>
                     <el-form-item label="门店标签" style="width: 50%" class="left">
                         <el-input v-model="form.tags" placeholder="英文逗号','隔开"></el-input>
                     </el-form-item>
@@ -144,7 +148,9 @@
         y:'',
         imgs: '',
         tags:'',
-        detailAddress: ''
+        detailAddress: '',
+        openStartTime: '',
+        openEndTime: ''
     }
     export default {
         data() {
