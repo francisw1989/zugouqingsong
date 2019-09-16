@@ -44,7 +44,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         localStorage.setItem('ms_username',this.ruleForm.username);
-                        localStorage.sysRoute = window.location.href.split('?')[1];
+                        localStorage.sysRoute = window.location.href.split('?')[1] || 'vb';
                         setTimeout(() => {
                             window.location.href = '/';    
                         }, 0);

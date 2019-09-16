@@ -62,7 +62,7 @@
             handleCommand(command) {
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
-                    this.$router.push('/login?'+localStorage.sysRoute);
+                    this.$router.push('/login?'+localStorage.sysRoute||'vb');
                 }
             },
             // 侧边栏折叠
