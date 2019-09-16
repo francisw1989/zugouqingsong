@@ -274,6 +274,7 @@
                         t.form.imgListShow.splice(i, 1)
                     }
                 }
+                t.form.imgListShow = fileList;
                 console.log(t.form.imgListShow)
             },
              // 保存编辑
