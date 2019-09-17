@@ -90,10 +90,10 @@
                 form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     itemClassName: [
-                        { required: true, message: '请输入项目名称', trigger: 'change' },
+                        { required: true, message: '请输入项目名称', trigger: 'blur' },
                     ],
                     sort: [
-                        { required: true, message: '请输入分类顺序', trigger: 'change' },
+                        { required: true, message: '请输入分类顺序', trigger: 'blur' },
                     ]
                 },
                 idx: -1,

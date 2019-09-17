@@ -74,7 +74,52 @@ let stockService = {
             })
         })
         return p;
-    }
+    },
+    //物料出库列表查询
+    getPlatformOutRecordList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformOutRecord/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+     //物料出库新增
+    platformOutRecordAdd(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/platformOutRecord/add' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //物料出库删除
+    platformOutRecordDelete(params){
+       let p = new Promise((resolve, reject)=>{
+           let data = {
+               method: 'DELETE',
+               url: '/api/v1/platformOutRecord/' + params.id,
+               params: params,
+               loading: true
+           }
+           $axios(data).then((res)=>{
+               resolve(res)
+           })
+       })
+       return p;
+   }
 
     
 

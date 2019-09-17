@@ -228,7 +228,7 @@
                     pageNumber: t.pageNumber,
                     chose: t.chose
                 }
-                if(t.checked1 && !t.checked1){
+                if(t.checked1 && !t.checked2){
                     params.articleType =1
                 }else if(!t.checked1 && t.checked2){
                     params.articleType =2

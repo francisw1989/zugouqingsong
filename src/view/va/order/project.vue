@@ -212,7 +212,7 @@
                         { required: true, message: '请输入', trigger: 'blur' },
                     ],
                     itemClassId: [
-                        { required: true, message: '请选择', trigger: 'blur' },
+                        { required: true, message: '请选择', trigger: 'change' },
                     ],
                     defaultDuration: [
                         { required: true, message: '请输入', trigger: 'blur' },

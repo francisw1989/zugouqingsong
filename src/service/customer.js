@@ -1,14 +1,16 @@
+import {$axios} from './axios.js';
 let customerService = {
-    getCustomerList(){
+    getCustomerList(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/user/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },

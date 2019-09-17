@@ -52,7 +52,7 @@
                 <el-form-item label="商品名称" prop="articleId">
                     <el-select v-model="form.articleId" @change='articleManagerListChange' placeholder="请选择" filterable>
                             <el-option v-for="(v, i) in getArticleManagerList" :key='v.id' :label="v.articleName"  :value="v.id"></el-option>
-                        </el-select>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="成本价" prop="costPrice">
                     <el-input v-model="form.costPrice" disabled></el-input>
@@ -101,8 +101,7 @@
         signatureName: '',
         supplierName: '',
         supplierPhone: '',
-        unit: '',
-        imgs: ''
+        unit: ''
     }
     export default {
         data() {
@@ -117,19 +116,19 @@
                 form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     articleType: [
-                        { required: true, message: '请选择', trigger: 'change' },
+                        { required: true, message: '请选择', trigger: 'blur' },
                     ],
                     articleId: [
-                        { required: true, message: '请选择', trigger: 'change' },
+                        { required: true, message: '请选择', trigger: 'blur' },
                     ],
                     inTime: [
-                        { required: true, message: '请选择', trigger: 'change' },
+                        { required: true, message: '请选择', trigger: 'blur' },
                     ],
                     count: [
-                        { required: true, message: '请输入', trigger: 'change' },
+                        { required: true, message: '请输入', trigger: 'blur' },
                     ],
                     signatureName: [
-                        { required: true, message: '请输入', trigger: 'change' },
+                        { required: true, message: '请输入', trigger: 'blur' },
                     ]
                 },
                 imageUrl: '',
