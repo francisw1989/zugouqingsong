@@ -99,19 +99,19 @@
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>3</span>
                                 <span class="">价格(元)</span>
-                                <el-input v-model="form.threePrice" style="width: 50px;" class="left5"></el-input>
+                                <el-input v-model="form.threePrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>5</span>
                                 <span class="">价格(元)</span>
-                                <el-input v-model="form.fivePrice" style="width: 50px;" class="left5"></el-input>
+                                <el-input v-model="form.fivePrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>10</span>
                                 <span class="">价格(元)</span>
-                                <el-input v-model="form.tenPrice" style="width: 50px;" class="left5"></el-input>
+                                <el-input v-model="form.tenPrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                         </div>
                     </el-form-item>
