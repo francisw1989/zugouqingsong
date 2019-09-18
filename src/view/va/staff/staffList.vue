@@ -84,7 +84,7 @@
                     <el-form-item label="手机号" prop="a" style="width: 50%" class="left">
                         <el-input v-model="form.a" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="薪资" prop="a" style="width: 50%"  class="left">
+                    <el-form-item label="薪资(月)" prop="a" style="width: 50%"  class="left">
                         <el-input v-model="form.a" placeholder=""></el-input>
                     </el-form-item>
                 </div>
@@ -95,9 +95,22 @@
                             <el-radio-button label="女" ></el-radio-button>
                         </el-radio-group>
                     </el-form-item>
+                    <el-form-item label="年龄" prop="a" style="width: 50%"  class="left">
+                        <el-input v-model="form.a" placeholder=""></el-input>
+                    </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="照片" prop="a">
+                    <el-form-item label="是否流动" style="width: 50%"  class="left">
+                        <el-switch v-model="form.isLiudong" class=""></el-switch>
+                    </el-form-item>
+                    <el-form-item v-if="form.isLiudong" label="所属门店" prop="ssmd" style="width: 50%"  class="left">
+                        <el-select v-model="form.ssmd"  style="width: 80%">
+                            <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                    <el-form-item label="照片" prop="a" style="width: 50%" class="left">
                         <el-upload
                         action="https://jsonplaceholder.typicode.com/posts/"
                         list-type="picture-card"
@@ -106,6 +119,29 @@
                         </el-upload>
                     </el-form-item>
                 </div>
+                <div class="clearfix">
+                    <el-form-item label="岗位" style="width: 50%"  class="left">
+                        <el-select v-model="form.a">
+                            <el-option></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="岗位等级" prop="ssmd" style="width: 50%"  class="left">
+                        <el-select v-model="form.a">
+                            <el-option></el-option>
+                        </el-select>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                   <el-form-item label="擅长技能" prop="a">
+                        <el-input v-model="form.a" type="textarea" placeholder=""></el-input>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                   <el-form-item label="" prop="a">
+                        <el-checkbox v-model="form.checked">新增之后继续完善员工信息</el-checkbox>
+                    </el-form-item>
+                </div>
+                
                 
 
             </el-form>
@@ -138,7 +174,8 @@
                     a: '',
                     b: '',
                     c: '',
-                    gender: '男'
+                    gender: '男',
+                    isLiudong: false
                 },
                 rules: {
                     a: [
