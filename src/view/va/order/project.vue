@@ -36,7 +36,7 @@
                 <el-table-column prop="itemName" label="项目名称" sortable width="150"></el-table-column>
                 <el-table-column prop="itemClassName" label="所属分类"></el-table-column>
                 <el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
-                <el-table-column prop="defaultPrice" label="价格(元)"></el-table-column>
+                <el-table-column prop="defaultPrice" label="价格(分钟/元)"></el-table-column>
                 <el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
                 <el-table-column prop="isAssembleName" label="参与拼团"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
@@ -72,7 +72,7 @@
                     <el-form-item label="推荐时长" prop="defaultDuration" style="width: 50%" class="left">
                         <el-input v-model="form.defaultDuration" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="价格(元)" prop="defaultPrice" style="width: 50%"  class="left">
+                    <el-form-item label="价格(分钟/元)" prop="defaultPrice" style="width: 50%"  class="left">
                         <el-input v-model="form.defaultPrice" placeholder="0"></el-input>
                     </el-form-item>
                 </div>
@@ -98,19 +98,19 @@
                             <div>
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>3</span>
-                                <span class="">价格(元)</span>
+                                <span class="">价格(总价/元)</span>
                                 <el-input v-model="form.threePrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>5</span>
-                                <span class="">价格(元)</span>
+                                <span class="">价格(总价/元)</span>
                                 <el-input v-model="form.fivePrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                             <div class="top10">
                                 <span>拼团人数</span>
                                 <span class='pad10RL'>10</span>
-                                <span class="">价格(元)</span>
+                                <span class="">价格(总价/元)</span>
                                 <el-input v-model="form.tenPrice" style="width: 80px;" class="left5"></el-input>
                             </div>
                         </div>

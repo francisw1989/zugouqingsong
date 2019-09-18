@@ -32,6 +32,9 @@ let orderService = {
                 loading: true,
             }
             $axios(data).then((res)=>{
+                for(const v of res.records){
+                    v.defaultPrice = v.defaultPrice/1000
+                }
                 resolve(res)
             })
         })
@@ -40,6 +43,7 @@ let orderService = {
     //服务项目新增
     itemAdd(params){
         let p = new Promise((resolve, reject)=>{
+            params.defaultPrice = params.defaultPrice * 1000;
             let data = {
                 method: 'post',
                 url: '/api/v1/item/' + params.id,
@@ -55,6 +59,7 @@ let orderService = {
     //服务项目修改
     itemEdit(params){
         let p = new Promise((resolve, reject)=>{
+            params.defaultPrice = params.defaultPrice * 1000;
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/item/' + params.id,
