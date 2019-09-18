@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="clearfix">
-                <el-button type="primary" class="right" @click="handle1">新增</el-button>
+                <el-button type="primary" class="right" @click="handleEdit">新增</el-button>
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
@@ -23,9 +23,9 @@
                 <el-table-column prop="c" label="状态"></el-table-column>
                 <el-table-column label="操作" width="230" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">删除</el-button>
-                        <el-button size="mini" type="danger" @click="handle3(scope.$index, scope.row)">禁用 </el-button>
+                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="handleForbid(scope.$index, scope.row)">禁用 </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -131,7 +131,7 @@
                     }
                 }
             },
-            handle1(index, row) {
+            handleEdit(index, row) {
                 if(row){
                     this.idx = index;
                     this.id = row.id;
@@ -148,23 +148,15 @@
                 
                 this.editVisible = true;
             },
-            handle2(){
+            handleDelete(){
 
             },
-            handle3(){
+            handleForbid(){
                 
             },
             radioChange(){
                 const t = this;
                 console.log(t.neirong)
-            },
-            moreSeach(){
-                const t = this;
-                if(t.showMore){
-                    t.showMore = false
-                }else{
-                    t.showMore = true
-                }
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
@@ -180,9 +172,7 @@
             accountService.getAccountList().then((res)=>{
                 t.list = res;
             });
-            t.jueseList = t.$GD.jueseList;
-            t.yuangongList = t.$GD.yuangongList;
-            
+            t.jueseList = t.$GD.jueseList;            
 
         }
     }

@@ -1,3 +1,4 @@
+import {$axios} from './axios.js';
 let jurisdictionService = {
     getJurisdictionList(){
         let p = new Promise((resolve, reject)=>{
@@ -12,7 +13,20 @@ let jurisdictionService = {
         })
         return p;
     },
-
+    //系统菜单列表
+    getSysMenuList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysMenu/list/1',
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+    return p;
+},
     
 }
 export { jurisdictionService }

@@ -6,8 +6,8 @@
                 <p class="top20"><i class="el-icon-phone"></i><span class="left5">{{row.phoneNum}}</span></p>
                 <p class="top10"><i class="el-icon-lx-people"></i><span class="left5">{{row.shopowner}}</span></p>
                 <p class="top10"><i class="el-icon-lx-mobile"></i><span class="left5">{{row.shopownerPhoneNum}}</span></p>
-                <p class="top10"><i class="el-icon-lx-home"></i><span class="left5">105.36平方</span></p>
-                <p class="top10"><i class="el-icon-lx-tag"></i><span class="left5">总店、首家、1000平以上、五星标准</span></p>
+                <p class="top10"><i class="el-icon-lx-home"></i><span class="left5">{{row.area}}平方</span></p>
+                <p class="top10"><i class="el-icon-lx-tag"></i><span class="left5">{{row.tags}}</span></p>
             </el-col>
             <el-col :span="12">
                 <img src="../../../assets/img/login-bg.jpg" class="img" alt="">

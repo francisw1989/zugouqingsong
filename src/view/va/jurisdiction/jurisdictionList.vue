@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="clearfix">
-                <el-button type="primary" class="right" @click="handle1">新增</el-button>
+                <el-button type="primary" class="right" @click="handleEdit">新增</el-button>
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
@@ -18,8 +18,8 @@
                 <el-table-column prop="c" label="描述"></el-table-column>
                 <el-table-column label="操作" width="160" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -52,13 +52,13 @@
                 <el-col style="border-left: 1px solid #ebeef5" :span="14">
                     <p class="center pad10" style="background-color: #f1f1f1">权限分配</p>
                     <div class="pad20">
-                        <el-table :data="menuList"  border class="table " ref="multipleTable"
-                            row-key="index" default-expand-all
+                        <el-table :data="menuList"  border class="table "
+                            row-key="id" default-expand-all
                             @selection-change="handleSelectionChange"
-                            :tree-props="{children: 'children'}"
+                            :tree-props="{children: 'sysMenu'}"
                         >
                             <el-table-column type="selection" width="55" align="center"></el-table-column>
-                            <el-table-column prop="title" label="菜单名称" width=""></el-table-column>
+                            <el-table-column prop="menuName" label="菜单名称" width=""></el-table-column>
                         </el-table>
                     </div>
                 </el-col>
@@ -101,43 +101,7 @@
                 idx: -1,
                 id: -1,
                 editVisible: false,
-                menuList: [
-                    {
-                        icon: 'el-icon-lx-home',
-                        index: '/va/dashboard',
-                        title: '首页'
-                    },
-                    {
-                        icon: 'el-icon-picture-outline',
-                        index: '/va/banner',
-                        title: 'banner管理'
-                    },
-                    {
-                        icon: 'el-icon-lx-shop',
-                        index: '/va/storeManage',
-                        title: '门店管理'
-                    },
-                    {
-                        icon: 'el-icon-lx-goods',
-                        index: '1',
-                        title: '订单管理',
-                        children: [
-                            {
-                                index: '/va/orderList',
-                                title: '订单列表'
-                            },
-                            {
-                                index: '/va/project',
-                                title: '服务项目'
-                            },
-                            {
-                                index: '/va/projectCat',
-                                title: '项目分类'
-                            },
-                        ]
-                    }
-                    
-                ],
+                menuList: [],
                 multipleSelection: []
             }
         },
@@ -164,7 +128,7 @@
                     }
                 }
             },
-            handle1(index, row) {
+            handleEdit(index, row) {
                 if(row){
                     this.idx = index;
                     this.id = row.id;
@@ -182,7 +146,7 @@
                 
                 this.editVisible = true;
             },
-            handle2(){
+            handleDelete(){
 
             },
            
@@ -191,12 +155,18 @@
                 this.getData();
             },
             
+            
 
         },
         mounted(){
             const t = this;
             jurisdictionService.getJurisdictionList().then((res)=>{
                 t.list = res;
+            });
+
+            jurisdictionService.getSysMenuList().then((res)=>{
+                t.menuList = res;
+                console.log(t.menuList);
             });
             
             
