@@ -44,6 +44,9 @@ let orderService = {
     itemAdd(params){
         let p = new Promise((resolve, reject)=>{
             params.defaultPrice = params.defaultPrice * 1000;
+            params.threePrice = params.threePrice * 1000;
+            params.fivePrice = params.fivePrice * 1000;
+            params.tenPrice = params.tenPrice * 1000;
             let data = {
                 method: 'post',
                 url: '/api/v1/item/' + params.id,
@@ -60,6 +63,9 @@ let orderService = {
     itemEdit(params){
         let p = new Promise((resolve, reject)=>{
             params.defaultPrice = params.defaultPrice * 1000;
+            params.threePrice = params.threePrice * 1000;
+            params.fivePrice = params.fivePrice * 1000;
+            params.tenPrice = params.tenPrice * 1000;
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/item/' + params.id,

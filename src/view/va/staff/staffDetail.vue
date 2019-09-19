@@ -16,7 +16,7 @@
                     </p>
                 </el-col>
             </el-row>
-            <el-form ref="form" :model="form"  :rules="rules"   label-width="80px" class="staffForm top20">
+            <el-form ref="form" :model="form"  :rules="rules"   label-width="100px" class="staffForm top20">
                 <el-form-item label="联系电话" >
                     <span v-if="!edit.a">{{form.a}} <i class="el-icon-edit left20 pointer" @click="openEdit('a')"></i> </span>
                     <el-input v-if="edit.a" v-model="form.a" ref="a"></el-input>
