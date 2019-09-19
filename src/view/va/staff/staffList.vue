@@ -9,7 +9,7 @@
         <div class="container">
             <div class=" clearfix">
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="add">新增</el-button>
-                <el-input v-model="select_word" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
+                <el-input v-model="employeeName" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
             </div>
@@ -35,11 +35,11 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="工号" sortable width="150"></el-table-column>
-                <el-table-column prop="b" label="姓名" width="120"></el-table-column>
-                <el-table-column prop="c" label="性别"></el-table-column>
-                <el-table-column prop="c" label="所属门店"></el-table-column>
-                <el-table-column prop="c" label="岗位"></el-table-column>
+                <el-table-column prop="jobNumber" label="工号" sortable width="150"></el-table-column>
+                <el-table-column prop="employeeName" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="sexName" label="性别"></el-table-column>
+                <el-table-column prop="storeName" label="所属门店"></el-table-column>
+                <el-table-column prop="postName"label="岗位"></el-table-column>
                 <el-table-column prop="c" label="等级"></el-table-column>
                 <el-table-column prop="c" label="是否流动"></el-table-column>
                 <el-table-column prop="c" label="手机号"></el-table-column>
@@ -52,7 +52,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -159,6 +159,9 @@
     import {staffService} from '../../../service/staff';
     import {orderService} from '../../../service/order';
     import StaffDetail from './staffDetail';
+    const Form= {
+        id: '',
+    }
     export default {
         data() {
             return {
@@ -166,17 +169,10 @@
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                select_word: '',
+                employeeName: '',
                 del_list: [],
                 is_search: false,
-                
-                form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    gender: '男',
-                    isLiudong: false
-                },
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     a: [
                         { required: true, message: '请选择类型', trigger: 'change' },
@@ -186,6 +182,11 @@
                 id: -1,
                 showMore: false,
                 shopList: [],
+                jobNumber: '',
+                sexName: '',
+                employeeName: '',
+                postName: '',
+                storeName: '',
                 shop: '',
                 gwList: [],
                 gw: [],
@@ -193,7 +194,10 @@
                 project: '',
                 isLiudong: false,
                 viewVisible: false,
-                editVisible: false
+                editVisible: false,
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         components:{
@@ -239,7 +243,7 @@
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getEmployeesList();
             },
             search() {
                 this.is_search = true;
@@ -258,13 +262,28 @@
                 this.idx = index;
                 this.id = row.id;
             },
+            getEmployeesList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber,
+                }
+                 staffService.getEmployeesList(params).then((res)=>{
+                    for(const v of res.records){
+                        v.postName = v.postBean?v.postBean.postName: '';
+                        v.storeName = v.stores?v.stores.name: '';
+                        if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
+            }
         },
         mounted(){
             const t = this;
             // 员工列表
-            staffService.getStaffList().then((res)=>{
-                t.list = res;
-            });
+           t.getEmployeesList();
             // 岗位列表
             staffService.getGwList().then((res)=>{
                 t.gwList = res;
