@@ -33,7 +33,10 @@ let orderService = {
             }
             $axios(data).then((res)=>{
                 for(const v of res.records){
-                    v.defaultPrice = v.defaultPrice/1000
+                    v.defaultPrice = v.defaultPrice/1000;
+                    v.threePrice = v.threePrice/1000;
+                    v.fivePrice = v.fivePrice/1000;
+                    v.tenPrice = v.tenPrice/1000;
                 }
                 resolve(res)
             })
