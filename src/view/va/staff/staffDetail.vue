@@ -339,11 +339,29 @@
     import {staffService} from '../../../service/staff';
     import {orderService} from '../../../service/order';
     var echarts = require('echarts');
+    const Form= {
+        employeeName: '',
+        password: '111111',
+        sex: '1',
+        birthday: '',
+        photo: '',
+        age: '',
+        post: '',
+        grade: '',
+        isMobilePosition: false,
+        storesId: '',
+        jobNumber: '',
+        telephoneNum: '',
+        initiationTime: '',
+        salary: '',
+        info: '',
+        isTechnician: true
+    }
     export default {
         name: 'staffDetail',
         data() {
             return {
-                form:{},
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
                     a: [
                         { required: true, message: '请选择类型', trigger: 'change' },
@@ -365,6 +383,7 @@
         computed:{
             
         },
+        props: ['row'],
         methods:{
             prevMouth(){
                 const t = this;
@@ -494,22 +513,20 @@
         },
         mounted(){
             const t = this;
-            
-            staffService.getStaffDetail().then((res)=>{
-                for(const key in res){
-                    t.edit[key] = false;
-                }
-                t.$commonService.getTagsTypeList().then((res)=>{
-                    t.form.tags.forEach(v => {
-                        let i = Math.floor(Math.random() * (10 - 0)) + 0;
-                        console.log(i);
-                        t.tabsType.push(res[i])
-                    });
-                    
+            console.log(t.row)
+            for(const key in t.row){
+                t.edit[key] = false;
+            }
+            t.$commonService.getTagsTypeList().then((res)=>{
+                t.form.tags.forEach(v => {
+                    let i = Math.floor(Math.random() * (10 - 0)) + 0;
+                    console.log(i);
+                    t.tabsType.push(res[i])
                 });
-                t.form = res;
-                console.log(t.form.fwmd)
-            })
+                
+            });
+            t.form = res;
+            console.log(t.form.fwmd)
             t.$commonService.getShopList().then((res)=>{
                 t.shopList = res;
             });

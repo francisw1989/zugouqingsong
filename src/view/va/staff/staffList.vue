@@ -62,7 +62,7 @@
 
         <!-- 员工详情 -->
         <el-dialog title="员工详情" :visible.sync="viewVisible" width="850px">
-            <staffDetail></staffDetail>
+            <staffDetail :row="row"></staffDetail>
         </el-dialog>
         <!-- 新增 -->
         <el-dialog title="新增员工" :visible.sync="editVisible" width="550px">
@@ -228,7 +228,8 @@
                 itemClassId: '',
                 isMobilePosition: '',
 
-                postGradeList:[]
+                postGradeList:[],
+                row: {}
             }
         },
         watch: {
@@ -339,7 +340,7 @@
             // 员工详情
             handle1(index, row) {
                 this.idx = index;
-                this.id = row.id;
+                this.row = row;
                 this.viewVisible = true;
             },
             // 重置密码
