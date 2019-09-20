@@ -352,7 +352,7 @@
                 const t = this;
                 t.list = [];
                 let params = {
-                    pageSize: 50,
+                    pageSize: 100,
                     pageNumber: 1
                 }
                 storeService.list(params).then((res)=>{

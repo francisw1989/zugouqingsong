@@ -30,12 +30,12 @@ let staffService = {
         })
         return p;
     },
-    //新增修改员工
+    //新增员工
     employeesAdd(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'post',
-                url: '/api/v1/employees/' + params.id,
+                url: '/api/v1/employees/',
                 params: params,
                 loading: true
             }

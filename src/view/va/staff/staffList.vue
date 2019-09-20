@@ -15,19 +15,22 @@
             </div>
             <div v-if='showMore' class="top10">
                 <span class="">所属门店</span>
-                <el-select class="left10" v-model="shop" placeholder="" filterable>
-                    <el-option v-for="(item, index) in shopList" :key="index" :value="item.shopId"  :label="item.shopName"></el-option>
+                <el-select class="left10" v-model="storesId" placeholder="" filterable clearable>
+                    <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                 </el-select>
                 <span class="left20">岗位</span>
-                <el-select class="left10" v-model="gw" placeholder="" filterable>
-                    <el-option v-for="(v, i) in gwList" :key="i" :label="v.a" :value="v.a"></el-option>
+                <el-select class="left10" v-model="post" placeholder="" filterable clearable>
+                    <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">可服务项目</span>
-                <el-select class="left10" v-model="project" placeholder="" filterable>
-                    <el-option v-for="(v) in projectList" :key="v.a" :label="v.a" :value="v.a"></el-option>
+                <el-select class="left10" v-model="itemClassId" placeholder="" filterable clearable>
+                    <el-option v-for="(v) in projectList" :key="v.id" :label="v.itemName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">是否流动</span>
-                <el-switch v-model="isLiudong" class="left10"></el-switch>
+                <el-select class="left10" v-model="isMobilePosition" placeholder="" filterable clearable style="width: 80px">
+                    <el-option label="是" value="1"></el-option>
+                    <el-option label="否" value="0"></el-option>
+                </el-select>
             </div>
 
 
@@ -39,14 +42,14 @@
                 <el-table-column prop="employeeName" label="姓名" width="120"></el-table-column>
                 <el-table-column prop="sexName" label="性别"></el-table-column>
                 <el-table-column prop="storeName" label="所属门店"></el-table-column>
-                <el-table-column prop="postName"label="岗位"></el-table-column>
+                <el-table-column prop="postName" label="岗位"></el-table-column>
                 <el-table-column prop="c" label="等级"></el-table-column>
                 <el-table-column prop="c" label="是否流动"></el-table-column>
                 <el-table-column prop="c" label="手机号"></el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
-                        <el-button size="mini" type="danger" @click="handle1(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="dodelete(scope.$index, scope.row)">删除</el-button>
                         <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">重置密码</el-button>
                     </template>
                 </el-table-column>
@@ -65,79 +68,83 @@
         <el-dialog title="新增员工" :visible.sync="editVisible" width="550px">
             <el-form ref="form" :model="form"  :rules="rules"   label-width="100px">
                 <div class="clearfix">
-                    <el-form-item label="姓名" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder=""></el-input>
+                    <el-form-item label="姓名" prop="" style="width: 50%" class="left">
+                        <el-input v-model="form.employeeName" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="出生日期" prop="a" style="width: 50%"  class="left">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
-                    </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="工号" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder=""></el-input>
-                    </el-form-item>
-                    <el-form-item label="入职时间" prop="a" style="width: 50%"  class="left">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
+                    <el-form-item label="出生日期" prop="" style="width: 50%"  class="left">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="手机号" prop="a" style="width: 50%" class="left">
-                        <el-input v-model="form.a" placeholder=""></el-input>
+                    <el-form-item label="工号" prop="" style="width: 50%" class="left">
+                        <el-input v-model="form.jobNumber" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="薪资(月)" prop="a" style="width: 50%"  class="left">
-                        <el-input v-model="form.a" placeholder=""></el-input>
+                    <el-form-item label="入职时间" prop="" style="width: 50%"  class="left">
+                        <el-date-picker type="date" placeholder="选择日期" v-model="form.initiationTime" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="性别" prop="a" style="width: 50%" class="left">
-                        <el-radio-group v-model="form.gender">
-                            <el-radio-button label="男" ></el-radio-button>
-                            <el-radio-button label="女" ></el-radio-button>
+                    <el-form-item label="手机号" prop="" style="width: 50%" class="left">
+                        <el-input v-model="form.telephoneNum" placeholder=""></el-input>
+                    </el-form-item>
+                    <el-form-item label="薪资(月)" prop="" style="width: 50%"  class="left">
+                        <el-input v-model="form.salary" placeholder=""></el-input>
+                    </el-form-item>
+                </div>
+                <div class="clearfix">
+                    <el-form-item label="性别" prop="" style="width: 50%" class="left">
+                        <el-radio-group v-model="form.sex">
+                            <el-radio-button label="1">男</el-radio-button>
+                            <el-radio-button label="0">女</el-radio-button>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="年龄" prop="a" style="width: 50%"  class="left">
-                        <el-input v-model="form.a" placeholder=""></el-input>
+                    <el-form-item label="年龄" prop="" style="width: 50%"  class="left">
+                        <el-input v-model="form.age" placeholder=""></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
                     <el-form-item label="是否流动" style="width: 50%"  class="left">
-                        <el-switch v-model="form.isLiudong" class=""></el-switch>
+                        <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                     </el-form-item>
-                    <el-form-item v-if="form.isLiudong" label="所属门店" prop="ssmd" style="width: 50%"  class="left">
-                        <el-select v-model="form.ssmd"  style="width: 80%">
-                            <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option>
+                    <el-form-item v-if="!form.isMobilePosition" label="所属门店" prop="" style="width: 50%"  class="left">
+                        <el-select v-model="form.storesId"  filterable clearable>
+                            <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="照片" prop="a" style="width: 50%" class="left">
-                        <el-upload
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        list-type="picture-card"
-                        :on-remove="handleRemove">
-                        <i class="el-icon-plus"></i>
+                    <el-form-item label="图片" style="width: 50%" class="left">
+                        <el-upload action="" 
+                            :show-file-list="false" 
+                            :on-change='getFile' 
+                            :auto-upload='false'>
+                            <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
+                        <img v-if="form.photo" :src="form.photo" class=" top10" style="max-width: 100%">
+                    </el-form-item>
+                    <el-form-item label="是否技师" style="width: 50%"  class="left">
+                        <el-switch v-model="form.isTechnician" class=""></el-switch>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
                     <el-form-item label="岗位" style="width: 50%"  class="left">
-                        <el-select v-model="form.a">
-                            <el-option></el-option>
+                        <el-select class="" v-model="form.post" placeholder="" filterable clearable @change='gwChange'>
+                            <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="岗位等级" prop="ssmd" style="width: 50%"  class="left">
-                        <el-select v-model="form.a">
-                            <el-option></el-option>
+                    <el-form-item v-if='postGradeList' label="岗位等级" style="width: 50%"  class="left">
+                        <el-select class="" v-model="form.grade" placeholder="" filterable clearable>
+                            <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                   <el-form-item label="擅长技能" prop="a">
-                        <el-input v-model="form.a" type="textarea" placeholder=""></el-input>
+                   <el-form-item label="擅长技能" >
+                        <el-input v-model="form.info" type="textarea" placeholder=""></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                   <el-form-item label="" prop="a">
+                   <el-form-item label="">
                         <el-checkbox v-model="form.checked">新增之后继续完善员工信息</el-checkbox>
                     </el-form-item>
                 </div>
@@ -158,9 +165,25 @@
     import bus from '../../../bus';
     import {staffService} from '../../../service/staff';
     import {orderService} from '../../../service/order';
+    import {storeService} from '../../../service/store';
     import StaffDetail from './staffDetail';
     const Form= {
-        id: '',
+        employeeName: '',
+        password: '111111',
+        sex: '1',
+        birthday: '',
+        photo: '',
+        age: '',
+        post: '',
+        grade: '',
+        isMobilePosition: false,
+        storesId: '',
+        jobNumber: '',
+        telephoneNum: '',
+        initiationTime: '',
+        salary: '',
+        info: '',
+        isTechnician: true
     }
     export default {
         data() {
@@ -169,13 +192,12 @@
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                employeeName: '',
                 del_list: [],
                 is_search: false,
                 form: JSON.parse(JSON.stringify(Form)),
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    requery: [
+                        { required: true, message: '请输入或选择' },
                     ]
                 },
                 idx: -1,
@@ -184,7 +206,7 @@
                 shopList: [],
                 jobNumber: '',
                 sexName: '',
-                employeeName: '',
+                
                 postName: '',
                 storeName: '',
                 shop: '',
@@ -197,29 +219,91 @@
                 editVisible: false,
                 total: 0,
                 pageSize: 10,
-                pageNumber: 1
+                pageNumber: 1,
+
+                // 头部查询参数
+                employeeName: '', 
+                storesId: '',
+                post: '',
+                itemClassId: '',
+                isMobilePosition: '',
+
+                postGradeList:[]
             }
+        },
+        watch: {
+
+            storesId(){
+                this.getEmployeesList()
+            },
+            post(){
+                this.getEmployeesList()
+            },
+            itemClassId(){
+                this.getEmployeesList()
+            },
+            isMobilePosition(){
+                this.getEmployeesList()
+            },
         },
         components:{
             StaffDetail
         },
         methods:{
+            getFile(file, fileList){
+                const t = this;
+                t.$commonService.getBase64(file.raw).then((Base64)=>{
+                    t.$commonService.upload(Base64).then((res)=>{
+                        t.form.photo = res.netUrl
+                    })
+                })
+            },
+            beforeImgUpload(file) {
+                console.log(file)
+                const isJPG = file.type === 'image/jpeg';
+                const isPNG = file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG && !isPNG) {
+                    this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M && isPNG;
+            },
+            // 岗位改变 联动 岗位等级
+            gwChange(id){
+                const t = this;
+                t.postGradeList = t.gwList.filter((v)=>{
+                    return v.id == id
+                })[0].postGradeList
+            },
+            // 删除
+            dodelete(index, row){
+                const t = this;
+                let params = {
+                    id: row.id
+                }
+                staffService.platformOutRecordDelete(params).then((res)=>{
+                    t.getEmployeesList();
+                })
+            },
             // 保存编辑
             saveEdit(form) {
+                const t = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
+                        let params = {};
                         this.editVisible = false;
-                        this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                        if(this.list[this.idx].id === this.id){
-                            this.$set(this.list, this.idx, this.form);
-                        }else{
-                            for(let i = 0; i < this.list.length; i++){
-                                if(this.list[i].id === this.id){
-                                    this.$set(this.list, i, this.form);
-                                    return ;
-                                }
-                            }
+                        for(let key in Form){
+                            params[key] = t.form[key]
                         }
+                        params.isMobilePosition = params.isMobilePosition?'1':'0';
+                        params.isTechnician = params.isTechnician?'1':'0';
+                        
+                        staffService.employeesAdd(params).then((res)=>{
+                            t.getEmployeesList();
+                        })
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -247,6 +331,7 @@
             },
             search() {
                 this.is_search = true;
+                this.getEmployeesList();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -261,6 +346,7 @@
             handle2(index, row) {
                 this.idx = index;
                 this.id = row.id;
+
             },
             getEmployeesList(){
                 const t = this;
@@ -268,8 +354,13 @@
                 let params = {
                     pageSize: t.pageSize,
                     pageNumber: t.pageNumber,
+                    employeeName: t.employeeName, 
+                    storesId: t.storesId,
+                    post: t.post,
+                    itemClassId: t.itemClassId,
+                    isMobilePosition: t.isMobilePosition,
                 }
-                 staffService.getEmployeesList(params).then((res)=>{
+                staffService.getEmployeesList(params).then((res)=>{
                     for(const v of res.records){
                         v.postName = v.postBean?v.postBean.postName: '';
                         v.storeName = v.stores?v.stores.name: '';
@@ -283,19 +374,19 @@
         mounted(){
             const t = this;
             // 员工列表
-           t.getEmployeesList();
+            t.getEmployeesList();
             // 岗位列表
-            staffService.getGwList().then((res)=>{
-                t.gwList = res;
+            staffService.getPostList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.gwList = res.records;
             });
             // 门店列表
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
+            storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.shopList = res.records
             });
             // 服务项目列表
-            t.$commonService.getProjectList().then((res)=>{
-               t.projectList = res;
-           });
+            orderService.getItemList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.projectList = res.records;
+            })
 
         }
     }
