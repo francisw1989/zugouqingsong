@@ -262,13 +262,12 @@
                     t.idx = '-1';
                     t.id = '';
                     t.form = JSON.parse(JSON.stringify(Form));
-
                 }
                 this.editVisible = true;
             },
              // 保存编辑
             saveEdit(form) {
-                 const t = this;
+                const t = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
                         let params = {};

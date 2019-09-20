@@ -90,7 +90,7 @@ let stockService = {
         })
         return p;
     },
-     //物料出库新增
+    //物料出库新增
     platformOutRecordAdd(params){
         let p = new Promise((resolve, reject)=>{
             let data = {

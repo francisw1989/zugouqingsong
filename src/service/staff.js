@@ -60,13 +60,6 @@ let staffService = {
         })
         return p;
     },
-    getGwList(){
-        let p = new Promise((resolve, reject)=>{
-            let data = [{a: 'dssssd', b:'121'},{a: 'ds2d', b:'121'}]
-            resolve(data)
-        })
-        return p;
-    },
     getSchedulingList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
@@ -144,7 +137,51 @@ let staffService = {
             resolve(data)
         })
         return p;
+    },
+     //岗位等级列表
+    getPostList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/post/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //岗位等级新增
+    postAdd(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/post/',
+                params: {},
+                loading: true
+            }
+            $axios(data,params).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //岗位等级删除
+    postDelete(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/post/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
     }
-
 }
 export { staffService }
