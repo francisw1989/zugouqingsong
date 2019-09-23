@@ -15,10 +15,10 @@
                 </p>
             </div>
             <div class=" clearfix top10">
-                <el-input v-model="select_word" placeholder="请输入员工姓" class="handle-input"></el-input>
+                <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
-                    <el-checkbox :label="v.shopId"  v-for="(v, i) in shopList" :key="i">{{v.shopName}}</el-checkbox>
+                    <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
             
@@ -65,6 +65,7 @@
 <script>
     import bus from '../../../bus';
     import {staffService} from '../../../service/staff';
+    import {storeService} from '../../../service/store';
     import StaffDetail from './staffDetail';
     export default {
         data() {
@@ -126,15 +127,18 @@
         mounted(){
             const t = this;
             // 门店列表
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
+            storeService.list({pageSize: 20,pageNumber: 1}).then((res)=>{
+                t.shopList = res.records;
             });
-            staffService.getSchedulingList().then((res)=>{
+            staffService.getEmployeeScheduleList({storeId: 2,monthDate: '2019-08'}).then((res)=>{
                 t.list = res;
-                console.log(t.list)
-                t.dayList = res[0].peopleList[0].dayList;
-                t.dayLength = res[0].peopleList[0].dayList.length
             });
+            // staffService.getSchedulingList().then((res)=>{
+            //     t.list = res;
+            //     console.log(t.list)
+            //     t.dayList = res[0].peopleList[0].dayList;
+            //     t.dayLength = res[0].peopleList[0].dayList.length
+            // });
 
         }
     }

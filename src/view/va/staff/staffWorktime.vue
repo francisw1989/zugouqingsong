@@ -18,7 +18,7 @@
                 <el-input v-model="select_word" placeholder="请输入员工姓" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
-                    <el-checkbox :label="v.shopId"  v-for="(v, i) in shopList" :key="i">{{v.shopName}}</el-checkbox>
+                    <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
              <el-checkbox-group v-model="typeValue" class="top20"  @change='type_change'>
@@ -49,6 +49,7 @@
 <script>
     import bus from '../../../bus';
     import {staffService} from '../../../service/staff';
+    import {storeService} from '../../../service/store';
     import StaffDetail from './staffDetail';
     export default {
         data() {
@@ -123,8 +124,8 @@
         mounted(){
             const t = this;
             // 门店列表
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
+            storeService.list({pageSize: 20,pageNumber: 1}).then((res)=>{
+                t.shopList = res.records;
             });
             staffService.getStaffWorktime().then((res)=>{
                 t.list = res;

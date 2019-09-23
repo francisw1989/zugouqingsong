@@ -15,16 +15,16 @@
             </div>
             <div v-if='showMore' class="top10">
                 <span class="">所属门店</span>
-                <el-select class="left10" v-model="storesId" placeholder="" filterable clearable>
+                <el-select class="left10" v-model="storesId" placeholder="" filterable clearable style="width: 130px">
                     <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                 </el-select>
                 <span class="left20">岗位</span>
-                <el-select class="left10" v-model="post" placeholder="" filterable clearable>
+                <el-select class="left10" v-model="post" placeholder="" filterable clearable style="width: 130px">
                     <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">可服务项目</span>
-                <el-select class="left10" v-model="itemClassId" placeholder="" filterable clearable>
-                    <el-option v-for="(v) in projectList" :key="v.id" :label="v.itemName" :value="v.id"></el-option>
+                <el-select class="left10" v-model="itemClassId" placeholder="" filterable clearable style="width: 130px">
+                    <el-option v-for="(v) in projectList" :key="v.id" :label="v.itemClassName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">是否流动</span>
                 <el-select class="left10" v-model="isMobilePosition" placeholder="" filterable clearable style="width: 80px">
@@ -38,14 +38,14 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="jobNumber" label="工号" sortable width="150"></el-table-column>
+                <el-table-column prop="jobNumber" label="工号"  width="150" sortable></el-table-column>
                 <el-table-column prop="employeeName" label="姓名" width="120"></el-table-column>
                 <el-table-column prop="sexName" label="性别"></el-table-column>
                 <el-table-column prop="storeName" label="所属门店"></el-table-column>
                 <el-table-column prop="postName" label="岗位"></el-table-column>
-                <el-table-column prop="c" label="等级"></el-table-column>
-                <el-table-column prop="c" label="是否流动"></el-table-column>
-                <el-table-column prop="c" label="手机号"></el-table-column>
+                <el-table-column prop="gradeNameN" label="等级"></el-table-column>
+                <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
+                <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
@@ -366,6 +366,8 @@
                         v.postName = v.postBean?v.postBean.postName: '';
                         v.storeName = v.stores?v.stores.name: '';
                         if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
+                        v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
+                        v.gradeNameN = v.postGrade?v.postGrade.gradeName:'';
                     }
                     t.list = res.records;
                     t.total = res.total
@@ -385,7 +387,7 @@
                 t.shopList = res.records
             });
             // 服务项目列表
-            orderService.getItemList({pageSize: 100,pageNumber: 1}).then((res)=>{
+            orderService.getItemClassList({pageSize: 100,pageNumber: 1}).then((res)=>{
                 t.projectList = res.records;
             })
 

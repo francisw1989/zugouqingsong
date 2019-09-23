@@ -45,8 +45,113 @@ let staffService = {
         })
         return p;
     },
-    //删除员工
-    platformOutRecordDelete(params){
+    //修改员工
+    employeesEdit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/employees/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工服务记录
+    getServiceRecordList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employees/serviceRecord/'+params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工排班记录
+    getEmployeeScheduleList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employeeSchedule/record/employees/'+params.employeeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工考勤记录
+    getEmployeeAttendanceList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employeeAttendance/record/employees/'+params.employeeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工考勤情况
+    getEmployeeAttendanceCount(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employeeAttendance/count/employees/'+params.employeeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工被评价记录
+    getEmployeeEvaluateRecord(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employees/evaluateRecord/'+params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //获取员工培训晋升历程
+     getEmployeeCourseRecord(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employees/courseRecord/'+params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //删除员工历程
+    employeeCourseDelete(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'DELETE',
@@ -60,6 +165,38 @@ let staffService = {
         })
         return p;
     },
+    //获取员工师徒关系
+    getEmployeEmentorShip(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employees/mentorShip/'+params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+
+    //获取员工排班列表
+    getEmployeeScheduleList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employeeSchedule/record/stores/'+params.storeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    
     getSchedulingList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
@@ -138,7 +275,7 @@ let staffService = {
         })
         return p;
     },
-     //岗位等级列表
+    //岗位等级列表
     getPostList(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
@@ -182,6 +319,35 @@ let staffService = {
             })
         })
         return p;
-    }
+    },
+    //班次列表查询
+    shiftsSettingList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/shiftsSetting/list',
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //班次修改
+    shiftsSettingEdit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/shiftsSetting/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
 }
 export { staffService }
