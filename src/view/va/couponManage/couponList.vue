@@ -18,7 +18,7 @@
                 </el-select>
                 <span class="left20">优惠券范围</span>
                 <el-select class="left10" v-model="couponScope" placeholder="请选择"  style="width: 120px">
-                    <el-option v-for="(v,i) in yhqFwList" :key="i+1" :label="v" :value="i+1"></el-option>
+                    <el-option v-for="(v,i) in yhqFwList" :key="i" :label="v" :value="i"></el-option>
                 </el-select>
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable">
@@ -35,10 +35,12 @@
                 <el-table-column prop="expiryDate" label="有效期截止时间"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column prop="statusName" label="状态"></el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column label="操作" width="200" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" @click="statusEdit(scope.$index, scope.row)">{{scope.row.status==1?'取消生效':'生效'}}</el-button>
+
                     </template>
                 </el-table-column>
             </el-table>
@@ -51,80 +53,85 @@
         <!-- 新增 -->
         <el-dialog :title="idx==-1?'新增优惠券':'修改优惠券'" :visible.sync="editVisible" width="500px">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                <el-form-item label="优惠券名称" prop="a">
-                    <el-input v-model="form.a"></el-input>
+                <el-form-item label="优惠券名称" prop="couponName">
+                    <el-input v-model="form.couponName"></el-input>
                 </el-form-item>
-                <el-form-item label="使用范围" prop="yhqFw">
-                    <el-radio-group v-model="form.yhqFw">
-                        <el-radio :label="item" v-for="item in yhqFwList" :key="item"></el-radio>
+                <el-form-item label="使用范围" prop="couponScope">
+                    <el-radio-group v-model="form.couponScope">
+                        <el-radio :label="v" v-for="(v,i) in yhqFwList" :key="i" :value="i" ></el-radio>
                     </el-radio-group>
-                    <div v-if="form.yhqFw!='通用'" class="top10">
-                        <el-select v-model="form.shop" multiple placeholder="">
-                            <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option>
+                    <div v-if="form.couponScope=='门店'" class="top10">
+                        <el-select v-model="applyStore" multiple placeholder="">
+                            <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
+                        </el-select>
+                    </div>
+                    <div v-if="form.couponScope=='项目'" class="top10">
+                        <el-select v-model="applyItemId" multiple placeholder="">
+                            <el-option v-for="(v) in projectList" :key="v.id" :value="v.id"  :label="v.itemName"></el-option>
                         </el-select>
                     </div>
                 </el-form-item>
-                <el-form-item label="优惠券类型" prop="yhqType">
-                    <el-radio-group v-model="form.yhqType">
-                        <template v-if="form.yhqFw=='项目'">
-                            <el-radio  :label="item" v-for="item in yhqTypeList" :key="item"></el-radio>
+                <el-form-item label="优惠券类型" prop="couponType">
+                    <el-radio-group v-model="form.couponType">
+                        <template v-if="form.couponScope=='项目'">
+                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="i+1" :value="i+1" ></el-radio>
                         </template>
-                        <template v-if="form.yhqFw!='项目'">
-                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="v" v-if='i!=yhqTypeList.length-1'></el-radio>
+                        <template v-if="form.couponScope!='项目'">
+                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="i+1" :value="i+1"  v-if='i!=yhqTypeList.length-1'></el-radio>
                         </template>
                     </el-radio-group>
-                    <div class="top10" v-if="form.yhqType=='满减'">
+                    <div class="top10" v-if="form.couponType=='满减'">
                         <p class="col999 top10">满减设置</p>
                         <div class="">
-                            满<el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
-                            <span class="left20">减</span><el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                            满<el-input v-model="form.couponCondition" class="left5" style="width: 80px"></el-input>
+                            <span class="left20">减</span><el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.yhqType=='满赠'">
+                    <div class="top10" v-if="form.couponType=='满赠'">
                         <p class="col999 top10">满赠设置</p>
                         <div class="">
-                            满<el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
-                            <span class="left20">赠</span><el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                            满<el-input v-model="form.couponCondition" class="left5" style="width: 80px"></el-input>
+                            <span class="left20">赠</span><el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.yhqType=='折扣'">
+                    <div class="top10" v-if="form.couponType=='折扣'">
                         <p class="col999 top10">折扣设置(优惠价 = 原价 x 折率)</p>
                         <div class="">
-                            折率<el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                            折率<el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.yhqType=='抵扣时间'">
+                    <div class="top10" v-if="form.couponType=='抵扣分钟'">
                         <p class="col999 top10">抵扣时间</p>
                         <div class="">
-                            抵扣<el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                            抵扣<el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                             <span class="left5">分钟</span>
                         </div>
                     </div>
 
                 </el-form-item>
-                <el-form-item label="发放数量" prop="a">
-                    <el-input v-model="form.a" style="width: 40%"></el-input>
-                    <span class="col999 left10">不填写为无限量</span>
+                <el-form-item label="发放数量" prop="grantCount">
+                    <el-input v-model="form.grantCount" style="width: 40%" ></el-input>
+                    <span class="col999 left10">默认0，无限量</span>
                 </el-form-item>
-                <el-form-item label="每人限制领取" prop="a">
-                    <el-input v-model="form.a" style="width: 40%"></el-input>
+                <el-form-item label="每人限制领取" prop="limitCount">
+                    <el-input v-model="form.limitCount" style="width: 40%" ></el-input>
                     <span class="left5">张</span>
-                    <span class="col999 left10">不填写为无限量</span>
+                    <span class="col999 left10">默认0，无限量</span>
                 </el-form-item>
-                <el-form-item label="有效期类型" prop="yxqlx">
-                    <el-radio-group v-model="form.yxqlx">
-                        <el-radio :label="item" v-for="item in yhqYxqlxList" :key="item"></el-radio>
+                <el-form-item label="有效期类型" prop="expiryType">
+                    <el-radio-group v-model="form.expiryType">
+                        <el-radio :label="v" v-for="(v,i) in yhqYxqlxList" :key="i+1" :value="i+1"></el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="有效期时间" prop="data" v-if="form.yxqlx=='固定日期'">
-                    <el-date-picker v-if="form.data"  value-format="yyyy-MM-dd" v-model="form.b" type="date" placeholder="选择日期"></el-date-picker>
+                <el-form-item label="有效期时间" prop="expiryDate" v-if="form.expiryType=='固定日期'">
+                    <el-date-picker  value-format="yyyy-MM-dd" v-model="form.expiryDate" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="领取几日内有效" prop="data" v-if="form.yxqlx=='自领取起'">
-                    <el-input v-model="form.a" style="width: 40%"></el-input>
+                <el-form-item label="领取几日内有效" prop="expiryDays" v-if="form.expiryType=='自领取起'">
+                    <el-input v-model="form.expiryDays" style="width: 40%"></el-input>
                     <span class="left5">日</span>
                 </el-form-item>
-                <el-form-item label="备注" prop="a">
-                    <el-input type="textarea" v-model="form.a"></el-input>
+                <el-form-item label="备注" prop="remark">
+                    <el-input type="textarea" v-model="form.remark"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -147,6 +154,25 @@
 <script>
     import bus from '../../../bus';
     import {couponService} from '../../../service/coupon';
+    import {storeService} from '../../../service/store';
+    import {orderService} from '../../../service/order';
+    const Form= {
+        id: '',
+        couponName: '',
+        couponScope: '',
+        couponType: '',
+        couponDenomination: '',
+        couponCondition: '0',
+        grantCount: '0',
+        applyItemId: '',
+        applyStore: '',
+        remark: '',
+        limitCount: '0',
+        expiryDate: '',
+        expiryType: '',
+        expiryDays: '',
+        status: '0'
+    }
     export default {
         data() {
             return {
@@ -165,24 +191,55 @@
                 couponType: '',
                 yhqTypeList: [],
                 couponScope: '',
+                storesId: '',
                 yhqFwList: '',
+                couponCondition: '0',
+                applyStore: '',
+                applyItemId: '',
+                grantCount: '0',
                 yhqYxqlxList: [],
-                form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    yhqType: '满减',
-                    yxqlx: '固定日期',
-                    yhqFw: '通用',
-                    data: '2019-05-06',
-                    shop: [],
-                },
+                form: JSON.parse(JSON.stringify(Form)),
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
-                    ]
+                   couponName: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    couponScope: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    couponType: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    couponDenomination: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    couponCondition: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    grantCount: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    applyItemId: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    applyStore: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    remark: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    limitCount: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ],
+                    expiryDate: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    expiryType: [
+                        { required: true, message: '请选择', trigger: 'change' },
+                    ],
+                    expiryDays: [
+                        { required: true, message: '请输入', trigger: 'blur' },
+                    ] 
                 },
-                imageUrl: '',
                 goodsCat:[],
                 shopList: [],
                 total: 0,
@@ -191,26 +248,36 @@
             }
         },
         components:{
-            
-        },
-        watch:{
-            
+            couponService
         },
         methods:{
             // 保存编辑
-            saveEdit() {
-                this.editVisible = false;
-                this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                if(this.tableData[this.idx].id === this.id){
-                    this.$set(this.tableData, this.idx, this.form);
-                }else{
-                    for(let i = 0; i < this.tableData.length; i++){
-                        if(this.tableData[i].id === this.id){
-                            this.$set(this.tableData, i, this.form);
-                            return ;
+            saveEdit(form) {
+                const t = this;
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        let params = {};
+                        t.editVisible = false;
+                        for(let key in Form){
+                            params[key] = t.form[key]
                         }
+                        console.log(params);
+                        if(t.idx == '-1'){
+                            couponService.couponManagerAdd(params).then((res)=>{
+                                t.getCouponManagerList()
+                            })
+                        }else{
+                            couponService.couponManagerEdit(params).then((res)=>{
+                                t.getCouponManagerList()
+                            })
+                        }
+                        
+
+                    } else {
+                        console.log('error submit!!');
+                        return false;
                     }
-                }
+                });
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
@@ -222,21 +289,18 @@
                 t.getCouponManagerList();
             },
             
-            // 员工详情
+            // 优惠券修改
             handleEdit(index, row) {
+                const t = this;
                 if(row){
-                    this.idx = index;
-                    this.id = row.id;
+                    t.idx = index;
+                    t.row = row;
+                    t.form = t.row;
                     // this.form = row;
                 }else{
                     this.idx = '-1';
                     this.id = '';
-                    this.imageUrl = '';
-                    // this.form = {
-                    //     a: '',
-                    //     b: '',
-                    //     c: '',
-                    // }
+                    t.form = JSON.parse(JSON.stringify(Form));
                 }
                 
                 this.editVisible = true;
@@ -259,6 +323,15 @@
                     this.delVisible = false;
                     t.getCouponManagerList();
                 })
+            },
+            //操作生效
+            statusEdit(index, row) {
+                const t = this;
+                t.idx = index;
+                t.row = row;
+                t.form = t.row;
+                t.row.status=="1"?t.from.status=0:t.from.status=1;
+                t.handleEdit(index, row);
             },
             getCouponManagerList(){
                 const t = this;
@@ -301,9 +374,14 @@
             const t = this;
             t.getCouponManagerList();
 
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
-            })
+             // 门店列表
+            storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.shopList = res.records
+            });
+            //服务项目列表
+            orderService.getItemList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                  t.projectList = res.records
+            }); 
             t.yhqTypeList = t.$GD.yhqTypeList;
             t.yhqFwList = t.$GD.yhqFwList;
             t.yhqYxqlxList = t.$GD.yhqYxqlxList;

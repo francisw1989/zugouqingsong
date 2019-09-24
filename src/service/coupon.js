@@ -29,20 +29,52 @@ let couponService = {
         })
         return p;
     },
-    
-    getLingquList(){
+    //优惠券新增
+    couponManagerAdd(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'post',
+                url: '/api/v1/couponManager/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },
+    //优惠券修改
+    couponManagerEdit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/couponManager/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    getCouponManagerRecord(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/couponManager/record',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+   
+
     
 }
 export { couponService }
