@@ -32,14 +32,14 @@
                 <el-form-item label="是否流动" >
                     <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                 </el-form-item>
-                <el-form-item label="所属门店" v-if='form.isMobilePosition == 0'>
+                <el-form-item label="所属门店">
                     <el-select v-model="form.storesId" filterable clearable>
                         <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="服务门店" v-if='form.isMobilePosition == 1'>
-                    <div v-for="(sItem, i) in form.fwmd" :key="i" class="btm5">
-                        <el-select v-model="form.fwmd[i].id" filterable clearable>
+                    <div v-for="(sItem, i) in form.storesList" :key="i" class="btm5">
+                        <el-select v-model="form.storesList[i].id" filterable clearable style="width: 200px">
                             <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                         </el-select>
                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd"></i>
@@ -49,7 +49,7 @@
                 </el-form-item>
                 <el-form-item label="服务项目类目" >
                     <div v-for="(sItem, i) in form.itemClassList" :key="i" class="btm5">
-                        <el-select class="" v-model="form.itemClassList[i].id" placeholder="" filterable clearable>
+                        <el-select class="" v-model="form.itemClassList[i].id" placeholder="" filterable clearable style="width: 200px">
                             <el-option v-for="(v) in projectList" :key="v.id" :label="v.itemClassName" :value="v.id"></el-option>
                         </el-select>
                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd2"></i>
@@ -159,29 +159,27 @@
                     <p class="font20 col000">岗位信息</p>
                     <el-form ref="form" :model="form"  :rules="rules"   label-width="80px" class="staffForm top10">
                         <el-form-item label="岗位" >
-                            <span v-if="!edit.postName">{{form.postBean.postName}} <i class="el-icon-edit left20 pointer" @click="openEdit('postName')"></i> </span>
-                            <el-input v-if="edit.postName" v-model="form.postBean.postName" ref="postName"></el-input>
-                        </el-form-item>
-                        <el-form-item label="级别" >
-                            <span v-if="!edit.gradeName">{{form.postGrade.gradeName}} <i class="el-icon-edit left20 pointer" @click="openEdit('gradeName')"></i> </span>
-                            <el-select v-if="edit.gradeName" v-model="form.postGrade.gradeName" ref="gradeName" style="width: 80%">
-                                <!-- <el-option v-for="item in shopList" :key="item.shopName" :label="item.shopName" :value="item.shopName"></el-option> -->
-                                <el-option label="120%" value="120%"></el-option>
+                            <el-select class="" v-model="form.post" placeholder=""  @change='gwChange'>
+                                <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="收费系数" >
-                            <span v-if="!edit.priceCoefficient">{{form.postGrade.priceCoefficient}} <i class="el-icon-edit left20 pointer" @click="openEdit('priceCoefficient')"></i> </span>
-                            <el-select v-if="edit.priceCoefficient" v-model="form.postGrade.priceCoefficient" ref="priceCoefficient" style="width: 80%">
-                                <el-option label="120%" value="120%"></el-option>
+                        <el-form-item label="级别">
+                            <el-select class="" v-model="form.grade" placeholder=""  @change='postGradeChange'>
+                                <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="提成系数" >
-                            <span v-if="!edit.incomeCoefficient">{{form.postGrade.incomeCoefficient}} <i class="el-icon-edit left20 pointer" @click="openEdit('incomeCoefficient')"></i> </span>
-                            <el-select v-if="edit.incomeCoefficient" v-model="form.postGrade.incomeCoefficient"  ref="incomeCoefficient" style="width: 80%">
-                                <el-option label="120%" value="120%"></el-option>
-                            </el-select>
-                        </el-form-item>
+                        <div v-if="postGradeBean.priceCoefficient">
+                            <el-form-item label="收费系数" >
+                                <span>{{postGradeBean.priceCoefficient}} </span>
+                            </el-form-item>
+                            <el-form-item label="佣金系数" >
+                                <span>{{postGradeBean.incomeCoefficient}} </span>
+                            </el-form-item>
+                        </div>
                     </el-form>
+                    <div class='top10 align-right right20'>
+                        <el-button size="small" @click='saveBase' type="primary">保存</el-button>
+                    </div>
                 </div>
                 <div v-if="tabName=='考勤'">
                     <div class="center">
@@ -339,7 +337,9 @@
                 tabName: '服务',
                 year: '2019',
                 mouth: '8',
-                res: ''
+                res: '',
+                postGradeList: [],
+                postGradeBean:{}// 岗位职级bean
             }
         },
         computed:{
@@ -347,7 +347,21 @@
         },
         props: ['row'],
         methods:{
-
+            // 岗位改变 联动 岗位等级
+            gwChange(id){
+                const t = this;
+                t.postGradeList = t.gwList.filter((v)=>{
+                    return v.id == id
+                })[0].postGradeList;
+                t.postGradeChange(t.postGradeList[0].id);
+            },
+            postGradeChange(id){
+                const t = this;
+                t.postGradeBean = t.postGradeList.filter((v)=>{
+                    return v.id == id
+                })[0]
+                console.log(t.postGradeBean)
+            },
             prevMouth(){
                 const t = this;
                 if(t.mouth==1){
@@ -432,19 +446,19 @@
             },
             mdAdd(){
                 const t = this;
-                if(t.form.fwmd.length>2){
-                    t.$message({
-                        message: '最多三条',
-                        type: 'warning'
-                    });
-                    return
-                }
-                t.form.fwmd.push({id: ''});
+                // if(t.form.storesList.length>2){
+                //     t.$message({
+                //         message: '最多三条',
+                //         type: 'warning'
+                //     });
+                //     return
+                // }
+                t.form.storesList.push({});
 
             },
             mdRemove(i){
                 const t = this;
-                t.form.fwmd.splice(i, 1)
+                t.form.storesList.splice(i, 1)
             },
             mdAdd2(){
                 const t = this;
@@ -482,13 +496,19 @@
                 t.form.isTechnician = t.form.isTechnician?'1':'0';
                 if(t.form.itemClassList.length){
                     t.form.itemClassIds =  t.form.itemClassList.map(v=>{
-                        return v.id
+                        if(v.id){
+                            return v.id
+                        }
+                        
                     }).join(',')
                 }
                 
-                if(t.form.fwmd.length){
-                    t.form.storesIds =  t.form.fwmd.map(v=>{
-                        return v.id
+                if(t.form.storesList.length){
+                    t.form.storesIds =  t.form.storesList.map(v=>{
+                        if(v.id){
+                            return v.id
+                        }
+                        
                     }).join(',')
                 }
                 
@@ -537,8 +557,15 @@
             t.row.isMobilePosition = t.row.isMobilePosition == 0 ?false: true;
             t.row.isTechnician = t.row.isTechnician == 0 ?false: true;
             
+            if(!t.row.storesList || !t.row.storesList.length){
+                t.row.storesList = [{}]
+            }
+            
+            if(!t.row.itemClassList || !t.row.itemClassList.length){
+                t.row.itemClassList = [{}]
+            }
             t.form = t.row;
-            t.form.fwmd = [{id: ''}];
+            console.log(t.form)
             for(const key in t.row){
                 t.edit[key] = false;
             }
@@ -593,6 +620,13 @@
             // 岗位列表
             staffService.getPostList({pageSize: 100,pageNumber: 1}).then((res)=>{
                 t.gwList = res.records;
+                t.postGradeList = t.gwList.filter((v)=>{
+                    return v.id == t.form.post;
+                })[0].postGradeList;
+                t.postGradeBean = t.postGradeList.filter((v)=>{
+                    return v.id == t.form.grade
+                })[0]
+                
             });
             // 门店列表
             storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{

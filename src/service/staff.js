@@ -1,5 +1,21 @@
 import {$axios} from './axios.js';
 let staffService = {
+    
+    // 删除员工
+    platformOutRecordDelete(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/employees/' + params.employeeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     //获取员工列表
     getEmployeesList(params){
         let p = new Promise((resolve, reject)=>{

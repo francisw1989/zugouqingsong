@@ -62,7 +62,7 @@
 
         <!-- 员工详情 -->
         <el-dialog title="员工详情" :visible.sync="viewVisible" width="850px">
-            <staffDetail :row="row"></staffDetail>
+            <staffDetail :row="row" v-if="viewVisible"></staffDetail>
         </el-dialog>
         <!-- 新增 -->
         <el-dialog title="新增员工" :visible.sync="editVisible" width="550px">
@@ -106,7 +106,7 @@
                     <el-form-item label="是否流动" style="width: 50%"  class="left">
                         <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                     </el-form-item>
-                    <el-form-item v-if="!form.isMobilePosition" label="所属门店" prop="" style="width: 50%"  class="left">
+                    <el-form-item label="所属门店" prop="" style="width: 50%"  class="left">
                         <el-select v-model="form.storesId"  filterable clearable>
                             <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                         </el-select>
@@ -189,7 +189,6 @@
         data() {
             return {
                 list: [],
-                cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
                 del_list: [],
@@ -218,7 +217,7 @@
                 viewVisible: false,
                 editVisible: false,
                 total: 0,
-                pageSize: 10,
+                pageSize: 50,
                 pageNumber: 1,
 
                 // 头部查询参数
@@ -233,7 +232,12 @@
             }
         },
         watch: {
-
+            viewVisible(val){
+                console.log(val)
+                if(val == false){
+                    this.getEmployeesList()
+                }
+            },
             storesId(){
                 this.getEmployeesList()
             },
@@ -283,11 +287,15 @@
             dodelete(index, row){
                 const t = this;
                 let params = {
-                    id: row.id
+                    employeeId: row.id
                 }
-                staffService.platformOutRecordDelete(params).then((res)=>{
-                    t.getEmployeesList();
-                })
+                this.$confirm('确认删除？').then(() => {
+                    staffService.platformOutRecordDelete(params).then((res)=>{
+                        this.$message.success('删除成功！');
+                        t.getEmployeesList();
+                    })
+                }).catch(_ => {});
+                
             },
             // 保存编辑
             saveEdit(form) {
@@ -327,7 +335,7 @@
                 }
             },
             handleCurrentChange(val) {
-                this.cur_page = val;
+                this.pageNumber = val;
                 this.getEmployeesList();
             },
             search() {
@@ -341,6 +349,7 @@
             handle1(index, row) {
                 this.idx = index;
                 this.row = row;
+                console.log(this.row)
                 this.viewVisible = true;
             },
             // 重置密码
