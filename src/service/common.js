@@ -13,7 +13,7 @@ let commonService = {
                     {a: '432', b:2},{a: '432', b:2},{a: '432', b:2}
                 ],
                 goodsCat: ['商品','物料'],
-                yhqTypeList: ['满减', '满赠', '折扣', '抵扣时间'],
+                yhqTypeList: ['满减', '满赠', '折扣', '抵扣分钟'],
                 yhqFwList: ['通用', '门店', '项目'],
                 yhqYxqlxList: ['固定日期','自领取起'],
                 ffTypeList: ['新用户注册'],

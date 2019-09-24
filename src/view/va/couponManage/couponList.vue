@@ -8,46 +8,42 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
-                <el-button type="primary" class="right" @click="handle1">新增</el-button>
-                <el-input v-model="select_word" placeholder="请输入商品编号或名称" class="handle-input"></el-input>
+                <el-button type="primary" class="right" @click="handleEdit">新增</el-button>
+                <el-input v-model="couponName" placeholder="请输入商品编号或名称" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 
                 <span class="left20">优惠券类型</span>
-                <el-select class="left10" v-model="yhqType" placeholder="请选择类型" style="width: 120px">
-                    <el-option v-for="item in yhqTypeList" :key="item" :label="item" :value="item"></el-option>
+                <el-select class="left10" v-model="couponType" placeholder="请选择类型" style="width: 120px">
+                    <el-option v-for="(v,i) in yhqTypeList" :key="i+1" :label="v" :value="i+1"></el-option>
                 </el-select>
                 <span class="left20">优惠券范围</span>
-                <el-select class="left10" v-model="yhqFw" placeholder="请选择"  style="width: 120px">
-                    <el-option v-for="item in yhqFwList" :key="item" :label="item" :value="item"></el-option>
+                <el-select class="left10" v-model="couponScope" placeholder="请选择"  style="width: 120px">
+                    <el-option v-for="(v,i) in yhqFwList" :key="i+1" :label="v" :value="i+1"></el-option>
                 </el-select>
-
             </div>
-
-
-            
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
-                <el-table-column prop="a" label="优惠券名称" sortable width="150"></el-table-column>
-                <el-table-column prop="b" label="使用范围" width="120"></el-table-column>
-                <el-table-column prop="c" label="类型"></el-table-column>
-                <el-table-column prop="c" label="面额"></el-table-column>
-                <el-table-column prop="c" label="使用条件"></el-table-column>
-                <el-table-column prop="c" label="发放数量"></el-table-column>
-                <el-table-column prop="c" label="已领取数量"></el-table-column>
-                <el-table-column prop="c" label="限领"></el-table-column>
-                <el-table-column prop="c" label="有效期截止时间"></el-table-column>
-                <el-table-column prop="c" label="创建时间"></el-table-column>
-                <el-table-column prop="c" label="状态"></el-table-column>
+                <el-table-column prop="couponName" label="优惠券名称" sortable width="150"></el-table-column>
+                <el-table-column prop="couponScopeName" label="使用范围" width="120"></el-table-column>
+                <el-table-column prop="couponTypeName" label="类型"></el-table-column>
+                <el-table-column prop="couponDenomination" label="面额"></el-table-column>
+                <el-table-column prop="couponCondition" label="使用条件"></el-table-column>
+                <el-table-column prop="grantCount" label="发放数量"></el-table-column>
+                <el-table-column prop="receivingCount" label="已领取数量"></el-table-column>
+                <el-table-column prop="limitCount" label="限领"></el-table-column>
+                <el-table-column prop="expiryDate" label="有效期截止时间"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间"></el-table-column>
+                <el-table-column prop="statusName" label="状态"></el-table-column>
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -137,7 +133,14 @@
             </span>
         </el-dialog>
 
-
+          <!-- 删除提示框 -->
+        <el-dialog title="提示" :visible.sync="delVisible" width="300px" left>
+            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="delVisible = false">取 消</el-button>
+                <el-button type="primary" @click="deleteRow()">确 定</el-button>
+            </span>
+        </el-dialog>
 
     </div>
 </template>
@@ -148,18 +151,20 @@
         data() {
             return {
                 list: [],
+                couponScopeList: ['通用','项目','门店'],
+                couponTypeList: ['','满减','满赠','折扣','抵扣分钟'],
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                select_word: '',
+                couponName: '',
                 is_search: false,
-
                 idx: -1,
                 id: -1,
                 editVisible: false,
-                yhqType: '',
+                delVisible: false,
+                couponType: '',
                 yhqTypeList: [],
-                yhqFw: '',
+                couponScope: '',
                 yhqFwList: '',
                 yhqYxqlxList: [],
                 form: {
@@ -180,7 +185,9 @@
                 imageUrl: '',
                 goodsCat:[],
                 shopList: [],
-                
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         components:{
@@ -207,14 +214,16 @@
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getCouponManagerList();
             },
             search() {
-                this.is_search = true;
+                //this.is_search = true;
+                const t = this;
+                t.getCouponManagerList();
             },
             
             // 员工详情
-            handle1(index, row) {
+            handleEdit(index, row) {
                 if(row){
                     this.idx = index;
                     this.id = row.id;
@@ -232,16 +241,66 @@
                 
                 this.editVisible = true;
             },
-            handle2(index, row){
-                
+            handleDelete(index, row){
+                const t = this;
+                this.idx = index;
+                this.id = row.id;
+                this.row = row;
+                t.delVisible = true;
+            },
+            // 确定删除
+            deleteRow(){
+                const t = this;
+                let parmas = {
+                    id: this.id
+                }
+                couponService.couponManagerDelete(parmas).then((res)=>{
+                    this.$message.success('删除成功');
+                    this.delVisible = false;
+                    t.getCouponManagerList();
+                })
+            },
+            getCouponManagerList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber,
+                    couponName: t.couponName,
+                    couponScope: t.couponScope,
+                    couponType: t.couponType
+                }
+                couponService.getCouponManagerList(params).then((res)=>{
+                    for(const v of res.records){
+                        if(v.couponScope == null){
+                            v.couponScopeName = ''
+                        }else{
+                            v.couponScopeName = t.couponScopeList[v.couponScope];
+                        }
+                        if(v.couponType == null){
+                            v.couponTypeName = ''
+                        }else{
+                            v.couponTypeName = t.couponTypeList[v.couponType];
+                        }
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
             }
+        },
+        watch:{
+            couponType(val){
+                this.getCouponManagerList();
+            },
+            couponScope(){
+                this.getCouponManagerList();
+            }
+
         },
         mounted(){
             const t = this;
-            // 员工列表
-            couponService.getCouponList().then((res)=>{
-                t.list = res;
-            });
+            t.getCouponManagerList();
+
             t.$commonService.getShopList().then((res)=>{
                 t.shopList = res
             })

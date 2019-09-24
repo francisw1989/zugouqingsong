@@ -78,7 +78,7 @@
                 goodsCat:[],
                 shopList: [],
                 ffTypeList: [],
-                typeList:['所有订单', '未支付','进行中','待评价','已完成'],
+                typeList:['所有优惠券', '已领取','已使用'],
                 type: '0',
             }
         },
