@@ -1,4 +1,5 @@
 <template>
+<div>
     <el-row>
         <el-col :span="11" style="border-right: 1px solid #ddd; padding-left: 10px">
             <el-row>
@@ -251,27 +252,27 @@
                     </el-row>
                 </div>
                 <div v-if="tabName=='培训'">
-                    <p class="font20 col000 clearfix">培训历程  <el-button type='primary' size="mini" class="right">新增</el-button> </p>
-                    <el-row  v-for="(v) in employeeCourseRecord1" :key="v.id" class="top20">
-                        <el-col :span="4">
-                            <p><span style="width:100px">{{v.createTime}} </span></p>
+                    <p class="font20 col000 clearfix btm20">培训历程  <el-button type='primary' size="mini" class="right"  @click="addJslc('1')">新增</el-button> </p>
+                    <el-row  v-for="(v) in employeeCourseRecord1" :key="v.id" class="">
+                        <el-col :span="5">
+                            <p>{{v.courseTime}}</p>
                             <img src="../../../assets/img/img3.png" class="left25" alt="">
                         </el-col>
-                        <el-col :span="20">
-                            <p >{{v.courseTitle}}  <el-button size="mini" type="danger" @click="courseDelete(v.id)">删除</el-button></p>
+                        <el-col :span="19">
+                            <p class="clearfix">{{v.courseTitle}} <i class="el-icon-error right pointer" @click="courseDelete(v.id)"></i></p>
                             <p class="col999">{{v.courseContent}}</p>
                         </el-col>
                     </el-row>
                 </div>
                 <div v-if="tabName=='晋升'">
-                    <p class="font20 col000 clearfix">晋升历程  <el-button type='primary' size="mini" class="right">新增</el-button> </p>
-                    <el-row v-for="(v) in employeeCourseRecord2" :key="v.id" class="top20">
-                         <el-col :span="4">
-                            <p>{{v.createTime}}</p>
+                    <p class="font20 col000 clearfix btm20">晋升历程  <el-button type='primary' size="mini" class="right" @click="addJslc('2')">新增</el-button> </p>
+                    <el-row v-for="(v) in employeeCourseRecord2" :key="v.id" class="">
+                         <el-col :span="5">
+                            <p>{{v.courseTime}}</p>
                             <img src="../../../assets/img/img3.png" class="left25" alt="">
                         </el-col>
-                        <el-col :span="20">
-                            <p>{{v.courseTitle}} <el-button size="mini" type="danger" @click="courseDelete(v.id)">删除</el-button></p></p>
+                        <el-col :span="19">
+                            <p class="clearfix">{{v.courseTitle}} <i class="el-icon-error right pointer" @click="courseDelete(v.id)"></i></p>
                             <p class="col999">{{v.courseContent}}</p>
                         </el-col>
                     </el-row>
@@ -284,7 +285,25 @@
         </el-col>
         
     </el-row>
-   
+    <!-- 新增历程 -->
+        <el-dialog :title="lcForm.courseType==1?'新增培训':'新增晋升'" :visible.sync="jslcVisible" width="350px" :modal='false'>
+            <el-form ref="form" :model="lcForm"  :rules="rules"   label-width="60px">
+                <el-form-item label="标题" prop="">
+                    <el-input v-model="lcForm.courseTitle" placeholder=""></el-input>
+                </el-form-item>
+                <el-form-item label="时间" prop="">
+                    <el-date-picker v-model="lcForm.courseTime" type="date" value-format="yyyy-MM-dd"  placeholder="选择日期"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="内容" prop="">
+                    <el-input v-model="lcForm.courseContent" type="textarea" placeholder=""></el-input>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="jslcVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveLc('lcForm')">保存</el-button>
+            </span>
+        </el-dialog>
+</div>
 </template>
 <script>
     import bus from '../../../bus';
@@ -313,13 +332,22 @@
         itemClassIds: '',
         isTechnician: true,
         storesIds:'' // 可服务门店
+    };
+    const LcForm = {
+        id: '',
+        courseTime: '',
+        courseTitle: '',
+        courseContent: '',
+        courseType: ''
     }
     export default {
         name: 'staffDetail',
         data() {
             return {
+                jslcVisible: false,
                 statusName: ['请假', '正常', '未打卡', '休假', '迟到', '早退', '迟到早退'],
                 form: {},
+                lcForm: JSON.parse(JSON.stringify(LcForm)),
                 rules: {
                     a: [
                         { required: true, message: '请选择类型', trigger: 'change' },
@@ -347,6 +375,32 @@
         },
         props: ['row'],
         methods:{
+            addJslc(courseType){
+                const t = this;
+                t.lcForm = JSON.parse(JSON.stringify(LcForm));
+                t.jslcVisible = true;
+                t.lcForm.id = t.row.id;
+                t.lcForm.courseType = courseType;
+            },
+            saveLc(){
+                const t = this;
+                staffService.addLc(t.lcForm).then(()=>{
+                    t.jslcVisible = false;
+                    if(t.lcForm.courseType == 2){
+                        staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 2}).then((res)=>{
+                            t.employeeCourseRecord2 = [];
+                            t.employeeCourseRecord2 = res;
+                        });
+                    }else{
+                        staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 1}).then((res)=>{
+                            t.employeeCourseRecord1 = [];
+                            t.employeeCourseRecord1 = res;
+                        });
+                    }
+                    
+                    
+                })
+            },
             // 岗位改变 联动 岗位等级
             gwChange(id){
                 const t = this;
@@ -541,11 +595,13 @@
                     this.$message.success('删除成功');
                     if(courseType=='1'){
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 1}).then((res)=>{
-                            t.employeeCourseRecord1 = res;
+                            t.employeeCourseRecord1 == [];
+                            t.employeeCourseRecord1 = JSON.parse(JSON.stringify(res));
                         });
                     }else{
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 2}).then((res)=>{
-                          t.employeeCourseRecord1 = res;
+                            t.employeeCourseRecord2 == []
+                            t.employeeCourseRecord2 = JSON.parse(JSON.stringify(res));
                         });
                     }
                 })
