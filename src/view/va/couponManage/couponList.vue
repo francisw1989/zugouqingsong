@@ -35,7 +35,7 @@
                 <el-table-column prop="expiryDate" label="有效期截止时间"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column prop="statusName" label="状态"></el-table-column>
-                <el-table-column label="操作" width="200" align="center">
+                <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -52,58 +52,61 @@
 
         <!-- 新增 -->
         <el-dialog :title="idx==-1?'新增优惠券':'修改优惠券'" :visible.sync="editVisible" width="500px">
-            <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="130px">
                 <el-form-item label="优惠券名称" prop="couponName">
                     <el-input v-model="form.couponName"></el-input>
                 </el-form-item>
                 <el-form-item label="使用范围" prop="couponScope">
                     <el-radio-group v-model="form.couponScope">
-                        <el-radio :label="v" v-for="(v,i) in yhqFwList" :key="i" :value="i" ></el-radio>
+                        <el-radio v-for="(v,i) in yhqFwList" :key="i"  :label="i" >{{v}}</el-radio>
                     </el-radio-group>
-                    <div v-if="form.couponScope=='门店'" class="top10">
-                        <el-select v-model="applyStore" multiple placeholder="">
+                    <!--门店-->
+                    <div v-if="form.couponScope=='2'" class="top10">
+                        <el-select v-model="form.applyStore" placeholder="">
                             <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                         </el-select>
                     </div>
-                    <div v-if="form.couponScope=='项目'" class="top10">
-                        <el-select v-model="applyItemId" multiple placeholder="">
+                    <!--通用-->
+                    <div v-if="form.couponScope=='1'" class="top10">
+                        <el-select v-model="form.applyItemId" placeholder="" @change='changeT'>
                             <el-option v-for="(v) in projectList" :key="v.id" :value="v.id"  :label="v.itemName"></el-option>
                         </el-select>
                     </div>
                 </el-form-item>
                 <el-form-item label="优惠券类型" prop="couponType">
                     <el-radio-group v-model="form.couponType">
-                        <template v-if="form.couponScope=='项目'">
-                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="i+1" :value="i+1" ></el-radio>
+                        <template v-if="form.couponScope=='1'">
+                            <el-radio  v-for="(v, i) in yhqTypeList" :key="i+1" :label="i+1" >{{v}}</el-radio>
                         </template>
-                        <template v-if="form.couponScope!='项目'">
-                            <el-radio  :label="v" v-for="(v, i) in yhqTypeList" :key="i+1" :value="i+1"  v-if='i!=yhqTypeList.length-1'></el-radio>
+                        <template v-if="form.couponScope!='1'">
+                            <el-radio v-for="(v, i) in yhqTypeList" :key="i+1" :label="i+1"  v-if='i!=(yhqTypeList.length-1)'>{{v}}</el-radio>
                         </template>
                     </el-radio-group>
-                    <div class="top10" v-if="form.couponType=='满减'">
+                    <div class="top10" v-if="form.couponType=='1'">
                         <p class="col999 top10">满减设置</p>
                         <div class="">
                             满<el-input v-model="form.couponCondition" class="left5" style="width: 80px"></el-input>
                             <span class="left20">减</span><el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.couponType=='满赠'">
+                    <div class="top10" v-if="form.couponType=='2'">
                         <p class="col999 top10">满赠设置</p>
                         <div class="">
                             满<el-input v-model="form.couponCondition" class="left5" style="width: 80px"></el-input>
                             <span class="left20">赠</span><el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.couponType=='折扣'">
+                    <div class="top10" v-if="form.couponType=='3'">
                         <p class="col999 top10">折扣设置(优惠价 = 原价 x 折率)</p>
                         <div class="">
-                            折率<el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
+                            折率<el-input v-model="form.couponDenomination" placeholder="7" class="left5" style="width: 80px"></el-input>
+                            <span class="left5">折</span>
                         </div>
                     </div>
-                    <div class="top10" v-if="form.couponType=='抵扣分钟'">
+                    <div class="top10" v-if="form.couponType=='4'">
                         <p class="col999 top10">抵扣时间</p>
                         <div class="">
-                            抵扣<el-input v-model="form.couponDenomination" class="left5" style="width: 80px"></el-input>
+                            抵扣<el-input v-model="form.couponDenomination" placeholder="30" class="left5" style="width: 80px"></el-input>
                             <span class="left5">分钟</span>
                         </div>
                     </div>
@@ -120,13 +123,13 @@
                 </el-form-item>
                 <el-form-item label="有效期类型" prop="expiryType">
                     <el-radio-group v-model="form.expiryType">
-                        <el-radio :label="v" v-for="(v,i) in yhqYxqlxList" :key="i+1" :value="i+1"></el-radio>
+                        <el-radio v-for="(v,i) in yhqYxqlxList" :key="i+1" :label="i+1">{{v}}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="有效期时间" prop="expiryDate" v-if="form.expiryType=='固定日期'">
+                <el-form-item label="有效期时间" prop="expiryDate" v-if="form.expiryType=='1'">
                     <el-date-picker  value-format="yyyy-MM-dd" v-model="form.expiryDate" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="领取几日内有效" prop="expiryDays" v-if="form.expiryType=='自领取起'">
+                <el-form-item label="领取几日内有效" prop="expiryDays" v-if="form.expiryType=='2'">
                     <el-input v-model="form.expiryDays" style="width: 40%"></el-input>
                     <span class="left5">日</span>
                 </el-form-item>
@@ -159,8 +162,8 @@
     const Form= {
         id: '',
         couponName: '',
-        couponScope: '',
-        couponType: '',
+        couponScope: '', // 使用范围(0通用 1项目 2门店)
+        couponType: '', //（1满减 2满赠 3折扣 4抵扣分钟）
         couponDenomination: '',
         couponCondition: '0',
         grantCount: '0',
@@ -169,7 +172,7 @@
         remark: '',
         limitCount: '0',
         expiryDate: '',
-        expiryType: '',
+        expiryType: '', //（1固定日期 2自领取日算起）
         expiryDays: '',
         status: '0'
     }
@@ -194,8 +197,6 @@
                 storesId: '',
                 yhqFwList: '',
                 couponCondition: '0',
-                applyStore: '',
-                applyItemId: '',
                 grantCount: '0',
                 yhqYxqlxList: [],
                 form: JSON.parse(JSON.stringify(Form)),
@@ -251,6 +252,9 @@
             couponService
         },
         methods:{
+            changeT(e){
+                console.log(e)
+            },
             // 保存编辑
             saveEdit(form) {
                 const t = this;
@@ -262,6 +266,13 @@
                             params[key] = t.form[key]
                         }
                         console.log(params);
+                        if(params.couponType == 1 || params.couponType == 2){
+                            params.couponCondition = params.couponCondition * 100;
+                            params.couponDenomination = params.couponDenomination * 100;
+                        }
+                        if(params.couponType == 3){
+                            params.couponDenomination = params.couponDenomination * 10;
+                        }
                         if(t.idx == '-1'){
                             couponService.couponManagerAdd(params).then((res)=>{
                                 t.getCouponManagerList()
@@ -315,10 +326,10 @@
             // 确定删除
             deleteRow(){
                 const t = this;
-                let parmas = {
+                let params = {
                     id: this.id
                 }
-                couponService.couponManagerDelete(parmas).then((res)=>{
+                couponService.couponManagerDelete(params).then((res)=>{
                     this.$message.success('删除成功');
                     this.delVisible = false;
                     t.getCouponManagerList();
@@ -345,6 +356,11 @@
                 }
                 couponService.getCouponManagerList(params).then((res)=>{
                     for(const v of res.records){
+                        v.statusName = v.status == 0?'不生效':'生效'
+                         if(v.couponType == 1 || v.couponType == 2){
+                            v.couponCondition = v.couponCondition / 100;
+                            v.couponDenomination = v.couponDenomination / 100;
+                        }
                         if(v.couponScope == null){
                             v.couponScopeName = ''
                         }else{
