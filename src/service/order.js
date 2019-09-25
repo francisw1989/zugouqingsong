@@ -33,10 +33,10 @@ let orderService = {
             }
             $axios(data).then((res)=>{
                 for(const v of res.records){
-                    v.defaultPrice = v.defaultPrice/1000;
-                    v.threePrice = v.threePrice/1000;
-                    v.fivePrice = v.fivePrice/1000;
-                    v.tenPrice = v.tenPrice/1000;
+                    v.defaultPrice = v.defaultPrice/100;
+                    v.threePrice = v.threePrice/100;
+                    v.fivePrice = v.fivePrice/100;
+                    v.tenPrice = v.tenPrice/100;
                 }
                 resolve(res)
             })
@@ -46,10 +46,10 @@ let orderService = {
     //服务项目新增
     itemAdd(params){
         let p = new Promise((resolve, reject)=>{
-            params.defaultPrice = params.defaultPrice * 1000;
-            params.threePrice = params.threePrice * 1000;
-            params.fivePrice = params.fivePrice * 1000;
-            params.tenPrice = params.tenPrice * 1000;
+            params.defaultPrice = params.defaultPrice * 100;
+            params.threePrice = params.threePrice * 100;
+            params.fivePrice = params.fivePrice * 100;
+            params.tenPrice = params.tenPrice * 100;
             let data = {
                 method: 'post',
                 url: '/api/v1/item/' + params.id,
@@ -65,10 +65,10 @@ let orderService = {
     //服务项目修改
     itemEdit(params){
         let p = new Promise((resolve, reject)=>{
-            params.defaultPrice = params.defaultPrice * 1000;
-            params.threePrice = params.threePrice * 1000;
-            params.fivePrice = params.fivePrice * 1000;
-            params.tenPrice = params.tenPrice * 1000;
+            params.defaultPrice = params.defaultPrice * 100;
+            params.threePrice = params.threePrice * 100;
+            params.fivePrice = params.fivePrice * 100;
+            params.tenPrice = params.tenPrice * 100;
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/item/' + params.id,
