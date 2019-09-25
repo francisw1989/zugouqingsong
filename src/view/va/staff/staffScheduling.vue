@@ -18,7 +18,7 @@
                 <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
-                    <el-checkbox :label="v.id"  v-for="(v, i) in shopListBack" :key="i">{{v.name}}</el-checkbox>
+                    <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
             
@@ -31,7 +31,7 @@
                 </tr>
             </table>
             <div v-if="loadDay">
-                <table class="m-table" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex" >
+                <table class="m-table" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex"  v-if="shopItem.show">
                     <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeScheduleList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
                     <template  v-if='shopItem.showAll' >
                         <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
@@ -63,7 +63,6 @@
         data() {
             return {
                 shopList: [],
-                shopListBack: [],
                 is_search: false,
                 select_word: '',
                 checkList:[],
@@ -173,16 +172,21 @@
             },
             checkBoxChange(){
                 const t = this;
-                t.loadDay = false;
-                console.log(t.checkList);
-                let ids = t.checkList.join(',');
-                let _list = t.shopList.filter((v)=>{
-                    return ids.indexOf(v.id) > -1
+                if(!t.checkList.length){
+                    for(const v of t.shopList){
+                        v.show = true;
+                    }
+                    return
+                }
+                t.shopList.forEach((v, i)=>{
+                    if(t.checkList.indexOf(v.id)>-1){
+                        v.show = true;
+                        t.showAll(i);
+                        v.showAll = true;
+                    }else{
+                        v.show = false
+                    }
                 })
-                console.log(t.checkList)
-                t.shopList = JSON.parse(JSON.stringify(_list))
-                t.loadDay = true;
-                debugger
             },
             search() {
                 this.is_search = true;
@@ -208,9 +212,9 @@
             const t = this;
             // 门店列表
             storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
-                t.shopListBack = JSON.parse(JSON.stringify(res.records));
                 for(const v of res.records){
                     v.showAll = false;
+                    v.show = true;
                 }
                 t.shopList = res.records;
                 t.showAll(0)
