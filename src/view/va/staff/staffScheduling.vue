@@ -15,9 +15,9 @@
                 </p>
             </div>
             <div class=" clearfix top10">
-                <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
+                <!-- <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button> -->
+                <el-checkbox-group v-model="checkList" class="" style="display: inline" @change='checkBoxChange'>
                     <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
