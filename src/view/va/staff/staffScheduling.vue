@@ -18,47 +18,39 @@
                 <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
-                    <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
+                    <el-checkbox :label="v.id"  v-for="(v, i) in shopListBack" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
             
             <table class="m-table top20">
                 <tr class="tr2">
-                    <td>姓名</td><td>职务</td>
-                    <td v-for="(v, i) in dayList" :key="i" class="td">{{i+1}}</td>
+                    <td style="width: 80px">姓名</td><td style="width: 80px">职务</td>
+                    <template v-if="loadDay">
+                        <td v-for="(v, i) in shopList[0].peopleList[0].employeeScheduleList" :key="i" class="td">{{i+1}}</td>
+                    </template>
                 </tr>
             </table>
-            <table class="m-table" v-for="(shopItem, shopIndex) in list" :key="shopIndex">
-                <tr class="tr"><td :colspan="dayLength+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.shopName}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
-                <template  v-if='shopItem.showAll' >
-                    <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
-                        <td>{{peopleItem.name}}</td>
-                        <td>{{peopleItem.position}}</td>
-                        <template  v-for="(dayItem, dayIndex) in peopleItem.dayList">
-                            <td v-if="dayItem.indexOf(',')>0"  class="td td2" :key="dayIndex">
-                                <el-dropdown trigger="click" placement='bottom-start'>
-                                    <span class="pointer">{{dayItem.split(',')[0]}}</span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',上'">上</el-dropdown-item>
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',下'">下</el-dropdown-item>
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',晚'">晚</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
-                            </td>
-                            <td v-else  class="td" :key="dayIndex">
-                                <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
-                                    <span class="pointer">{{dayItem}}</span>
-                                    <el-dropdown-menu slot="dropdown">
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',上'">上</el-dropdown-item>
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',下'">下</el-dropdown-item>
-                                        <el-dropdown-item :command="shopIndex+','+peopleIndex+','+dayIndex + ',晚'">晚</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </el-dropdown>
-                            </td>
-                        </template>
-                    </tr>
-                </template>
-            </table>
+            <div v-if="loadDay">
+                <table class="m-table" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex" >
+                    <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeScheduleList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
+                    <template  v-if='shopItem.showAll' >
+                        <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
+                            <td style="width: 80px">{{peopleItem.employeeName}}</td>
+                            <td style="width: 80px">{{peopleItem.postBean.postName}}</td>
+                            <template  v-for="(dayItem, dayIndex) in peopleItem.employeeScheduleList">
+                                <td  class="td" :key="dayIndex">
+                                    <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
+                                        <span class="pointer">{{dayItem.shiftsName}}</span>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item v-for="(v, i) in shiftsSettingList" :key="v.id"  :command="shopIndex+','+peopleIndex+','+dayIndex + ',' + i">{{v.shiftsName}}</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </el-dropdown>
+                                </td>
+                            </template>
+                        </tr>
+                    </template>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -70,19 +62,37 @@
     export default {
         data() {
             return {
-                list: [],
+                shopList: [],
+                shopListBack: [],
                 is_search: false,
                 select_word: '',
                 checkList:[],
-                shopList: [],
                 dayLength: 0,
                 dayList: [],
-                year: '2019',
-                mouth: '8'
+                year: new Date().getFullYear(),
+                mouth: new Date().getMonth() +1,
+                loadDay: false,
+                shiftsSettingList: []
             }
         },
         components:{
             StaffDetail
+        },
+        watch:{
+            mouth(){
+                const t = this;
+                t.loadDay = false;
+                t.shopList[0].showAll = false
+                t.shopList[0].peopleList = null;
+                t.showAll(0)
+            },
+            year(){
+                const t = this;
+                t.loadDay = false;
+                t.shopList[0].showAll = false
+                t.shopList[0].peopleList = null;
+                t.showAll(0)
+            }
         },
         methods:{
             prevMouth(){
@@ -90,6 +100,7 @@
                 if(t.mouth==1){
                     t.mouth = 12;
                     t.year --;
+                    t.
                     return
                 }
                 t.mouth --;
@@ -106,39 +117,113 @@
             handleCommand(res){
                 const t = this;
                 let d = res.split(',');
-                t.list[d[0]].peopleList[d[1]].dayList[d[2]] = d[3];
-                t.$set(t.list,d[0],t.list[d[0]])
+                //   :command="shopIndex+','+peopleIndex+','+dayIndex + ',' + i"
+                t.shopList[d[0]].peopleList[d[1]].employeeScheduleList[d[2]].shiftsName = t.shiftsSettingList[d[3]].shiftsName;
+                t.$set(t.shopList,d[0],t.shopList[d[0]])
+                // t.shopList = JSON.parse(JSON.stringify(t.shopList))
+                if(t.shiftsSettingList[d[3]].id==0){
+                    let params = {
+                        employeeId: t.shopList[d[0]].peopleList[d[1]].id,
+                        scheduleDate: t.shopList[d[0]].peopleList[d[1]].employeeScheduleList[d[2]].scheduleDate
+                    }
+                    staffService.scheduleDel(params)
+                }else{
+                    let params = {
+                        employeeId: t.shopList[d[0]].peopleList[d[1]].id,
+                        shiftsId: t.shiftsSettingList[d[3]].id,
+                        scheduleDate: t.shopList[d[0]].peopleList[d[1]].employeeScheduleList[d[2]].scheduleDate
+                    }
+                    staffService.scheduleSet(params)
+                }
+                
             },
             showAll(shopIndex){
                 const t = this;
-                t.list[shopIndex].showAll ? t.list[shopIndex].showAll = false : t.list[shopIndex].showAll = true;
-                t.$set(t.list,shopIndex,t.list[shopIndex])
+                // for(const v of t.shopList){
+                //     v.showAll = false
+                // }
+                // t.shopList = JSON.parse(JSON.stringify(t.shopList))
+                if(!t.shopList[shopIndex].showAll){
+                    t.shopList[shopIndex].showAll = true;
+                    let storeId = t.shopList[shopIndex].id;
+                    if(!t.shopList[shopIndex].peopleList){
+                        t.getEmployeeScheduleList(storeId).then((res)=>{
+                            for(const v of res){
+                                for(const v2 of v.employeeScheduleList){
+                                    if(v2.shiftsId){
+                                        v2.shiftsName = t.shiftsSettingList[Number(v2.shiftsId) -1]
+                                    }else{
+                                        v2.shiftsName = '无'
+                                    }
+                                }
+                            }
+                            t.shopList[shopIndex].peopleList = res;
+                            t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                            t.loadDay = true;
+                            console.log(t.shopList[0].peopleList[0].employeeScheduleList)
+                        })
+                    }else{
+                        t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                    }
+                }else{
+                    t.shopList[shopIndex].showAll = false;
+                    t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                }
+                
             },
             checkBoxChange(){
                 const t = this;
+                t.loadDay = false;
+                console.log(t.checkList);
+                let ids = t.checkList.join(',');
+                let _list = t.shopList.filter((v)=>{
+                    return ids.indexOf(v.id) > -1
+                })
                 console.log(t.checkList)
+                t.shopList = JSON.parse(JSON.stringify(_list))
+                t.loadDay = true;
+                debugger
             },
             search() {
                 this.is_search = true;
             },
+            getEmployeeScheduleList(storeId){
+                const t = this;
+                let p = new Promise((resolve, reject)=>{
+                    staffService.getEmployeeScheduleList({
+                        storeId: storeId,
+                        monthDate: t.year + '-' + t.mouth
+                    }).then((res)=>{
+
+                        resolve(res)
+                    });
+                })
+                return p;
+                
+            }
 
           
         },
         mounted(){
             const t = this;
             // 门店列表
-            storeService.list({pageSize: 20,pageNumber: 1}).then((res)=>{
+            storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.shopListBack = JSON.parse(JSON.stringify(res.records));
+                for(const v of res.records){
+                    v.showAll = false;
+                }
                 t.shopList = res.records;
+                t.showAll(0)
             });
-            staffService.getEmployeeScheduleList({storeId: 2,monthDate: '2019-08'}).then((res)=>{
-                t.list = res;
-            });
-            // staffService.getSchedulingList().then((res)=>{
-            //     t.list = res;
-            //     console.log(t.list)
-            //     t.dayList = res[0].peopleList[0].dayList;
-            //     t.dayLength = res[0].peopleList[0].dayList.length
-            // });
+            // 排班列表
+            staffService.shiftsSettingList().then((res)=>{
+                res.push({
+                    shiftsName: '无',
+                    id: 0
+                })
+                t.shiftsSettingList = res;
+            })
+
 
         }
     }

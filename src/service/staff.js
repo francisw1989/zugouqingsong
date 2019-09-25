@@ -1,5 +1,35 @@
 import {$axios} from './axios.js';
 let staffService = {
+    // 删除排班
+    scheduleDel(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/employeeSchedule/record/employees/',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+     // 设置排班
+     scheduleSet(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'POST',
+                url: '/api/v1/employeeSchedule/record/employees/',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 给某个员工添加历程
     addLc(params){
         let p = new Promise((resolve, reject)=>{
