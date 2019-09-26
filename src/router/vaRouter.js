@@ -107,12 +107,12 @@ let vaRouter = [
             {
                 path: 'activityList',
                 component: resolve => require(['../view/va/activity/activityList.vue'], resolve),
-                meta: { title: '活动数据列表' },
+                meta: { title: '活动数据' },
             },
             {
                 path: 'activityRule',
                 component: resolve => require(['../view/va/activity/activityRule.vue'], resolve),
-                meta: { title: '活动规则列表' },
+                meta: { title: '活动规则' },
             },
             {
                 path: 'evaluateList',

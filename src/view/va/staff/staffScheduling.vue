@@ -40,7 +40,7 @@
                             <template  v-for="(dayItem, dayIndex) in peopleItem.employeeScheduleList">
                                 <td  class="td" :key="dayIndex">
                                     <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
-                                        <span class="pointer">{{dayItem.shiftsName}}</span>
+                                        <span class="pointer">{{dayItem.shiftsName || '无'}}</span>
                                         <el-dropdown-menu slot="dropdown">
                                             <el-dropdown-item v-for="(v, i) in shiftsSettingList" :key="v.id"  :command="shopIndex+','+peopleIndex+','+dayIndex + ',' + i">{{v.shiftsName}}</el-dropdown-item>
                                         </el-dropdown-menu>
@@ -146,16 +146,16 @@
                     t.shopList[shopIndex].showAll = true;
                     let storeId = t.shopList[shopIndex].id;
                     if(!t.shopList[shopIndex].peopleList){
-                        t.getEmployeeScheduleList(storeId).then((res)=>{
-                            for(const v of res){
-                                for(const v2 of v.employeeScheduleList){
-                                    if(v2.shiftsId){
-                                        v2.shiftsName = t.shiftsSettingList[Number(v2.shiftsId) -1]
-                                    }else{
-                                        v2.shiftsName = '无'
-                                    }
-                                }
-                            }
+                        t.getStoreEmployeeScheduleList(storeId).then((res)=>{
+                            // for(const v of res){
+                            //     for(const v2 of v.employeeScheduleList){
+                            //         if(v2.shiftsId){
+                            //             v2.shiftsName = t.shiftsSettingList[Number(v2.shiftsId) -1]
+                            //         }else{
+                            //             v2.shiftsName = '无'
+                            //         }
+                            //     }
+                            // }
                             t.shopList[shopIndex].peopleList = res;
                             t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
                             t.loadDay = true;
@@ -191,10 +191,10 @@
             search() {
                 this.is_search = true;
             },
-            getEmployeeScheduleList(storeId){
+            getStoreEmployeeScheduleList(storeId){
                 const t = this;
                 let p = new Promise((resolve, reject)=>{
-                    staffService.getEmployeeScheduleList({
+                    staffService.getStoreEmployeeScheduleList({
                         storeId: storeId,
                         monthDate: t.year + '-' + t.mouth
                     }).then((res)=>{

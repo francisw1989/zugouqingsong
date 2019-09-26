@@ -13,11 +13,11 @@
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 
                 <span class="left20">优惠券类型</span>
-                <el-select class="left10" v-model="couponType" placeholder="请选择类型" style="width: 120px">
+                <el-select class="left10" v-model="couponType" placeholder="请选择类型" style="width: 120px" clearable>
                     <el-option v-for="(v,i) in yhqTypeList" :key="i+1" :label="v" :value="i+1"></el-option>
                 </el-select>
                 <span class="left20">优惠券范围</span>
-                <el-select class="left10" v-model="couponScope" placeholder="请选择"  style="width: 120px">
+                <el-select class="left10" v-model="couponScope" placeholder="请选择"  style="width: 120px" clearable>
                     <el-option v-for="(v,i) in yhqFwList" :key="i" :label="v" :value="i"></el-option>
                 </el-select>
             </div>

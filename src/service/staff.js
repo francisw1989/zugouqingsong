@@ -1,5 +1,22 @@
 import {$axios} from './axios.js';
 let staffService = {
+    
+
+    // 查询某个门店下的所有员工 某月份的考勤记录
+    getStoreWorkingTimeList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/employeeAttendance/record/stores/'+params.storeId,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 删除排班
     scheduleDel(params){
         let p = new Promise((resolve, reject)=>{
@@ -241,8 +258,8 @@ let staffService = {
         return p;
     },
 
-    //获取员工排班列表
-    getEmployeeScheduleList(params){
+    //获取某个门店某个月的所有员工的排班记录
+    getStoreEmployeeScheduleList(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'get',

@@ -161,8 +161,8 @@
                         index: '6',
                         title: '常规活动',
                         subs: [
-                            {index: '/va/activityList',title: '活动数据列表'},
-                            {index: '/va/activityRule',title: '活动规则列表'},
+                            {index: '/va/activityList',title: '活动数据'},
+                            {index: '/va/activityRule',title: '活动规则'},
                         ]
                     },
                     {

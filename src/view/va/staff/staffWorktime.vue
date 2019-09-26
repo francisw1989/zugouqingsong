@@ -15,34 +15,44 @@
                 </p>
             </div>
             <div class=" clearfix top10">
-                <el-input v-model="select_word" placeholder="请输入员工姓" class="handle-input"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                <el-checkbox-group v-model="checkList" class="left20" style="display: inline" @change='checkBoxChange'>
+                <!-- <el-input v-model="select_word" placeholder="请输入员工姓" class="handle-input"></el-input>
+                <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button> -->
+                <el-checkbox-group v-model="checkList" class="" style="display: inline" @change='checkBoxChange' >
                     <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
             </div>
-             <el-checkbox-group v-model="typeValue" class="top20"  @change='type_change'>
+            <div class="top20">
+                <span v-for="(v, i) in typeList" :key="i" class="right10">
+                    <i :class="v.icon"></i><span class="left5">{{v.name}}</span>
+                </span>
+            </div>
+             <!-- <el-checkbox-group v-model="typeValue" class="top20"  @change='type_change' disabled>
                 <el-checkbox-button :icon='v.icon' :label="v.name"  v-for="(v, i) in typeList" :key="i" ><i :class="v.icon"></i><span class="left5">{{v.name}}</span></el-checkbox-button>
-            </el-checkbox-group>
+            </el-checkbox-group> -->
             
             <table class="m-table top20">
                 <tr class="tr2">
-                    <td>姓名</td><td>职务</td>
-                    <td v-for="(v, i) in dayList" :key="i" class="td">{{i+1}}</td>
+                    <td style="width: 80px">姓名</td><td style="width: 80px">职务</td>
+                    <template v-if="loadDay">
+                        <td v-for="(v, i) in shopList[0].peopleList[0].employeeAttendanceList" :key="i" class="td">{{i+1}}</td>
+                    </template>
                 </tr>
             </table>
-            <table class="m-table" v-for="(shopItem, shopIndex) in list" :key="shopIndex">
-                <tr class="tr"><td :colspan="dayLength+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.shopName}} (今日异常0,本月异常:0,出勤率99%)<i class="el-icon-caret-bottom left5"></i> </span></td></tr>
-                <template  v-if='shopItem.showAll' >
-                    <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
-                        <td>{{peopleItem.name}}</td>
-                        <td>{{peopleItem.position}}</td>
-                        <template  v-for="(dayItem, dayIndex) in peopleItem.dayList">
-                            <td  class="td" :key="dayIndex"><i :class="typeList[dayItem].icon"></i></td>
-                        </template>
-                    </tr>
-                </template>
-            </table>
+            <div v-if="loadDay">
+                <table class="m-table" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex"  v-if="shopItem.show">
+                    <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeAttendanceList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
+                    <template  v-if='shopItem.showAll' >
+                        <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
+                            <td style="width: 80px">{{peopleItem.employeeName}}</td>
+                            <td style="width: 80px">{{peopleItem.postBean.postName}}</td>
+                            <template  v-for="(dayItem, dayIndex) in peopleItem.employeeAttendanceList">
+                                 <td  class="td" :key="dayIndex" v-if="dayItem.status==null"><i :class="typeList[2].icon"></i></td>
+                                 <td  class="td" :key="dayIndex" v-else><i :class="typeList[dayItem.status].icon"></i></td>
+                            </template>
+                        </tr>
+                    </template>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -61,21 +71,40 @@
                 shopList: [],
                 dayLength: 0,
                 dayList: [],
-                year: '2019',
-                mouth: '8',
+                year: new Date().getFullYear(),
+                mouth: new Date().getMonth() +1,
+                //  0.请假 1正常  2.未打卡  3.休假   4.迟到  5.早退  6.迟到早退
                 typeList: [
+                    {name: '请假', icon:'el-icon-circle-close-outline'},
                     {name: '正常', icon:'el-icon-check'},
+                    {name: '未打卡', icon:'el-icon-circle-close'},
                     {name: '休班', icon:'el-icon-remove-outline'},
                     {name: '迟到', icon:'el-icon-arrow-down'},
                     {name: '早退', icon:'el-icon-arrow-up'},
-                    {name: '迟到且早退', icon:'el-icon-close'},
-                    {name: '请假', icon:'el-icon-circle-close-outline'},
+                    {name: '迟到早退', icon:'el-icon-close'},
                 ],
-                typeValue: []
+                typeValue: [],
+                loadDay: false
             }
         },
         components:{
             StaffDetail
+        },
+        watch:{
+            mouth(){
+                const t = this;
+                t.loadDay = false;
+                t.shopList[0].showAll = false
+                t.shopList[0].peopleList = null;
+                t.showAll(0)
+            },
+            year(){
+                const t = this;
+                t.loadDay = false;
+                t.shopList[0].showAll = false
+                t.shopList[0].peopleList = null;
+                t.showAll(0)
+            }
         },
         methods:{
             type_change(){
@@ -108,31 +137,84 @@
             },
             showAll(shopIndex){
                 const t = this;
-                t.list[shopIndex].showAll ? t.list[shopIndex].showAll = false : t.list[shopIndex].showAll = true;
-                t.$set(t.list,shopIndex,t.list[shopIndex])
+                // for(const v of t.shopList){
+                //     v.showAll = false
+                // }
+                // t.shopList = JSON.parse(JSON.stringify(t.shopList))
+                if(!t.shopList[shopIndex].showAll){
+                    t.shopList[shopIndex].showAll = true;
+                    let storeId = t.shopList[shopIndex].id;
+                    if(!t.shopList[shopIndex].peopleList){
+                        t.getStoreWorkingTimeList(storeId).then((res)=>{
+                            t.shopList[shopIndex].peopleList = res;
+                            t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                            t.loadDay = true;
+                            console.log(t.shopList[0].peopleList[0].employeeAttendanceList)
+                        })
+                    }else{
+                        t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                    }
+                }else{
+                    t.shopList[shopIndex].showAll = false;
+                    t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                }
+                
             },
             checkBoxChange(){
                 const t = this;
-                console.log(t.checkList)
+                if(!t.checkList.length){
+                    for(const v of t.shopList){
+                        v.show = true;
+                    }
+                    return
+                }
+                t.shopList.forEach((v, i)=>{
+                    if(t.checkList.indexOf(v.id)>-1){
+                        v.show = true;
+                        t.showAll(i);
+                        v.showAll = true;
+                    }else{
+                        v.show = false
+                    }
+                })
             },
             search() {
                 this.is_search = true;
             },
+            getStoreWorkingTimeList(storeId){
+                const t = this;
+                let p = new Promise((resolve, reject)=>{
+                    staffService.getStoreWorkingTimeList({
+                        storeId: storeId,
+                        monthDate: t.year + '-' + t.mouth
+                    }).then((res)=>{
+
+                        resolve(res)
+                    });
+                })
+                return p;
+                
+            }
 
           
         },
         mounted(){
             const t = this;
             // 门店列表
-            storeService.list({pageSize: 20,pageNumber: 1}).then((res)=>{
+            storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
+                for(const v of res.records){
+                    v.showAll = false;
+                    v.show = true;
+                }
                 t.shopList = res.records;
+                t.showAll(0)
             });
-            staffService.getStaffWorktime().then((res)=>{
-                t.list = res;
-                console.log(t.list)
-                t.dayList = res[0].peopleList[0].dayList;
-                t.dayLength = res[0].peopleList[0].dayList.length
-            });
+            // staffService.getStaffWorktime().then((res)=>{
+            //     t.list = res;
+            //     console.log(t.list)
+            //     t.dayList = res[0].peopleList[0].dayList;
+            //     t.dayLength = res[0].peopleList[0].dayList.length
+            // });
 
         }
     }

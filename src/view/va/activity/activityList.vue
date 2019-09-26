@@ -100,6 +100,7 @@
         },
         watch:{
             type(val){
+                const t = this;
                 t.getuserActivityRecord();
             },
         },
