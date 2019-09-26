@@ -8,25 +8,25 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
-                <el-input v-model="select_word" placeholder="姓名、手机号" class="handle-input"></el-input>
+                <el-input v-model="userName" placeholder="姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left20">活动类型</span>
-                <el-select class="left10" v-model="hdType" placeholder="请选择类型" style="width: 120px">
-                    <el-option v-for="item in hdTypeList" :key="item" :label="item" :value="item"></el-option>
+                <el-select class="left10" v-model="type" placeholder="请选择类型" style="width: 120px">
+                    <el-option v-for="(v,i) in ffTypeList" :key="i" :label="v" :value="i"></el-option>
                 </el-select>
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
-                <el-table-column prop="a" label="参与人姓名" width="150"></el-table-column>
-                <el-table-column prop="b" label="参与活动" width="120"></el-table-column>
-                <el-table-column prop="c" label="参与时间"></el-table-column>
-                <el-table-column prop="c" label="现金"></el-table-column>
-                <el-table-column prop="c" label="优惠券"></el-table-column>
-                <el-table-column prop="c" label="积分"></el-table-column>
+                <el-table-column prop="userName" label="参与人姓名" width="150"></el-table-column>
+                <el-table-column prop="activityTypeName" label="参与活动" width="120"></el-table-column>
+                <el-table-column prop="activityTime" label="参与时间"></el-table-column>
+                <el-table-column prop="amount" label="现金"></el-table-column>
+                <el-table-column prop="couponIds" label="优惠券"></el-table-column>
+                <el-table-column prop="score" label="积分"></el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -47,48 +47,66 @@
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                select_word: '',
+                userName: '',
                 is_search: false,
-                form: {
-                    a: '',
-                    b: '',
-                    c: ''
-                },
-                rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
-                    ]
-                },
                 idx: -1,
                 id: -1,
-
-
-                hdType: '',
-                hdTypeList: [],
+                type: '',
+                ffTypeList: [],
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1
             }
         },
         components:{
-            
+            activityService
         },
         methods:{
 
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getActivityConfigList();
             },
             search() {
-                this.is_search = true;
+                //this.is_search = true;
+                const t = this;
+                t.getCouponManagerList();
             },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            getuserActivityRecord(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber,
+                    type: t.type,
+                    userName: t.userName
+                }
+                activityService.getuserActivityRecord(params).then((res)=>{
+                    for(const v of res.records){
+                        if(v.activityType == null){
+                            v.activityTypeName = ''
+                        }else{
+                            v.activityTypeName = t.ffTypeList[v.activityType];
+                        }
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
+            }
 
+        },
+        watch:{
+            type(val){
+                t.getuserActivityRecord();
+            },
         },
         mounted(){
            const t = this;
-           activityService.getActivityList().then((res)=>{
-               t.list = res;
-           });
-           t.hdTypeList = t.$GD.hdTypeList;
-
-
+           t.ffTypeList = t.$GD.ffTypeList;
+           t.getuserActivityRecord();
         }
     }
 </script>

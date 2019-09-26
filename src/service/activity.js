@@ -1,18 +1,64 @@
+import {$axios} from './axios.js';
+
 let activityService = {
-    getActivityList(){
+    getActivityConfig(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232是是是131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '23342131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232rtt131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '2ee32131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131rr',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/activityConfig/'+params.type,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },
-
+    getuserActivityRecord(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/userActivityRecord/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //活动配置 仅支持非拼团活动
+    activityConfigActivity(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/activityConfig/activity',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    //拼团活动配置 仅支持拼团活动
+    activityConfigAssemble(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/activityConfig/assemble',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    }
     
 }
 export { activityService }

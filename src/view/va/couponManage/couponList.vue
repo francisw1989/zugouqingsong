@@ -282,8 +282,6 @@
                                 t.getCouponManagerList()
                             })
                         }
-                        
-
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -341,8 +339,21 @@
                 t.idx = index;
                 t.row = row;
                 t.form = t.row;
-                t.row.status=="1"?t.from.status=0:t.from.status=1;
-                t.handleEdit(index, row);
+                t.row.status=="1"?t.form.status=0:t.form.status=1;
+                let params = {};
+                for(let key in Form){
+                    params[key] = t.form[key]
+                }
+                if(params.couponType == 1 || params.couponType == 2){
+                    params.couponCondition = params.couponCondition * 100;
+                    params.couponDenomination = params.couponDenomination * 100;
+                }
+                if(params.couponType == 3){
+                    params.couponDenomination = params.couponDenomination * 10;
+                }
+                couponService.couponManagerEdit(params).then((res)=>{
+                    t.getCouponManagerList()
+                })
             },
             getCouponManagerList(){
                 const t = this;

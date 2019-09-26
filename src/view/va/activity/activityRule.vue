@@ -15,18 +15,15 @@
             <div class="pad20" style="" >
                 <el-form ref="form" :model="form"  :rules="rules"   label-width="130px" label-position='left'>
                     <el-form-item label="活动是否生效">
-                        <el-switch v-model="form.isShengxiao" class="left10"></el-switch>
+                        <el-switch v-model="form.status" class="left10"></el-switch>
                     </el-form-item>
-                    <div v-if='type!=4 && form.isShengxiao'>
-                        <el-form-item label="邀请人数上线" v-if='type==3'>
-                            <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="位"></el-input>
-                        </el-form-item>
+                    <div v-if='type!=4 && form.status==1'>
                         <el-form-item label="有效期开始时间">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style=""></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.startTime" value-format="yyyy-MM-dd" style=""></el-date-picker>
                             <span class="col999 left5">默认取当前时间</span>
                         </el-form-item>
                         <el-form-item label="有效期结束时间">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style=""></el-date-picker>
+                            <el-date-picker type="date" placeholder="选择日期" v-model="form.daendTimete" value-format="yyyy-MM-dd" style=""></el-date-picker>
                             <span class="col999 left5">不填表示长期有效</span>
                         </el-form-item>
                         <el-form-item label="返利方式">
@@ -38,9 +35,9 @@
                                     <p class="col999">返现（满赠）规则</p>
                                     <div class=""  v-for="(v, i) in form.fxList" :key="i" >
                                         <span>{{type==0?'充值':'消费'}}满</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                                        <el-input v-model="form.activityCondition" class="left5" style="width: 80px"></el-input>
                                         <span class="left20">返</span>
-                                        <el-input v-model="form.a" class="left5" placeholder="元" style="width: 80px"></el-input>
+                                        <el-input v-model="form.amount" class="left5" placeholder="元" style="width: 80px"></el-input>
                                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('fx', 'fxList')"></i>
                                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'fx', 'fxList')"></i>
                                     </div>
@@ -50,17 +47,17 @@
                                 </div>
                                 <div v-if="form.yhq1">
                                     <p class="col999">赠送优惠券规则</p>
-                                    <div class=""  v-for="(v, i) in form.yhqList" :key="i" >
+                                    <div class=""  v-for="(v, i) in form.yhqList" :key="v.couponId" >
                                         <span>{{type==0?'充值':'消费'}}满</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                                        <el-input v-model="form.activityCondition" class="left5" style="width: 80px"></el-input>
                                         <span class="left20">送优惠券</span>
-                                        <el-select class="left10" v-model="yhq" placeholder="请选择" style="width: 120px">
-                                            <el-option v-for="(v, i) in yhqList" :key="i" :label="v" :value="i"></el-option>
+                                        <el-select class="left10" v-model="couponIds" placeholder="请选择" style="width: 120px">
+                                            <el-option v-for="(v, i) in yhqList" :key="v.couponId" :label="v.couponName" :value="v.couponId"></el-option>
                                         </el-select>
                                         <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
                                         <span class="left5">张</span>
-                                        <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('yhq', 'yhqList')"></i>
-                                        <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'yhq', 'yhqList')"></i>
+                                        <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('couponIds', 'yhqList')"></i>
+                                        <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'couponIds', 'yhqList')"></i>
                                     </div>
                                 </div>
                                 <div class="top10">
@@ -70,9 +67,9 @@
                                     <p class="col999">赠送积分规则</p>
                                     <div class=""  v-for="(v, i) in form.jfList" :key="i" >
                                         <span>{{type==0?'充值':'消费'}}满</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
+                                        <el-input v-model="form.activityCondition" class="left5" style="width: 80px"></el-input>
                                         <span class="left20">送</span>
-                                        <el-input v-model="form.a" placeholder="分" class="left5" style="width: 80px"></el-input>
+                                        <el-input v-model="form.amount" placeholder="分" class="left5" style="width: 80px"></el-input>
                                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('jf', 'jfList')"></i>
                                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'jf', 'jfList')"></i>
                                     </div>
@@ -86,7 +83,7 @@
                                     <p class="col999">赠送储值金规则</p>
                                     <div class="" >
                                         <span>注册送</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="元"></el-input>
+                                        <el-input v-model="form.amount" class="left5" style="width: 80px" placeholder="元"></el-input>
                                     </div>
                                 </div>
                                 <div class="top10">
@@ -96,8 +93,8 @@
                                     <p class="col999">赠送优惠券规则</p>
                                     <div class="">
                                         <span>注册送</span>
-                                        <el-select class="left10" v-model="yhq" placeholder="请选择" style="width: 120px">
-                                            <el-option v-for="(v, i) in yhqList" :key="i" :label="v" :value="i"></el-option>
+                                        <el-select class="left10" v-model="couponIds" placeholder="请选择" style="width: 120px">
+                                            <el-option v-for="(v, i) in yhqList" :key="v.couponId" :label="v.couponName" :value="v.couponId"></el-option>
                                         </el-select>
                                         <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
                                         <span class="left5">张</span>
@@ -110,7 +107,7 @@
                                     <p class="col999">赠送积分规则</p>
                                     <div class="" >
                                         <span>注册送</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="分"></el-input>
+                                        <el-input v-model="form.amount" class="left5" style="width: 80px" placeholder="分"></el-input>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +119,7 @@
                                     <p class="col999">赠送储值金规则</p>
                                     <div class="" >
                                         <span>每邀请一位好友送</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="元"></el-input>
+                                        <el-input v-model="form.amount" class="left5" style="width: 80px" placeholder="元"></el-input>
                                     </div>
                                 </div>
                                 <div class="top10">
@@ -132,8 +129,8 @@
                                     <p class="col999">赠送优惠券规则</p>
                                     <div class="">
                                         <span>每邀请一位好友送</span>
-                                        <el-select class="left10" v-model="yhq" placeholder="请选择" style="width: 120px">
-                                            <el-option v-for="(v, i) in yhqList" :key="i" :label="v" :value="i"></el-option>
+                                        <el-select class="left10" v-model="couponIds" placeholder="请选择" style="width: 120px">
+                                            <el-option v-for="(v, i) in yhqList" :key="v.couponId" :label="v.couponName" :value="v.couponId"></el-option>
                                         </el-select>
                                         <el-input v-model="form.a" class="left5" style="width: 80px"></el-input>
                                         <span class="left5">张</span>
@@ -146,7 +143,7 @@
                                     <p class="col999">赠送积分规则</p>
                                     <div class="" >
                                         <span>每邀请一位好友送</span>
-                                        <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="分"></el-input>
+                                        <el-input v-model="form.amount" class="left5" style="width: 80px" placeholder="分"></el-input>
                                     </div>
                                 </div>
                             </div>
@@ -155,11 +152,11 @@
                     <div v-if='type==4'>
                         
                         <el-form-item label="拼团时间限制">
-                            <el-input v-model="form.a" class="left5" style="width: 80px" placeholder=""></el-input>
+                            <el-input v-model="form.assembleDays" class="left5" style="width: 80px" placeholder=""></el-input>
                             <span class="left10">拼团期限 </span>
                         </el-form-item>
                         <el-form-item label="拼团优惠券有效期">
-                            <el-input v-model="form.a" class="left5" style="width: 80px" placeholder=""></el-input>
+                            <el-input v-model="form.expiryDays" class="left5" style="width: 80px" placeholder=""></el-input>
                             <span class='left10'>自领取多少天</span>
                         </el-form-item>
                     </div>
@@ -180,30 +177,45 @@
 <script>
     import bus from '../../../bus';
     import {activityService} from '../../../service/activity';
+    import {couponService} from '../../../service/coupon';
 
+    const Form= {
+        assembleDays: 0,
+        couponList: [
+            {
+            activityCondition: 0,
+            amount: 0,
+            couponIds: '',
+            grantType: 0
+            }
+        ],
+        endTime: '',
+        expiryDays: 0,
+        monenyList: [
+            {
+            activityCondition: 0,
+            amount: 0,
+            couponIds: '',
+            grantType: 0
+            }
+        ],
+        scoreList: [
+            {
+            activityCondition: 0,
+            amount: 0,
+            couponIds: '',
+            grantType: 0
+            }
+        ],
+        startTime: '',
+        status: 0,
+        type: 0
+    }
     export default {
         data() {
             return {
-                form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    isShengxiao: true,
-                    fx: false,
-                    fxList: [''],
-                    yhq1: false,
-                    yhqList: [''],
-                    jf1: false,
-                    jfList: [''],
-                    czj1: '',
-                    czj2: '',
-                    czj3: '',
-                    jf2:'',
-                    jf3: '',
-                    yhq2: '',
-                    yhq3: ''
-                },
-                yhq: 0,
+                form: JSON.parse(JSON.stringify(Form)),
+                couponIds: 0,
                 yhqList: [],
                 rules: {
                     a: [
@@ -242,7 +254,9 @@
         },
         mounted(){
             const t = this;
-            t.yhqList = t.$GD.yhqList;
+            couponService.getCouponManagerList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                  t.yhqList = res.records
+            }); 
 
         }
     }
