@@ -154,7 +154,7 @@
                 this.multipleSelection = [];
             },
             handleCurrentChange(val) {
-                this.cur_page = val;
+                this.pageNumber = val;
                 this.getData();
             },
             search() {

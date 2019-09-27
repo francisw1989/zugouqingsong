@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class=" clearfix">
-                <el-input v-model="select_word" placeholder="订单编号、项目名称、技师名称、客户名称" class="handle-input"></el-input>
+                <el-input v-model="orderId" placeholder="订单编号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
             </div>
@@ -18,30 +18,30 @@
                     <el-option v-for="(v, i) in xmflList" :key="i" :label="v" :value="v"></el-option>
                 </el-select>
                 <span class="left20">开始时间</span>
-                <el-date-picker class="left10" style="width: 150px" v-model="startData" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="startTime" type="date" placeholder="选择日期"></el-date-picker>
                 <span class="left20">结束时间</span>
-                <el-date-picker class="left10" style="width: 150px" v-model="endData" type="date" placeholder="选择日期"></el-date-picker>
-                <el-radio-group v-model="neirong" class="left20" @change='radioChange'> 
+                <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="endTime" type="date" placeholder="选择日期"></el-date-picker>
+                <!-- <el-radio-group v-model="neirong" class="left20" @change='radioChange'> 
                     <el-radio label="0">全部</el-radio>
                     <el-radio label="1">有评价的内容</el-radio>
-                </el-radio-group>
+                </el-radio-group> -->
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="服务时间" width="150"></el-table-column>
-                <el-table-column prop="b" label="客户名称" width="120"></el-table-column>
-                <el-table-column prop="c" label="评分"></el-table-column>
-                <el-table-column prop="c" label="服务技师"></el-table-column>
-                <el-table-column prop="c" label="评价标签"></el-table-column>
-                <el-table-column prop="c" label="评价内容"></el-table-column>
-                <el-table-column prop="c" label="项目名称"></el-table-column>
-                <el-table-column prop="c" label="实际消费"></el-table-column>
-                 <el-table-column label="操作" width="80" align="center">
+                <el-table-column prop="orderStartTime" label="服务时间" width="150"></el-table-column>
+                <el-table-column prop="user.userName" label="客户名称" width="120"></el-table-column>
+                <el-table-column prop="user.score" label="评分"></el-table-column>
+                <el-table-column prop="orderTechnician.employeeName" label="服务技师"></el-table-column>
+                <el-table-column prop="user.tags" label="评价标签"></el-table-column>
+                <el-table-column prop="content" label="评价内容"></el-table-column>
+                <el-table-column prop="orderTechnician.itemName" label="项目名称"></el-table-column>
+                <el-table-column prop="orderTechnician.allPrice" label="实际消费"></el-table-column>
+                <!-- <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
             <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
@@ -147,7 +147,13 @@
                         { required: true, message: '请选择类型', trigger: 'change' },
                     ]
                 },
-                tags: ['环境好','技术好','服务好']
+                tags: ['环境好','技术好','服务好'],
+                total: 0,
+                pageSize: 10,
+                pageNumber: 1,
+                orderId: '',
+                startTime: '',
+                endTime: ''
             }
         },
         components:{
@@ -166,11 +172,12 @@
                 }
             },
             handleCurrentChange(val) {
-                this.cur_page = val;
-                this.getData();
+                this.pageNumber = val;
+                this.getlist();
             },
             search() {
-                this.is_search = true;
+                const t = this;
+                t.getlist();
             },
             // 评价详情
             handle1(index, row) {
@@ -180,14 +187,39 @@
             },
             saveEdit(){
                 
+            },
+            getlist(){
+                const t = this;
+                let params = {
+                    orderId: t.orderId,
+                    startTime: t.startTime,
+                    endTime: t.endTime,
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber
+                }
+                evaluateService.list(params).then((res)=>{
+                    t.list = res.records;
+                });
             }
 
         },
+        watch:{
+            startTime(){
+                const t = this;
+                t.getlist()
+            },
+            endTime(){
+                const t = this;
+                t.getlist()
+            },
+            orderId(){
+                const t = this;
+                t.getlist()
+            },
+        },
         mounted(){
            const t = this;
-           evaluateService.getEvaluateList().then((res)=>{
-               t.list = res;
-           });
+           t.getlist();
            t.xmflList = t.$GD.xmflList;
 
 
