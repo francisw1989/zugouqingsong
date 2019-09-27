@@ -18,21 +18,21 @@
                     </div>
                     <div class="top15">
                         <div v-if="tab1=='检索'" class="clearfix">
-                            <el-form  ref="form" :model="form"  :rules="rules"   label-width="70px">
-                                <el-form-item label="会员号" prop="a" style="" class="">
-                                    <el-input v-model="form.a" placeholder=""></el-input>
+                            <el-form  ref="form" :model="seachForm"  :rules="rules"   label-width="70px">
+                                <el-form-item label="会员号" style="" class="">
+                                    <el-input v-model="seachForm.memberNum" placeholder=""></el-input>
                                 </el-form-item>
-                                <el-form-item label="手机号" prop="a" style="" class="">
-                                    <el-input v-model="form.a" placeholder=""></el-input>
+                                <el-form-item label="手机号" style="" class="">
+                                    <el-input v-model="seachForm.telephoneNum" placeholder=""></el-input>
                                 </el-form-item>
-                                <el-form-item label="姓名" prop="a" style="" class="">
-                                    <el-input v-model="form.a" placeholder=""></el-input>
+                                <el-form-item label="姓名" style="" class="">
+                                    <el-input v-model="seachForm.userName" placeholder=""></el-input>
                                 </el-form-item>
-                                <el-form-item label="房间号" prop="a" style="" class="">
-                                    <el-input v-model="form.a" placeholder=""></el-input>
+                                <el-form-item label="房间号" style="" class="">
+                                    <el-input v-model="seachForm.roomName" placeholder=""></el-input>
                                 </el-form-item>
                             </el-form>
-                            <div class="btns btns1 absolute" style="left: 0; bottom: 0" @click='seach'>检索</div>
+                            <div class="btns btns1 absolute" style="left: 0; bottom: 0" @click="customSeach('seachForm')">检索</div>
                         </div>
                         <div v-if="tab1=='信息'" class="clearfix">
                             <div class="clearfix">
@@ -42,28 +42,28 @@
                             </div>
                             <el-form class="top15"  ref="form" :model="form1"  label-width="80px" label-position='left'>
                                 <el-form-item label="会员号" style="" class="">
-                                    242343242
+                                    {{userForm.memberNum}}
                                 </el-form-item>
                                 <el-form-item label="手机号" style="" class="">
-                                    324324234
+                                    {{userForm.telephoneNum}}
                                 </el-form-item>
                                 <el-form-item label="姓名" style="" class="">
-                                    张三
+                                    {{userForm.userName}}
                                 </el-form-item>
                                 <el-form-item label="性别" style="" class="">
-                                    男
+                                    {{userForm.sex==0?'女':'男'}}
                                 </el-form-item>
                                 <el-form-item label="生日" style="" class="">
-                                    2009-05-06
+                                    {{userForm.birthday}}
                                 </el-form-item>
                                 <el-form-item label="积分" style="" class="">
-                                    32
+                                    {{userForm.score}}
                                 </el-form-item>
                                 <el-form-item label="虚拟账户" style="" class="">
-                                    3232
+                                    {{userForm.savingsAccount/1000}}
                                 </el-form-item>
                                 <el-form-item label="储值账户" style="" class="">
-                                    1200
+                                    {{userForm.virtualAccount/1000}}
                                     <el-button type="primary" class="left10">充值</el-button>
                                     <div class="colye">余额不足</div>
                                 </el-form-item>
@@ -109,10 +109,10 @@
                                     </template>
                                 </table>
                             </div>
-                            <div class="pagination">
+                            <!-- <div class="pagination">
                                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
                                 </el-pagination>
-                            </div>
+                            </div> -->
                         </div>
                     </el-col>
                     <el-col v-if="tab1=='信息'" style="height: 100%; padding: 5px 5px 5px 0" :span="8">
@@ -271,11 +271,22 @@
         b: '',
         c: ''
     }
-
+    const SeachForm = {
+        memberNum: '',
+        telephoneNum:'',
+        userName: '',
+        roomName: '',
+    }
     import {cashierService} from '../../../service/cashier';
+    import {orderService} from '../../../service/order';
     export default {
         data() {
             return {
+                seachForm: JSON.parse(JSON.stringify(SeachForm)),
+                userForm: {},
+                appointList: [], // 待到店列表
+                itemClassList: [], // 项目分类列表
+                itemList: [], // 项目列表
                 list: [],
                 tab1: '检索',
                 tab2: 0,
@@ -311,7 +322,8 @@
                 payTypeList:['扫码支付', '现金','支付宝','微信','银联'],
                 payType: '0',
                 onlineBookingStep: 0,
-                underLineBookingStep: 0
+                underLineBookingStep: 0,
+                
             }
         },
         components: {
@@ -321,6 +333,17 @@
             
         },
         methods:{
+            getAppointList(){
+                const t = this;
+                cashierService.getAppointList({
+                    pageSize: 100, 
+                    pageNumber: 1,
+                    storeId: 2,
+                    userId: ''
+                }).then((res)=>{
+                    t.appointList = res.records
+                });
+            },
             confirmArrived(v){
                 const t = this;
                 v.isArrived = true;
@@ -329,9 +352,25 @@
             handleChange(){
 
             },
-            seach(){
+            customSeach(seachform){
                 const t = this;
-                t.tab1 = '信息'
+                t.tab1 = '信息';
+                 this.$refs[seachform].validate((valid) => {
+                    if (valid) {
+                        let params = {};
+                        // t.editVisible = false;
+                        for(let key in SeachForm){
+                            params[key] = t.seachForm[key]
+                        }
+                        cashierService.customSeach(params).then(()=>{
+                            
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+                
             },
             payTypeChange(){
 
@@ -406,10 +445,33 @@
             
             back(){
                 window.location.href = '/'
+            },
+            getItemClassList(){
+                const t = this;
+                orderService.getItemClassList().then((res)=>{
+                    t.itemClassList = res.records;
+                    t.getItemList(t.itemClassList[0].id)
+                })
+            },
+            getItemList(itemClassId){
+                const t = this;
+                orderService.getItemList({
+                    pageSize: 100,
+                    pageNumber: 1,
+                    itemClassId: itemClassId
+                }).then((res)=>{
+                    t.itemList = res.records
+                }); 
             }
+
         },
         mounted(){
-           const t = this;
+            const t = this;
+            t.getAppointList();
+            t.getItemClassList();
+            
+
+
            setTimeout(()=>{
                 this.$notify({
                     message: '您有新的订单',

@@ -7,7 +7,11 @@
             </el-breadcrumb>
         </div>
         <div class="container">
-            <el-table :data="list"  border class="table" ref="multipleTable">
+            <div class="handle-box align-right">
+                <el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del" @click="handle1">新增</el-button>
+                <!-- <el-button type="danger" icon="el-icon-delete" class="handle-del left10" @click="delAll">批量删除</el-button> -->
+            </div>
+            <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="evaluateLevel" label="评价等级名称" width="150"></el-table-column>
@@ -16,6 +20,7 @@
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini" @click="dodelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -26,9 +31,9 @@
                 <el-form-item label="评价等级名称" prop="evaluateLevel">
                     <el-input v-model="form.evaluateLevel"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="分值" prop="a">
-                    <el-input v-model="form.a" style="width: 80px" placeholder="分"></el-input>
-                </el-form-item> -->
+                <el-form-item label="分值" prop="evaluateScore">
+                    <el-input v-model="form.evaluateScore" style="width: 80px" placeholder="分"></el-input>
+                </el-form-item>
                 <el-form-item label="评价标签">
                     <el-tag :key="tag" v-for="tag in form.evaluateLabel" closable :disable-transitions="false" @close="handleClose(tag)" class="right5">
                     {{tag}}
@@ -59,7 +64,7 @@
         id: '',
         evaluateScore: '',
         evaluateLevel: '',
-        evaluateLabel: ''
+        evaluateLabel: []
     }
     export default {
         data() {
@@ -76,7 +81,10 @@
                 rules: {
                     evaluateLevel: [
                         { required: true, message: '请输入', trigger: 'change' },
-                    ]
+                    ],
+                    evaluateScore:[
+                        { required: true, message: '请输入', trigger: 'change' },
+                    ],
                 },
                 idx: -1,
                 id: -1,
@@ -127,9 +135,16 @@
                         }
                         params.evaluateLabel = params.evaluateLabel.join(',')
                         console.log(params);
-                        evaluateService.saveEdit(params).then(()=>{
-                            t.getlist();
-                        });
+                        if(t.idx != -1){
+                            evaluateService.saveEdit(params).then(()=>{
+                                t.getlist();
+                            });
+                        }else{
+                            evaluateService.add(params).then(()=>{
+                                t.getlist();
+                            });
+                        }
+                        
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -137,6 +152,18 @@
                 });
                 
                 
+            },
+            dodelete(index, row){
+                const t = this;
+                let params = {
+                    id: row.id
+                }
+                this.$confirm('确认删除？').then(() => {
+                    evaluateService.delete(params).then((res)=>{
+                        this.$message.success('删除成功！');
+                        t.getlist();
+                    })
+                }).catch(_ => {});
             },
             handle1(index, row) {
                 if(row){
@@ -148,7 +175,6 @@
                     this.idx = '-1';
                     this.id = '';
                     this.form = JSON.parse(JSON.stringify(Form));
-                    
                 }
                 
                 this.editVisible = true;

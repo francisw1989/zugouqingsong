@@ -14,8 +14,8 @@
             </div>
             <div v-if='showMore' class="top10">
                 <span class="">项目分类</span>
-                <el-select class="left10" v-model="form.a" placeholder="请选择项目分类" filterable>
-                    <el-option v-for="(v, i) in xmflList" :key="i" :label="v" :value="v"></el-option>
+                <el-select class="left10"  clearable v-model="itemClassId" placeholder="请选择项目分类" filterable>
+                    <el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName"  :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">开始时间</span>
                 <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="startTime" type="date" placeholder="选择日期"></el-date-picker>
@@ -29,14 +29,14 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="orderStartTime" label="服务时间" width="150"></el-table-column>
+                <el-table-column prop="orderTechnician.orderStartTime" label="服务时间" width="150"></el-table-column>
                 <el-table-column prop="user.userName" label="客户名称" width="120"></el-table-column>
                 <el-table-column prop="user.score" label="评分"></el-table-column>
                 <el-table-column prop="orderTechnician.employeeName" label="服务技师"></el-table-column>
                 <el-table-column prop="user.tags" label="评价标签"></el-table-column>
                 <el-table-column prop="content" label="评价内容"></el-table-column>
                 <el-table-column prop="orderTechnician.itemName" label="项目名称"></el-table-column>
-                <el-table-column prop="orderTechnician.allPrice" label="实际消费"></el-table-column>
+                <el-table-column prop="orderTechnician.actualEmployeePrice" label="实际消费"></el-table-column>
                 <!-- <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
@@ -44,7 +44,7 @@
                 </el-table-column> -->
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"  :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -106,6 +106,7 @@
 <script>
     import bus from '../../../bus';
     import {evaluateService} from '../../../service/evaluate';
+    import {orderService} from '../../../service/order';
     export default {
         data() {
             return {
@@ -153,7 +154,9 @@
                 pageNumber: 1,
                 orderId: '',
                 startTime: '',
-                endTime: ''
+                endTime: '',
+                itemClassId: '',
+                itemClassList: []
             }
         },
         components:{
@@ -194,11 +197,16 @@
                     orderId: t.orderId,
                     startTime: t.startTime,
                     endTime: t.endTime,
+                    itemClassId: t.itemClassId,
                     pageSize: t.pageSize,
                     pageNumber: t.pageNumber
                 }
                 evaluateService.list(params).then((res)=>{
                     t.list = res.records;
+                    for(const v of t.list){
+                        v.orderTechnician.actualEmployeePrice = orderTechnician.actualEmployeePrice/1000
+                    }
+                    t.total = res.total
                 });
             }
 
@@ -212,15 +220,19 @@
                 const t = this;
                 t.getlist()
             },
-            orderId(){
+            itemClassId(){
                 const t = this;
                 t.getlist()
-            },
+            }
         },
         mounted(){
            const t = this;
            t.getlist();
-           t.xmflList = t.$GD.xmflList;
+           orderService.getItemClassList().then((res)=>{
+               t.itemClassList = res.records;
+               
+           })
+        //    t.xmflList = t.$GD.xmflList;
 
 
         }
