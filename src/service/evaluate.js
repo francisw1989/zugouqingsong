@@ -33,5 +33,23 @@ let evaluateService = {
         })
         return p;
     },
+    // /api/v1/evaluationLabel/{id}
+    // 根据id修改标签   
+    saveEdit(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/evaluationLabel/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
 }
+
+
 export { evaluateService }

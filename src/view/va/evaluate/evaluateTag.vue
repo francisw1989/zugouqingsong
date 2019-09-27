@@ -10,7 +10,7 @@
             <el-table :data="list"  border class="table" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="evaluateLevel" label="评价" width="150"></el-table-column>
+                <el-table-column prop="evaluateLevel" label="评价等级名称" width="150"></el-table-column>
                 <el-table-column prop="evaluateScore" label="对应分值" width="120"></el-table-column>
                 <el-table-column prop="evaluateLabel" label="标签"></el-table-column>
                 <el-table-column label="操作" width="150" align="center">
@@ -21,18 +21,16 @@
             </el-table>
 
         </div>
-        <el-dialog :title="idx==-1?'新增优惠券':'修改优惠券'" :visible.sync="editVisible" width="500px">
+        <el-dialog :title="idx==-1?'新增':'修改'" :visible.sync="editVisible" width="500px">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px">
-                <el-form-item label="评价名称" prop="a">
-                    <el-select v-model="form.pjfl" placeholder="">
-                        <el-option v-for="item in pjflList" :key="item" :label="item" :value="item"></el-option>
-                    </el-select>
+                <el-form-item label="评价等级名称" prop="evaluateLevel">
+                    <el-input v-model="form.evaluateLevel"></el-input>
                 </el-form-item>
                 <!-- <el-form-item label="分值" prop="a">
                     <el-input v-model="form.a" style="width: 80px" placeholder="分"></el-input>
                 </el-form-item> -->
                 <el-form-item label="评价标签">
-                    <el-tag :key="tag" v-for="tag in form.tags" closable :disable-transitions="false" @close="handleClose(tag)" class="right5">
+                    <el-tag :key="tag" v-for="tag in form.evaluateLabel" closable :disable-transitions="false" @close="handleClose(tag)" class="right5">
                     {{tag}}
                     </el-tag>
                     <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="mini" @keyup.enter.native="handleInputConfirm"
@@ -73,14 +71,11 @@
                 select_word: '',
                 is_search: false,
                 form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    tags: ['dsfsd']
+                    
                 },
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    evaluateLevel: [
+                        { required: true, message: '请输入', trigger: 'change' },
                     ]
                 },
                 idx: -1,
@@ -103,7 +98,7 @@
 
             },
             handleClose(tag) {
-                this.form.tags.splice(this.form.tags.indexOf(tag), 1);
+                this.form.evaluateLabel.splice(this.form.evaluateLabel.indexOf(tag), 1);
             },
             showInput() {
                 this.inputVisible = true;
@@ -115,40 +110,45 @@
             handleInputConfirm() {
                 let inputValue = this.inputValue;
                 if (inputValue) {
-                    this.form.tags.push(inputValue);
+                    this.form.evaluateLabel.push(inputValue);
                 }
                 this.inputVisible = false;
                 this.inputValue = '';
             },
             // 保存编辑
-            saveEdit() {
-                this.editVisible = false;
-                this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                if(this.tableData[this.idx].id === this.id){
-                    this.$set(this.tableData, this.idx, this.form);
-                }else{
-                    for(let i = 0; i < this.tableData.length; i++){
-                        if(this.tableData[i].id === this.id){
-                            this.$set(this.tableData, i, this.form);
-                            return ;
+            saveEdit(form) {
+                const t = this;
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        let params = {};
+                        t.editVisible = false;
+                        for(let key in Form){
+                            params[key] = t.form[key]
                         }
+                        params.evaluateLabel = params.evaluateLabel.join(',')
+                        console.log(params);
+                        evaluateService.saveEdit(params).then(()=>{
+                            t.getlist();
+                        });
+                    } else {
+                        console.log('error submit!!');
+                        return false;
                     }
-                }
+                });
+                
+                
             },
             handle1(index, row) {
                 if(row){
                     this.idx = index;
                     this.id = row.id;
-                    this.form = row;
+                    this.form = JSON.parse(JSON.stringify(row));
+                    this.form.evaluateLabel = this.form.evaluateLabel.split(',')
                 }else{
                     this.idx = '-1';
                     this.id = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                        tags: []
-                    }
+                    this.form = JSON.parse(JSON.stringify(Form));
+                    
                 }
                 
                 this.editVisible = true;
