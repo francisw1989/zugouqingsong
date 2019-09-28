@@ -395,7 +395,7 @@
                         t.jwd = t.form.x + "," + t.form.y;
                         t.map.centerAndZoom(poi.point, 15);
                         //创建标注位置
-                        var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
+                        var myIcon = new BMap.Icon(img, new BMap.Size(50,50));
                         t.marker = new BMap.Marker(poi.point,{icon:myIcon});  // 创建标注
                         t.map.addOverlay(t.marker);              // 将标注添加到地图中
                         t.markerDrag();
@@ -414,7 +414,7 @@
                 if(t.row){
                     point = new BMap.Point(t.row.y, t.row.x)
                 }
-                var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
+                var myIcon = new BMap.Icon(img, new BMap.Size(50,50));
                 t.marker = new BMap.Marker(point,{icon:myIcon});  // 创建标注
                 t.map.addOverlay(t.marker);              // 将标注添加到地图中
                 t.map.centerAndZoom(point, 13);
@@ -435,7 +435,7 @@
                     t.form.x = e.point.lat;
                     t.form.y = e.point.lng;
                     //创建标注位置
-                    var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
+                    var myIcon = new BMap.Icon(img, new BMap.Size(50,50));
                     t.marker = new BMap.Marker(e.point,{icon:myIcon});  // 创建标注
                     t.map.addOverlay(t.marker);              // 将标注添加到地图中
                     t.markerDrag();
