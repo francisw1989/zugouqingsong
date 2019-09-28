@@ -83,12 +83,13 @@
 </template>
 <script>
     import bus from '../../../bus';
+    import {roomService} from '../../../service/room';
     import {storeService} from '../../../service/store';
     import {dashboardService} from '../../../service/dashboard.js'
     var echarts = require('echarts');
     export default {
         name: 'Detail',
-        props: ['row', 'info'],
+        props: ['id'],
         data() {
             return {
                 shopList: [],
@@ -148,10 +149,20 @@
                     }]
                 });
             },
+            getInfo(){
+                const t = this;
+                let params = {
+                    id: t.id
+                }
+                roomService.viewRoom(params).then((res)=>{
+                    
+                })
+            }
         },
         mounted(){
             const t = this;
-            console.log(t.row)
+            t.getInfo();
+
             // t.incomeChart = echarts.init(document.getElementById('incomeChart'));
             // t.$commonService.getShopList().then((res)=>{
             //     t.shopList = res

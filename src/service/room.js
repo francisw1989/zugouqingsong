@@ -1,5 +1,20 @@
 import {$axios} from './axios.js';
 let roomService = {
+    // 删除房间
+    delete(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'delete',
+                url: '/api/v1/room/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/room/{id}
     // 根据id修改房间信息
     editRoom(params){
@@ -36,6 +51,7 @@ let roomService = {
     // 新增房间
     addRoom(params){
         let p = new Promise((resolve, reject)=>{
+            params.storeId = window.Store.id;
             let data = {
                 method: 'post',
                 url: '/api/v1/room/',
@@ -52,6 +68,7 @@ let roomService = {
     // 查询房间信息列表
     getRoomList(params){
         let p = new Promise((resolve, reject)=>{
+            params.storeId = window.Store.id;
             let data = {
                 method: 'get',
                 url: '/api/v1/room/',

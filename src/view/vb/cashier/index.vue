@@ -283,6 +283,7 @@
     }
     import {cashierService} from '../../../service/cashier';
     import {orderService} from '../../../service/order';
+    import {roomService} from '../../../service/room';
     export default {
         data() {
             return {
@@ -466,6 +467,12 @@
                 }).then((res)=>{
                     t.itemList = res.records
                 }); 
+            },
+            getRoomList(){
+                const t = this;
+                roomService.getRoomList({pageSize: '100',pageNumber: '1',}).then((res)=>{
+                    t.roomList = res.records
+                })
             }
 
         },
@@ -473,7 +480,7 @@
             const t = this;
             t.getAppointList();
             t.getItemClassList();
-            
+            t.getRoomList();
 
 
            setTimeout(()=>{

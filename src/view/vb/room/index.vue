@@ -15,19 +15,24 @@
             <div class="clearfix top20">
                 <el-card v-for="(v, i) in list" :key="i" shadow="hover" style="width: 300px;" class="left roomBox">
                     <div slot="header" class="clearfix">
-                        <div class="right top5">
+                        <div class="right ">
                             <i class="el-icon-delete  icon" @click="handleDelete(i, v)" ></i>
                             <i class="el-icon-edit left10 icon" @click="handleEdit(i, v)"></i>
                             <i class="el-icon-view  left10 icon" @click="view(i, v)"></i>
 
                         </div>
-                        <span>101兰花厅</span>
+                        <span><span class="col000 font16">{{v.name}}</span><span class="left10 col999">{{v.useNum||0}}/{{v.peopleNum}}</span> </span>
                     </div>
-                    <div>
-                        <el-tag class="tag">默认标签</el-tag>
-                        <el-tag class="tag">默认标签</el-tag>
-                        <el-tag class="tag">默认标签</el-tag>
-                        <el-tag class="tag">默认标签</el-tag>
+                    <div class="col999">{{v.labels}}</div>
+                    <div style="height: 100px; overflow: auto">
+                        <div class="top10">
+                            <el-tag class="tag" v-for="(item, i) in v.itemAccount" :key="i">
+                                {{item.item_class_name}}
+                                <i class="el-icon-lx-friend"></i>
+                                ({{item.total}})
+                            </el-tag>
+                            
+                        </div>
                     </div>
                 </el-card>
             </div>
@@ -36,14 +41,14 @@
         <!-- 编辑弹出框 -->
         <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="400px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="房间名称" prop="a">
-                    <el-input v-model="form.a"></el-input>
+                <el-form-item label="房间名称" prop="name">
+                    <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="可容纳人数" prop="a">
-                    <el-input v-model="form.a"></el-input>
+                <el-form-item label="可容纳人数" prop="labels">
+                    <el-input v-model="form.peopleNum"></el-input>
                 </el-form-item>
-                <el-form-item label="房间标签" prop="a">
-                    <el-input v-model="form.a" placeholder="请用逗号隔开"></el-input>
+                <el-form-item label="房间标签" prop="peopleNum">
+                    <el-input v-model="form.labels" placeholder=""></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -52,17 +57,9 @@
             </span>
         </el-dialog>
 
-        <!-- 删除提示框 -->
-        <el-dialog title="提示" :visible.sync="delVisible" width="300px" left>
-            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="delVisible = false">取 消</el-button>
-                <el-button type="primary" @click="deleteRow">确 定</el-button>
-            </span>
-        </el-dialog>
         <!-- 查看 -->
-        <el-dialog title="房间详情" :visible.sync="viewVisible" width="40%">
-            <Detail :row='row'></Detail>
+        <el-dialog title="房间详情" :visible.sync="viewVisible" width="900px">
+            <Detail :id='id' v-if='viewVisible'></Detail>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
             </span>
@@ -71,9 +68,10 @@
 </template>
 <script>
     const Form = {
-        a: '',
-        b: '',
-        c: ''
+        id: '',
+        name: '',
+        labels: '',
+        peopleNum: ''
     }
     import bus from '../../../bus';
     import {roomService} from '../../../service/room';
@@ -144,26 +142,40 @@
                 this.editVisible = true;
             },
             handleDelete(index, row) {
-                this.idx = index;
-                this.id = row.id;
-                this.delVisible = true;
+                const t = this;
+                let params = {
+                    id: row.id
+                }
+                this.$confirm('确认删除？').then(() => {
+                    roomService.delete(params).then((res)=>{
+                        this.$message.success('删除成功！');
+                        t.getRoomList();
+                    })
+                }).catch(_ => {});
             },
              // 保存编辑
             saveEdit(form) {
+                const t = this;
                 this.$refs[form].validate((valid) => {
                     if (valid) {
                         this.editVisible = false;
-                        this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                        if(this.list[this.idx].id === this.id){
-                            this.$set(this.list, this.idx, this.form);
-                        }else{
-                            for(let i = 0; i < this.list.length; i++){
-                                if(this.list[i].id === this.id){
-                                    this.$set(this.list, i, this.form);
-                                    return ;
-                                }
-                            }
+                        let params = {};
+                        this.editVisible = false;
+                        for(let key in Form){
+                            params[key] = t.form[key]
                         }
+                        if(t.idx){
+                            roomService.editRoom(params).then((res)=>{
+                                this.$message.success('操作成功！');
+                                t.getRoomList();
+                            })
+                        }else{
+                            roomService.addRoom(params).then((res)=>{
+                                this.$message.success('操作成功！');
+                                t.getRoomList();
+                            })
+                        }
+                        
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -190,20 +202,21 @@
                 }
             },
             getRoomList(){
+                const t = this;
                 let params = {
                     pageSize: '100',
                     pageNumber: '1',
                     name: t.name
                 }
                 roomService.getRoomList(params).then((res)=>{
-
+                    t.list = res.records
                 })
             },
         },
         
         mounted(){
            const t = this;
-           
+           t.getRoomList();
            roomService.list().then((res)=>{
                t.list = res;
            })

@@ -69,7 +69,7 @@
                 dayLength: 0,
                 dayList: [],
                 year: new Date().getFullYear(),
-                mouth: new Date().getMonth() +1,
+                mouth: '',
                 loadDay: false,
                 shiftsSettingList: []
             }
@@ -210,6 +210,8 @@
         },
         mounted(){
             const t = this;
+            t.mouth = new Date().getMonth() +1;
+            t.mouth = t.mouth<10?'0'+t.mouth : t.mouth;
             // 门店列表
             storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
                 for(const v of res.records){
