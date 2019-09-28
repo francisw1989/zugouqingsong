@@ -410,7 +410,20 @@
                 let map = new BMap.Map("map");// 创建地图实例  
                 t.map = map;
                 // 创建中心点坐标
-                t.map.centerAndZoom('南京', 13);
+                let point = '南京';
+                if(t.row){
+                    point = new BMap.Point(t.row.y, t.row.x)
+                }
+                var myIcon = new BMap.Icon(img, new BMap.Size(100,100));
+                t.marker = new BMap.Marker(point,{icon:myIcon});  // 创建标注
+                t.map.addOverlay(t.marker);              // 将标注添加到地图中
+                t.map.centerAndZoom(point, 13);
+
+
+                // var point = new BMap.Point(120.391655,36.067588);  // 创建点坐标
+                // t.map.centerAndZoom(point, 15);
+
+
                 t.map.addControl(new BMap.NavigationControl());
                 t.map.enableScrollWheelZoom(true);
                 t.geoc = new BMap.Geocoder();
