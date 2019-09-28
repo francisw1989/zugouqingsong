@@ -224,4 +224,7 @@ let commonService = {
         },1000)
     }
 }
+window.Store = {
+    id: 2
+}
 export { commonService }

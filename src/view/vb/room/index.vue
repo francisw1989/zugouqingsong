@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="select_word" placeholder="请输入房间名称" class="handle-input"></el-input>
+                <el-input v-model="name" placeholder="请输入房间名称" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="right" @click="handleEdit">新增</el-button>
             </div>
@@ -101,7 +101,8 @@
                 row: {},
                 bannerTypeList: [],
                 bannerTypeSel: '技师',
-                viewVisible: false
+                viewVisible: false,
+                name: '',
                 
                 
             }
@@ -121,7 +122,7 @@
                 this.row = row;
             },
             search() {
-                this.is_search = true;
+                this.getRoomList();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -187,10 +188,22 @@
                         }
                     }
                 }
-            }
+            },
+            getRoomList(){
+                let params = {
+                    pageSize: '100',
+                    pageNumber: '1',
+                    name: t.name
+                }
+                roomService.getRoomList(params).then((res)=>{
+
+                })
+            },
         },
+        
         mounted(){
            const t = this;
+           
            roomService.list().then((res)=>{
                t.list = res;
            })

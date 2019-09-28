@@ -276,6 +276,10 @@
         telephoneNum:'',
         userName: '',
         roomName: '',
+        pageSize: '100',
+        pageNumber: '1'  
+        
+
     }
     import {cashierService} from '../../../service/cashier';
     import {orderService} from '../../../service/order';
@@ -355,7 +359,7 @@
             customSeach(seachform){
                 const t = this;
                 t.tab1 = '信息';
-                 this.$refs[seachform].validate((valid) => {
+                this.$refs[seachform].validate((valid) => {
                     if (valid) {
                         let params = {};
                         // t.editVisible = false;

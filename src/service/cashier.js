@@ -1,7 +1,7 @@
 import {$axios} from './axios.js';
 let cashierService = {
     //     /api/v1/custom/
-    // 根据条件检索会员
+    // 根据条件检索会员订单
     customSeach(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
