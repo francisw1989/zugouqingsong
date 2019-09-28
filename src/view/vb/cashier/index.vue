@@ -77,7 +77,7 @@
                 <el-row style="height: 100%;">
                     <el-col style="height: 100%; padding: 5px 5px 5px 0" :span="tab1=='信息'?16:24">
                         <div class="area" >
-                            <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待到店(24)</div>
+                            <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待到店({{appointList.length}})</div>
                             <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
                             <div style="height: 80%; overflow: auto">
                                 <table class="m-table3">
@@ -89,7 +89,7 @@
                                         <td>手机号</td>
                                         <td>距离到店</td>
                                     </tr>
-                                    <template v-for="(v, i) in list">
+                                    <template v-for="(v, i) in appointList">
                                         <tr>
                                             <td>{{v.a}}</td>
                                             <td>{{v.a}}</td>
