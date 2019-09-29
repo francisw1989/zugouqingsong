@@ -26,7 +26,7 @@
                     <span v-if="!edit.initiationTime">{{form.initiationTime}} <i class="el-icon-edit left20 pointer" @click="openEdit('initiationTime')"></i> </span>
                     <el-date-picker v-if="edit.initiationTime" ref="initiationTime"  value-format="yyyy-MM-dd" v-model="form.initiationTime" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="出身日期" >
+                <el-form-item label="出生日期" >
                     <span v-if="!edit.birthday">{{form.birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
                     <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>

@@ -1,24 +1,34 @@
 import {$axios} from './axios.js';
 let orderService = {
-    getOrderList(){
+    //获取订单列表
+    getOrderList(params){
         let p = new Promise((resolve, reject)=>{
-            let data = [
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-                {a: '232131',b:'但是',c:'水电费',d:'地方',e:'df'},
-            ]
-            resolve(data)
+            let data = {
+                method: 'get',
+                url: '/api/v1/order/list',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                for(const v of res.records){
+                    v.payPrice = v.payPrice/100;
+                }
+                resolve(res)
+            })
         })
         return p;
     },
-    getOrderDetal(){
+    getOrderDetails(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
-                a: 'dsfdsf'
+                method: 'get',
+                url: '/api/v1/order/'+params.id,
+                params: params,
+                loading: true,
             }
-            resolve(data)
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
         })
         return p;
     },

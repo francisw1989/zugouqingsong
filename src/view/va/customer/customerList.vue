@@ -47,7 +47,7 @@
 
         <!-- 详情 -->
         <el-dialog title="客户详情" :visible.sync="viewVisible" width="850px">
-            <CustomerDetail></CustomerDetail>
+            <CustomerDetail :row="row" v-if="viewVisible"></CustomerDetail>
         </el-dialog>
 
 
@@ -100,10 +100,10 @@
                  const t = this;
                 t.getCustomerList();
             },
-            // 员工详情
+            //客户详情
             handle1(index, row) {
                 this.idx = index;
-                this.id = row.id;
+                this.row = row;
                 this.viewVisible = true;
             },
             handle2(index, row){

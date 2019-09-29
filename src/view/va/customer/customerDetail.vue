@@ -4,37 +4,37 @@
             <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
-                        <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
-                        <div class="ghWap font12">工号:3242342</div>
+                        <img :src="form.photo" alt="" class="tx1 left">
+                        <div class="ghWap font12">工号:{{form.memberNum}}</div>
                     </div>
                 </el-col>
                 <el-col :span="17">
-                    <p class="font16b top10 ">张三  <span class="left20 font12 col999">男 26岁</span> </p>
+                    <p class="font16b top10 ">{{form.userNickname}}  <span class="left20 font12 col999">{{form.sexName}} {{form.age}}岁</span> </p>
                     <p class="top5">
-                        <el-tag type="success" size="small">¥1213.00</el-tag>
-                        <el-tag type="info" size="small" class="left5">VIP-3</el-tag>
-                        <el-tag type="danger" size="small" class="left5">12</el-tag>
+                        <el-tag type="success" size="small">¥{{form.balance}}</el-tag>
+                        <el-tag type="info" size="small" class="left5">VIP-{{form.memberLevel}}</el-tag>
+                        <el-tag type="danger" size="small" class="left5">{{form.score}}</el-tag>
                     </p>
                 </el-col>
             </el-row>
             <el-form ref="form" :model="form"  :rules="rules"   label-width="80px" class="staffForm top20">
                 <el-form-item label="联系电话" >
-                    18238383838
+                    {{form.telephoneNum}}
                 </el-form-item>
                 <el-form-item label="注册时间" >
-                    2019-09-09
+                    {{form.createTime}}
                 </el-form-item>
-                <el-form-item label="出身日期" >
-                    <span v-if="!edit.c">{{form.c}} <i class="el-icon-edit left20 pointer" @click="openEdit('c')"></i> </span>
-                    <el-date-picker v-if="edit.c" ref="c"  value-format="yyyy-MM-dd" v-model="form.c" type="date" placeholder="选择日期"></el-date-picker>
+                <el-form-item label="出生日期" >
+                    <span v-if="!edit.birthday">{{form.birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
+                    <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="黑名单" >
-                    <el-switch v-model="form.hei" class=""></el-switch>
-                    <span class="col999 left5">2019-7-11 12：00修改</span>
-                    <p class="top5">服务时轻薄技术小妹，小妹奋起反抗！</p>
+                    <el-switch v-model="form.inBlacklist" class=""></el-switch>
+                    <span class="col999 left5">{{form.updateTime}}修改</span>
+                    <p class="top5">{{form.userTags?form.userTags.tags:''}}</p>
                 </el-form-item>
                 <el-form-item label="红名单" >
-                    <el-switch v-model="form.hong" class=""></el-switch>
+                    <el-switch v-model="form.inRedlist" class=""></el-switch>
                 </el-form-item>
                 
             </el-form>
@@ -89,80 +89,32 @@
                     </el-form>
                 </div>
                 <div v-if="tabName=='服务明细'">
-                    <p class="font20 col000  clearfix"><span class="right ">本月共服务8单</span>服务订单</p>
-                    <div class="pad15TB bor_btm_so">
+                    <p class="font20 col000  clearfix"><span class="right ">本月共服务{{orderTotalNum}}单</span>服务订单</p>
+                    <div v-for="(v) in orderRecordList" :key="v.id" class="pad15TB bor_btm_so">
                         <p class="col999">
-                            <span>2019-08-02 21：00</span>
-                            <span class="left20">颈椎放松</span>
-                            <span class="left20">弘扬总店</span>
-                            <span class="left20">拼团</span>
-                            <span class="left20">120元</span>
+                            <span>{{v.createTime}}</span>
+                            <span class="left20">{{v.itemNames}}</span>
+                            <span class="left20">{{v.storeName}}</span>
+                            <span class="left20">{{v.isAssemble==1?'拼团':''}}</span>
+                            <span class="left20">{{v.payPrice}}元</span>
                         </p>
                         <p class="">
-                            <span class="verMid">张三</span>
-                            <span class="left20 verMid">5分</span>
-                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
-                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
-                        </p>
-                    </div>
-                    <div class="pad15TB bor_btm_so">
-                        <p class="col999">
-                            <span>2019-08-02 21：00</span>
-                            <span class="left20">颈椎放松</span>
-                            <span class="left20">弘扬总店</span>
-                            <span class="left20">拼团</span>
-                            <span class="left20">120元</span>
-                        </p>
-                        <p class="">
-                            <span class="verMid">张三</span>
-                            <span class="left20 verMid">5分</span>
-                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
-                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
-                        </p>
-                    </div>
-                    <div class="pad15TB bor_btm_so">
-                        <p class="col999">
-                            <span>2019-08-02 21：00</span>
-                            <span class="left20">颈椎放松</span>
-                            <span class="left20">弘扬总店</span>
-                            <span class="left20">拼团</span>
-                            <span class="left20">120元</span>
-                        </p>
-                        <p class="">
-                            <span class="verMid">张三</span>
-                            <span class="left20 verMid">5分</span>
-                            <span class="left20 txtOver verMid" style="width: 160px">干活不错,手艺好干活不错,手艺好干活不错,手艺好</span>
-                            <el-tag type="success" class="left20 verMid">已预约</el-tag>
+                            <span class="verMid">{{v.employeeNames}}</span>
+                            <span class="left20 verMid">{{}}分</span>
+                            <span class="left20 txtOver verMid" style="width: 160px">{{}}</span>
+                            <el-tag type="success" class="left20 verMid">{{v.statusName}}</el-tag>
                         </p>
                     </div>
                     <p  class="center top10"><span class="pointer colblue">查看完整记录</span></p>
                 </div>
                 <div v-if="tabName=='消费明细'">
-                    <p class="font20 col000  clearfix"><span class="right ">本月共消费8元</span>消费明细</p>
-                    <table class="m-table1 top20">
+                    <p class="font20 col000  clearfix"><span class="right ">本月共消费{{articleOrderTotalNum}}元</span>消费明细</p>
+                    <table  v-for="(v) in articleOrderItemRecord" :key="v.id"  class="m-table1 top20">
                         <tr>
-                            <td class="col999">2019-08-02 21:00</td>
-                            <td class="col999">-120元</td>
-                            <td>服务消费</td>
-                            <td>储值卡支付</td>
-                        </tr>
-                         <tr>
-                            <td class="col999">2019-08-02 21:00</td>
-                            <td class="col999">-120元</td>
-                            <td>服务消费</td>
-                            <td>储值卡支付</td>
-                        </tr>
-                         <tr>
-                            <td class="col999">2019-08-02 21:00</td>
-                            <td class="col999">-120元</td>
-                            <td>服务消费</td>
-                            <td>储值卡支付</td>
-                        </tr>
-                         <tr>
-                            <td class="col999">2019-08-02 21:00</td>
-                            <td class="col999">-120元</td>
-                            <td>服务消费</td>
-                            <td>储值卡支付</td>
+                            <td class="col999">{{v.createTime}}</td>
+                            <td class="col999">-{{v.totalPrice}}元</td>
+                            <td>{{v.articleName}}</td>
+                            <td>{{}}</td>
                         </tr>
                     </table>
                 </div>
@@ -230,12 +182,16 @@
                 hei: false,
                 hong: false,
                 inputVisible: false,
-                inputValue: ''
+                inputValue: '',
+                sexList:['女','男','未知'],
+                statusList: ['','待支付','已支付待到店','已到店待服务','服务中','服务完成','系统取消','用户取消'],
+                payTypeList:['','虚拟账户','现金账户','微信支付','现金','微信转账','支付宝转账']
             }
         },
         computed:{
             
         },
+        props: ['row'],
         methods:{
             handleClose(tag) {
                 this.form.tags.splice(this.form.tags.indexOf(tag), 1);
@@ -280,16 +236,42 @@
         },
         mounted(){
             const t = this;
-            
-            customerService.getCustormDetail().then((res)=>{
-                for(const key in res){
-                    t.edit[key] = false;
+            console.log(t.row);
+            t.row.inBlacklist=t.row.inBlacklist==0?false:true;
+            t.row.inRedlist=t.row.inRedlist==0?false:true;
+            t.row.sexName=t.sexList[t.row.sex];
+            t.row.balance=(t.row.virtualAccount+t.row.savingsAccount)/100;
+            t.form = t.row;
+            //用户行为数据
+            customerService.getCustomerDate({id: t.row.id}).then((res)=>{
+                t.employeeScheduleList = res;
+            });
+            //用户服务记录
+            customerService.getCustomerOrderRecord({id: t.row.id,pageSize: 30,pageNumber: 1}).then((res)=>{
+                for(const v of res.records){
+                    v.payPrice=v.payPrice/100;
+                    v.statusName=t.statusList[v.status];
                 }
-                t.form = res;
-                console.log(t.form.ssmd)
-            })
-           
-            
+                t.orderRecordList = res.records;
+                t.orderTotalNum=res.total;
+            });
+            //用户消费记录
+            customerService.getArticleOrderItemRecord({id: t.row.id,pageSize: 30,pageNumber: 1}).then((res)=>{
+                for(const v of res.records){
+                    v.totalPrice=v.totalPrice/100;
+                    // v.statusName=t.payTypeList[v.status];
+                }
+                t.articleOrderItemRecord = res.records;
+                t.articleOrderTotalNum=res.total;
+            });
+            //用户充值记录
+            customerService.getRechargeRecord({id: t.row.id,pageSize: 30,pageNumber: 1}).then((res)=>{
+                for(const v of res.records){
+                    v.totalPrice=v.totalPrice/100;
+                    // v.statusName=t.payTypeList[v.status];
+                }
+                t.rechargeRecord = res.records;
+            });
         }
     }
 </script>
