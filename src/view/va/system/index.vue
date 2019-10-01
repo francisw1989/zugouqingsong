@@ -8,32 +8,31 @@
         </div>
         <div class="container">
             <div class=" clearfix">
-                <el-radio-group v-model="type">
-                    <el-radio-button :label="i"  v-for="(v, i) in typeList" :key="i" >{{v}}</el-radio-button>
+                <el-radio-group v-model="tabIndex" @change='tabChange'>
+                    <el-radio-button :label="i"  v-for="(v, i) in tabList" :key="i" >{{v.tabName}}</el-radio-button>
                 </el-radio-group>
             </div>
-            <div class="pad20" style="" >
-                <p class="pad10TB colblue">标题标题</p>
-                <el-form class='top10' ref="form" :model="form"  :rules="rules"   label-width="150px" label-position='left'>
-                    <el-form-item label="活动是否生效">
-                        <el-switch v-model="form.isShengxiao" class="left10"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="邀请人数上线">
-                        <el-input v-model="form.a" class="left5" style="width: 80px" placeholder="位"></el-input>
-                    </el-form-item>
-                    <el-form-item label="有效期开始时间">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style=""></el-date-picker>
-                        <span class="col999 left5">默认取当前时间</span>
-                    </el-form-item>
-                    <el-form-item label="有效期结束时间">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date" value-format="yyyy-MM-dd" style=""></el-date-picker>
-                        <span class="col999 left5">不填表示长期有效</span>
-                    </el-form-item>
-                    <el-form-item label="">
-                        <el-button  type="primary">保存</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
+            <el-card class="box-card top10"  v-for="(v, i) in groupList" :key="i" shadow="hover">
+                <div slot="header" class="clearfix">
+                    {{v.groupName}}
+                </div>
+                <!-- (text,int,float,select,checkbox,textarea,radio) -->
+                <div>
+                    <el-form class='top10' ref="form" :rules="rules" label-width="280px" label-position='right'>
+                        <template v-for="(item, itemIndex) in v.item" >
+                            <el-form-item :label="item.settingName" :key="itemIndex" >
+                                <el-input style="width: 200px" v-model="item.settingValue" class="" placeholder="" v-if="item.settingType == 'int' || item.settingType == 'text'  || item.settingType == 'float'"></el-input>
+                                <el-input style="width: 200px" v-model="item.settingValue" type="textarea" class="" placeholder="" v-if="item.settingType == 'textarea'"></el-input>
+                                <span class="left10">{{item.settingDescription}}</span>
+                            </el-form-item>
+                        </template>
+                        <el-form-item label="">
+                            <el-button @click="saveItemValueList(v.item)" type="primary">保存</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </el-card>
+
             
 
         </div>
@@ -45,7 +44,7 @@
 </template>
 <script>
     import bus from '../../../bus';
-    import {activityService} from '../../../service/activity';
+    import {systemService} from '../../../service/system';
 
     export default {
         data() {
@@ -65,21 +64,73 @@
                 idx: -1,
                 id: -1,
 
-                type: '1',
-                typeList: ['系统设置', '提成设置', '会员级别规则', '门店提醒规则', '其他']
+                tabIndex: 0,
+                tabList: [],
+                groupList: []
             }
         },
         components:{
             
         },
         methods:{
-            
+            saveItemValueList(data){
+                const t = this;
+                console.log(data)
+                let itemList = [];
+                let valida = true;
+                for(const v of data){
+                    if(v.isNullable == 1 && !v.settingValue){
+                        this.$message.error('请输入: ' + v.settingName);
+                        valida = false;
+                        break;
+                        return;
+                    }
+                    itemList.push({
+                        settingKey: v.settingKey,
+                        settingValue: v.settingValue
+                    })
+                }
+                if(valida){
+                    systemService.saveItemValueList(itemList).then((res)=>{
+                        // t.typeList = res;
+                        this.$message.success('修改成功！');
+                    })
+                }
+                
+            },
+            tabChange(){
+                const t = this;
+                t.getTabCodeList();
+            },
+            getTabCodeList(){
+                const t = this;
+                let params = {
+                    tabId: t.tabList[t.tabIndex].id
+                }
+                systemService.getTabCodeList(params).then((res)=>{
+                    // t.typeList = res;
+                    for(const v of res){
+                        for(const v2 of v.item){
+                            v2.settingValue = v2.settingValue ? v2.settingValue: v2.defaultValue
+                        }
+                    }
+                    t.groupList = res;
+                })
+            },
+            getTabList(){
+                const t = this;
+                systemService.getTabList().then((res)=>{
+                    t.tabList = res;
+                    t.tabIndex = 0;
+                    t.getTabCodeList();
+                })
+            }
 
 
         },
         mounted(){
             const t = this;
-            
+            t.getTabList();
 
         }
     }
