@@ -1,5 +1,299 @@
 import {$axios} from './axios.js';
 let commonService = {
+    allMenu(){
+        let menus = [];
+        if(localStorage.sysRoute == 'va'){
+            menus = [
+                {
+                    icon: 'el-icon-lx-home',
+                    index: '/va/dashboard',
+                    title: '首页',
+                    id: 1000
+                },
+                {
+                    icon: 'el-icon-picture-outline',
+                    index: '/va/banner',
+                    title: 'banner管理',
+                    id: 35
+                },
+                {
+                    icon: 'el-icon-lx-shop',
+                    index: '/va/storeManage',
+                    title: '门店管理',
+                    id: 1
+                },
+                {
+                    icon: 'el-icon-lx-goods',
+                    index: '1',
+                    title: '订单管理',
+                    id: 3,
+                    subs: [
+                        {
+                            index: '/va/orderList',
+                            title: '订单列表',
+                            id: 4
+                        },
+                        {
+                            index: '/va/project',
+                            title: '服务项目',
+                            id: 5
+                        },
+                        {
+                            index: '/va/projectCat',
+                            title: '项目分类',
+                            id: 6
+                        },
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-friend',
+                    index: '2',
+                    title: '员工管理',
+                    id: 7,
+                    subs: [
+                        {
+                            index: '/va/staffList',
+                            title: '员工列表',
+                            id: 8
+                        },
+                        {
+                            index: '/va/staffScheduling',
+                            title: '员工排班',
+                            id: 9
+                        },
+                        {
+                            index: '/va/staffWorktime',
+                            title: '员工考勤',
+                            id: 10
+                        },
+                        {
+                            index: '/va/positionSetting',
+                            title: '岗位与等级设置',
+                            id: 11
+                        },
+                        {
+                            index: '/va/schedulingSetting',
+                            title: '排班规则设置',
+                            id: 12
+                        },
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-group',
+                    index: '3',
+                    title: '客户管理',
+                    id: 12,
+                    subs: [
+                        {
+                            index:'/va/customerList', title:'客户列表',
+                            id: 14
+                        },
+                        {
+                            index:'/va/tagsSetting', title:'用户标签设置',
+                            id: 15
+                        },
+                        {
+                            index:'/va/rightsSetting', title:'会员权益设置',
+                            id: 16
+                        },
+                        
+    
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-global',
+                    index: '4',
+                    title: '物料商品管理',
+                    id: 36,
+                    subs: [
+                        {
+                            index: '/va/stockList', title: '库存管理'
+                        },
+                        {
+                            index: '/va/outStock', title: '出库记录'
+                        },
+                        {
+                            index: '/va/procurementList', title: '采购记录'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-recharge',
+                    index: '5',
+                    title: '优惠卷管理',
+                    subs: [
+                        {index: '/va/couponList',title: '优惠券列表'},
+                        {index: '/va/lingquList',title: '领用记录'},
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-present',
+                    index: '6',
+                    title: '常规活动',
+                    id: 24,
+                    subs: [
+                        {index: '/va/activityList',title: '活动数据', id: 25},
+                        {index: '/va/activityRule',title: '活动规则', id: 26},
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-message',
+                    index: '7',
+                    title: '评价管理',
+                    id: 27,
+                    subs: [
+                        {index: '/va/evaluateList', title: '评价列表', id: 28},
+                        {index: '/va/evaluateTag', title: '评价标签', id: 29},
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-profile',
+                    index: '/va/accountList',
+                    title: '账号管理',
+                    id: 30
+                },
+                {
+                    icon: 'el-icon-lx-lock',
+                    index: '/va/jurisdictionList',
+                    title: '权限管理',
+                    id: 31
+                },
+                {
+                    icon: 'el-icon-lx-settings',
+                    index: '/va/system',
+                    title: '系统配置',
+                    id: 32
+                },
+    
+            ]
+        }else if(localStorage.sysRoute == 'vb'){
+            items = [
+                {
+                    icon: 'el-icon-lx-home',
+                    index: '/vb/dashboard',
+                    title: '首页'
+                },
+                {
+                    icon: 'el-icon-lx-recharge',
+                    index: '/cashier',
+                    title: '收银台'
+                },
+                {
+                    icon: 'el-icon-lx-shop',
+                    index: '/vb/room',
+                    title: '房间管理'
+                },
+                {
+                    icon: 'el-icon-lx-goods',
+                    index: '1',
+                    title: '订单管理',
+                    subs: [
+                        {
+                            index: '/vb/orderList',
+                            title: '订单列表'
+                        },
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-friend',
+                    index: '2',
+                    title: '员工管理',
+                    subs: [
+                        {
+                            index: '/vb/staffList',
+                            title: '员工列表'
+                        },
+                        {
+                            index: '/vb/setting',
+                            title: '账号管理'
+                        },
+                        {
+                            index: '/vb/staffScheduling',
+                            title: '员工排班'
+                        },
+                        {
+                            index: '/vb/staffWorktime',
+                            title: '员工考勤'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-group',
+                    index: '3',
+                    title: '客户管理',
+                    subs: [
+                        {
+                            index:'/vb/customerList', title:'客户列表'
+                        }
+                        
+
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-global',
+                    index: '4',
+                    title: '物料商品管理',
+                    subs: [
+                        {
+                            index: '/vb/stockList', title: '库存管理'
+                        },
+                        {
+                            index: '/vb/outStock', title: '出库管理'
+                        },
+                        {
+                            index: '/vb/procurementList', title: '入库管理'
+                        }
+                    ]
+                },
+                {
+                    icon: 'el-icon-lx-message',
+                    index: '7',
+                    title: '评价管理',
+                    subs: [
+                        {index: '/vb/evaluateList', title: '评价列表'},
+                    ]
+                },
+                // {
+                //     icon: 'el-icon-lx-profile',
+                //     index: '/vb/accountList',
+                //     title: '账号管理'
+                // },
+                {
+                    icon: 'el-icon-lx-lock',
+                    index: '/vb/jurisdictionList',
+                    title: '权限管理'
+                },
+                 {
+                    icon: 'el-icon-lx-lock',
+                    index: '/vb/setting',
+                    title: '门店设置'
+                }
+            ]
+        }
+        return menus;
+    },
+    // /api/v1/sysMenu/list/{type}
+    // 列表查询系统菜单
+    getSysMenu(){
+        let p = new Promise((resolve, reject)=>{
+            let type = '';
+            if(localStorage.sysRoute == 'va'){
+                type = 1;
+            }else if(localStorage.sysRoute == 'vb'){
+                type = 0;
+            }
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysMenu/list/' + type,
+                params: {type: type},
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 公共数据
     GD(){
         let p = new Promise((resolve, reject)=>{
