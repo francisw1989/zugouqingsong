@@ -1,5 +1,54 @@
 import {$axios} from './axios.js';
 let accountService = {
+    // /api/v1/sysUser/{id}
+    // 根据id修改账户
+    save(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/sysUser/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/sysUser/
+    // 新增账户
+    add(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'POST',
+                url: '/api/v1/sysUser/',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/sysUser/{id}
+    // 根据id删除
+    delete(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/sysUser/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    
     // /api/v1/sysUser/list
     // 账户列表查询
     sysUserList(){

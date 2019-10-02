@@ -10,7 +10,7 @@
             <div class="clearfix">
                 <el-button type="primary" class="right" @click="handleEdit">新增</el-button>
             </div>
-            <el-table :data="list"  border class="table top20" ref="multipleTable">
+            <el-table :data="list"  border class="table top20" >
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="roleName" label="权限名称" width="150"></el-table-column>
@@ -19,7 +19,7 @@
                 <el-table-column label="操作" width="160" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="dodelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -28,9 +28,9 @@
                 </el-pagination>
             </div> -->
         </div>
-        <el-dialog :title="idx==-1?'新增权限':'编辑权限'" :visible.sync="editVisible" width="1000px">
+        <el-dialog :title="idx==-1?'新增权限':'编辑权限'" :visible.sync="editVisible" width="700px">
             <el-row style="border: 1px solid #ebeef5" v-if="editVisible">
-                <el-col :span="10">
+                <el-col :span="15">
                     <p class="center pad10" style="background-color: #f1f1f1">权限信息</p>
                     <div class="pad20">
                         <el-form ref="form" :model="form" :rules="rules" label-width="90px" class="">
@@ -40,7 +40,7 @@
                             <el-form-item label="权限状态">
                                 <el-switch v-model="form.roleStatus" class="left10"></el-switch>
                             </el-form-item>
-                            <el-form-item label="权限描述">
+                            <el-form-item label="权限描述" prop="roleDesc">
                                 <el-input v-model="form.roleDesc" type="textarea"></el-input>
                             </el-form-item>
                             
@@ -48,17 +48,19 @@
                         </el-form>
                     </div>
                 </el-col>
-                <el-col style="border-left: 1px solid #ebeef5" :span="14">
+                <el-col style="border-left: 1px solid #ebeef5" :span="9">
                     <p class="center pad10" style="background-color: #f1f1f1">权限分配</p>
                     <div class="pad20">
-                        <el-table :data="menuList"  border class="table "
-                            row-key="id" default-expand-all
-                            @selection-change="handleSelectionChange"
-                            :tree-props="{children: 'sysMenu'}"
-                        >
-                            <el-table-column type="selection" width="55" align="center"></el-table-column>
-                            <el-table-column prop="menuName" label="菜单名称" width=""></el-table-column>
-                        </el-table>
+                        <el-tree
+                        ref="tree"
+                        :data="menuList"
+                        show-checkbox
+                        node-key="id"
+                        default-expand-all
+                        check-on-click-node
+                        :default-checked-keys="form.sysMenuIds"
+                        :props="defaultProps">
+                        </el-tree>
                     </div>
                 </el-col>
             </el-row>
@@ -78,72 +80,97 @@
 
     import bus from '../../../bus';
     import {jurisdictionService} from '../../../service/jurisdiction';
+    import {commonService} from '../../../service/common';
     const Form = {
         id: '',
         roleName: '',
         roleStatus: true,
         roleDesc: '',
-        menuIds: ''
+        menuIds: []
     }
     export default {
         data() {
             return {
+                defaultProps: {
+                    label: 'menuName',
+                    children: 'sysMenu'
+                },
                 list: [],
                 cur_page: 1,
-                multipleSelection: [],
                 select_cate: '',
                 select_word: '',
                 form: {
                     
                 },
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    roleName: [
+                        { required: true, message: '请输入', trigger: 'change' },
+                    ],
+                    roleDesc: [
+                        { required: true, message: '请输入', trigger: 'change' },
                     ]
                 },
                 idx: -1,
                 id: -1,
                 editVisible: false,
                 menuList: [],
-                multipleSelection: []
             }
         },
         components:{
             
         },
         methods:{
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-                console.log(this.multipleSelection)
-            },
+            
             // 保存编辑
-            saveEdit() {
-                this.editVisible = false;
-                this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                if(this.tableData[this.idx].id === this.id){
-                    this.$set(this.tableData, this.idx, this.form);
-                }else{
-                    for(let i = 0; i < this.tableData.length; i++){
-                        if(this.tableData[i].id === this.id){
-                            this.$set(this.tableData, i, this.form);
-                            return ;
+            saveEdit(form) {
+                const t = this;
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        let params = {};
+                        t.editVisible = false;
+                        for(let key in Form){
+                            params[key] = t.form[key]
                         }
+                        params.roleStatus = params.roleStatus?'1':'0';
+                        params.menuIds = t.$refs.tree.getCheckedNodes(false, true).map((v)=>{return v.id}).join(',')
+                        console.log(params.menuIds)
+                        if(t.idx != -1){
+                            jurisdictionService.save(params).then(()=>{
+                                t.getList();
+                            });
+                        }else{
+                            jurisdictionService.add(params).then(()=>{
+                                t.getList();
+                            });
+                        }
+                        
+                    } else {
+                        console.log('error submit!!');
+                        return false;
                     }
-                }
+                });
             },
             handleEdit(index, row) {
-                if(row){
-                    this.idx = index;
-                    this.id = row.id;
-                    this.form = row;
-                    this.form.roleStatus ==0 ?false: true
-                }else{
-                    this.idx = '-1';
-                    this.id = '';
-                    this.form = JSON.parse(JSON.stringify(Form))
-                }
+                const t = this;
                 
+                
+                
+                if(row){
+                    t.idx = index;
+                    t.id = row.id;
+                    t.form = row;
+                    t.form.roleStatus ==0 ? false: true;
+                    // t.form.sysMenuIds = '1,3'
+                }else{
+                    t.idx = '-1';
+                    t.id = '';
+                    t.form = JSON.parse(JSON.stringify(Form))
+                }
                 this.editVisible = true;
+                
+                
+                
+                
             },
             handleDelete(){
 
@@ -161,7 +188,19 @@
                     }
                     t.list = res.records;
                 });
-            }
+            },
+            dodelete(index, row){
+                const t = this;
+                let params = {
+                    id: row.id
+                }
+                this.$confirm('确认删除？').then(() => {
+                    jurisdictionService.delete(params).then((res)=>{
+                        this.$message.success('删除成功！');
+                        t.getList();
+                    })
+                }).catch(_ => {});
+            },
             
             
 
@@ -169,7 +208,9 @@
         mounted(){
             const t = this;
             t.getList();
-
+            commonService.getSysMenu().then((res)=>{
+                t.menuList = res;
+            });
             // jurisdictionService.getSysMenuList().then((res)=>{
             //     t.menuList = res;
             //     console.log(t.menuList);

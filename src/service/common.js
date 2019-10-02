@@ -1,7 +1,6 @@
 import {$axios} from './axios.js';
 let commonService = {
 
-    
     allMenu(){
         let menus = [];
         if(localStorage.sysRoute == 'va'){
