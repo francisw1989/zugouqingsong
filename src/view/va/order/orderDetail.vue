@@ -22,15 +22,15 @@
                     <el-col :span="8" class="">{{info.orderInfo.orderEndTime}}</el-col>
                 </el-row>
                 <el-row class="top5">
-                    <el-col :span="4" class="col999">支付方式</el-col>
-                    <el-col :span="8" class="">{{info.orderInfo.payTypeName}}</el-col>
-                    <el-col :span="4" class="col999">支付金额</el-col>
+                	<el-col :span="4" class="col999">订单总价</el-col>
+                    <el-col :span="8" class="">{{info.orderInfo.totalPrice}}元</el-col>
+                    <el-col :span="4" class="col999">优惠价</el-col>
                     <el-col :span="8" class="">{{info.orderInfo.payPrice}}元</el-col>
                 </el-row>
                  <el-row class="top5">
-                    <el-col :span="4" class="col999">订单总额</el-col>
-                    <el-col :span="8" class="">{{info.orderInfo.totalPrice}}元</el-col>
-                    <el-col :span="4" class="col999">实际消费金额</el-col>
+                    <el-col :span="4" class="col999">支付方式</el-col>
+                    <el-col :span="8" class="">{{info.orderInfo.payTypeName}}</el-col>
+                    <el-col :span="4" class="col999">实际扣款</el-col>
                     <el-col :span="8" class="">{{info.orderInfo.actualOrderPrice}}元</el-col>
                 </el-row>
                  <el-row class="top5">
@@ -39,10 +39,12 @@
                 </el-row>
             </el-card>
             <el-card class="top10"  v-if="info.orderInfo.orderItems&&info.orderInfo.orderItems.length">
-                <div slot="header" class="clearfix">
-                   【服务项目】
-                </div>
+                
                 <div v-for="(v) in info.orderInfo.orderItems" :key="v.id">
+                	<div slot="header" class="clearfix">
+            		<br />
+                   	【服务项目】
+                	</div>
                     <el-row  class="">
                         <el-col :span="4" class="col999">项目名称</el-col>
                         <el-col :span="8" class="">{{v.itemName}}</el-col>
@@ -56,16 +58,16 @@
                         <el-col :span="8" class="">{{v.room?v.room.name:''}}</el-col>
                     </el-row>
                     <el-row class="top5">
-                        <el-col :span="4" class="col999">服务时长（分钟）</el-col>
-                        <el-col :span="8" class="">{{v.orderTime}}</el-col>
+                        <el-col :span="4" class="col999">预约时长</el-col>
+                        <el-col :span="8" class="">{{v.orderTime}}（分钟）</el-col>
                         <el-col :span="4" class="col999">原价</el-col>
-                        <el-col :span="8" class="">{{v.actualOrderPrice}}元</el-col>
+                        <el-col :span="8" class="">{{v.orderPrice}}元</el-col>
                     </el-row>
                     <el-row class="top5">
                         <el-col :span="4" class="col999">优惠价</el-col>
-                        <el-col :span="8" class="">{{v.orderPrice}}元</el-col>
-                        <el-col :span="4" class="col999">实际消费</el-col>
                         <el-col :span="8" class="">{{v.payPrice}}元</el-col>
+                        <el-col :span="4" class="col999">实际扣款</el-col>
+                        <el-col :span="8" class="">{{v.actualOrderPrice}}元</el-col>
                     </el-row>
                 </div>
             </el-card>
@@ -126,10 +128,11 @@
                 <div class="pad20 bor_btm_so">
                     <p class="font14b">状态信息</p>
 
-                    <el-row v-for="(v) in info.orderRecordInfo" :key="v.id"  class="top10 font12">
+                    <el-row v-for="(v,index) in info.orderRecordInfo.reverse()" :key="v.id"  class="top10 font12">
                         <el-col :span="8" class="">
                             <p class="colblue">{{v.createTime}}</p>
-                            <img src="../../../assets/img/img2.png" class="left25" alt="">
+                            
+                            <img src="../../../assets/img/img2.png" v-if="index!=info.orderRecordInfo.length-1" class="left25" alt="">
                         </el-col>
                         <el-col :span="16" class="">{{v.content}}</el-col>
                     </el-row>

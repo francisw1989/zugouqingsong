@@ -46,6 +46,12 @@
                 <el-table-column prop="gradeNameN" label="等级"></el-table-column>
                 <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
                 <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
+                <el-table-column prop="status" label="状态">
+                	<template slot-scope="scope">
+                        <span v-if="scope.row.status==0">正常</span>
+                        <span v-if="scope.row.status==1">离职</span>
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>

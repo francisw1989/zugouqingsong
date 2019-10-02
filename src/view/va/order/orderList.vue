@@ -48,17 +48,22 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="storeName" label="服务门店"></el-table-column>
-                <el-table-column prop="orderStartTime" label="服务时间"></el-table-column>
-                <el-table-column prop="orderTimes" label="服务时长"></el-table-column>
+                <el-table-column prop="orderStartTime" label="预约服务时间"></el-table-column>
+                <el-table-column prop="orderTimes" label="预约时长">
+                	<template slot-scope="scope">
+                        <span v-html="scope.row.orderTimes"></span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="isCouponName" label="优惠券"></el-table-column>
                 <el-table-column prop="isAssembleName" label="拼团"></el-table-column>
-                <el-table-column prop="payPrice" label="实际消费(元)"></el-table-column>
+                <el-table-column prop="payPrice" label="优惠价(元)"></el-table-column>
                 <el-table-column prop="employeeNames" label="服务技师" width='100'>
                     <template slot-scope="scope">
                         <span v-html="scope.row.employeeNames"></span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="statusName" label="当前状态"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleDetails(scope.$index, scope.row)">查看</el-button>
