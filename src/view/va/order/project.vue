@@ -36,7 +36,7 @@
                 <el-table-column prop="itemName" label="项目名称" sortable width="150"></el-table-column>
                 <el-table-column prop="itemClassName" label="所属分类"></el-table-column>
                 <el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
-                <el-table-column prop="defaultPrice" label="价格(分钟/元)"></el-table-column>
+                <el-table-column prop="defaultPrice" label="默认价格(元)"></el-table-column>
                 <el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
                 <el-table-column prop="isAssembleName" label="参与拼团"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
