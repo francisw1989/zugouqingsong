@@ -13,9 +13,9 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="权限名称" width="150"></el-table-column>
-                <el-table-column prop="b" label="状态" width="120"></el-table-column>
-                <el-table-column prop="c" label="描述"></el-table-column>
+                <el-table-column prop="roleName" label="权限名称" width="150"></el-table-column>
+                <el-table-column prop="roleStatusName" label="状态" width="120"></el-table-column>
+                <el-table-column prop="roleDesc" label="描述"></el-table-column>
                 <el-table-column label="操作" width="160" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -23,26 +23,25 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
+            <!-- <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
                 </el-pagination>
-            </div>
+            </div> -->
         </div>
         <el-dialog :title="idx==-1?'新增权限':'编辑权限'" :visible.sync="editVisible" width="1000px">
-            <el-row style="border: 1px solid #ebeef5">
+            <el-row style="border: 1px solid #ebeef5" v-if="editVisible">
                 <el-col :span="10">
                     <p class="center pad10" style="background-color: #f1f1f1">权限信息</p>
                     <div class="pad20">
                         <el-form ref="form" :model="form" :rules="rules" label-width="90px" class="">
-                            <el-form-item label="权限名称" prop="a">
-                                <el-input v-model="form.a"></el-input>
+                            <el-form-item label="权限名称" prop="roleName">
+                                <el-input v-model="form.roleName"></el-input>
                             </el-form-item>
-                            <el-form-item label="权限状态" prop="a">
-                                <el-switch v-model="form.isOpen" class="left10"></el-switch>
+                            <el-form-item label="权限状态">
+                                <el-switch v-model="form.roleStatus" class="left10"></el-switch>
                             </el-form-item>
-                            
-                            <el-form-item label="权限描述" prop="a">
-                                <el-input v-model="form.a" type="textarea"></el-input>
+                            <el-form-item label="权限描述">
+                                <el-input v-model="form.roleDesc" type="textarea"></el-input>
                             </el-form-item>
                             
                             
@@ -76,9 +75,16 @@
     </div>
 </template>
 <script>
+
     import bus from '../../../bus';
     import {jurisdictionService} from '../../../service/jurisdiction';
-    
+    const Form = {
+        id: '',
+        roleName: '',
+        roleStatus: true,
+        roleDesc: '',
+        menuIds: ''
+    }
     export default {
         data() {
             return {
@@ -88,10 +94,7 @@
                 select_cate: '',
                 select_word: '',
                 form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    isOpen: true
+                    
                 },
                 rules: {
                     a: [
@@ -133,15 +136,11 @@
                     this.idx = index;
                     this.id = row.id;
                     this.form = row;
+                    this.form.roleStatus ==0 ?false: true
                 }else{
                     this.idx = '-1';
                     this.id = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                        isOpen: true
-                    }
+                    this.form = JSON.parse(JSON.stringify(Form))
                 }
                 
                 this.editVisible = true;
@@ -154,20 +153,27 @@
                 this.cur_page = val;
                 this.getData();
             },
+            getList(){
+                const t = this;
+                jurisdictionService.getList().then((res)=>{
+                    for(const v of res.records){
+                        v.roleStatusName = v.roleStatus==0?'禁用':'启用'
+                    }
+                    t.list = res.records;
+                });
+            }
             
             
 
         },
         mounted(){
             const t = this;
-            jurisdictionService.getJurisdictionList().then((res)=>{
-                t.list = res;
-            });
+            t.getList();
 
-            jurisdictionService.getSysMenuList().then((res)=>{
-                t.menuList = res;
-                console.log(t.menuList);
-            });
+            // jurisdictionService.getSysMenuList().then((res)=>{
+            //     t.menuList = res;
+            //     console.log(t.menuList);
+            // });
             
             
 

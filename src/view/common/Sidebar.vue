@@ -47,14 +47,10 @@
                 return this.$route.path;
             }
         },
-        created(){
-            const t = this;
-            // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-            bus.$on('collapse', msg => {
-                this.collapse = msg;
-            })
-            let allMenu = commonService.allMenu();
-            commonService.getSysMenu('1').then((res)=>{
+        methods: {
+            menuDeal(res){
+                const t = this;
+                let allMenu = commonService.allMenu();
                 for(const v1 of allMenu){
                     let item = res.filter((v2)=>{
                         return v2.id == v1.id
@@ -79,7 +75,23 @@
                     
                 }
                 t.items = allMenu;
+            }
+        },
+        created(){
+            const t = this;
+            // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+            bus.$on('collapse', msg => {
+                this.collapse = msg;
             })
+            
+            let userInfo = JSON.parse(localStorage.userInfo);
+            if(userInfo && userInfo.account == 'admin'){
+                commonService.getSysMenu('1').then((res)=>{
+                    t.menuDeal(res)
+                })
+            }else{
+                t.menuDeal(userInfo.menuList)
+            }
             
 
         }

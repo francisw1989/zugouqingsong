@@ -13,14 +13,14 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="账号" width="150"></el-table-column>
-                <el-table-column prop="b" label="姓名" width="120"></el-table-column>
-                <el-table-column prop="c" label="手机"></el-table-column>
-                <el-table-column prop="c" label="邮箱"></el-table-column>
-                <el-table-column prop="c" label="角色"></el-table-column>
-                <el-table-column prop="c" label="最后登录时间"></el-table-column>
-                <el-table-column prop="c" label="登录ip"></el-table-column>
-                <el-table-column prop="c" label="状态"></el-table-column>
+                <el-table-column prop="account" label="账号" width="150"></el-table-column>
+                <el-table-column prop="name" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="mobile" label="手机"></el-table-column>
+                <el-table-column prop="email" label="邮箱"></el-table-column>
+                <el-table-column prop="roleId" label="角色"></el-table-column>
+                <el-table-column prop="loginTime" label="最后登录时间"></el-table-column>
+                <el-table-column prop="loginIp" label="登录ip"></el-table-column>
+                <el-table-column prop="statusName" label="状态"></el-table-column>
                 <el-table-column label="操作" width="230" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -83,6 +83,8 @@
 </template>
 <script>
     import bus from '../../../bus';
+    import {commonService} from '../../../service/common';
+
     import {accountService} from '../../../service/account';
 
     export default {
@@ -160,20 +162,27 @@
             },
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.getList();
             },
             search() {
                 this.is_search = true;
             },
+            getList(){
+                const t = this;
+                accountService.sysUserList().then((res)=>{
+                    for(const v of res.records){
+                        v.statusName = v.status == 0 ? '禁用' : '启用'
+                    }
+                    t.list = res.records;
+                });
+            }
 
         },
         mounted(){
             const t = this;
-            accountService.getAccountList().then((res)=>{
-                t.list = res;
-            });
+            
             t.jueseList = t.$GD.jueseList;            
-
+            t.getList();
         }
     }
 </script>

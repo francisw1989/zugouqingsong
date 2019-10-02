@@ -4,12 +4,12 @@
             <div class="ms-title">足够轻松 平台管理</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                    <el-input v-model="ruleForm.username" placeholder="请输入用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -22,12 +22,14 @@
 </template>
 
 <script>
+    import {commonService} from '../../service/common';
+    import {accountService} from '../../service/account';
     export default {
         data: function(){
             return {
                 ruleForm: {
                     username: 'admin',
-                    password: '123123'
+                    password: '123456'
                 },
                 rules: {
                     username: [
@@ -43,11 +45,20 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username',this.ruleForm.username);
+                        let params = {
+                            account: this.ruleForm.username,
+                            password: this.ruleForm.password
+                        }
                         localStorage.sysRoute = window.location.href.split('?')[1] || 'vb';
-                        setTimeout(() => {
-                            window.location.href = '/';    
-                        }, 0);
+                        accountService.login(params).then((res)=>{
+                            localStorage.token = res.token;
+                            accountService.userLoginInfo().then((userInfo)=>{
+                                localStorage.userInfo = JSON.stringify(userInfo)
+                                window.location.href = '/';
+                            })
+                            
+                        })
+                        
                         
                     } else {
                         console.log('error submit!!');

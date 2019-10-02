@@ -25,7 +25,8 @@ let $axios = (data, otherData)=>{
             url: data.url,
             headers: {
                 "Content-Type": "application/json",
-                Accept: "application/json;charset=UTF-8"
+                Accept: "application/json;charset=UTF-8",
+                Authorization: localStorage.token
             },
             params: data.params,
             data: otherData
@@ -38,6 +39,8 @@ let $axios = (data, otherData)=>{
             }
             
         }).catch((res)=>{
+            // 1001 登录失效
+            alert(res.response.data.msg)
             reject(res.response.data)
             loading && loading.close();
         });

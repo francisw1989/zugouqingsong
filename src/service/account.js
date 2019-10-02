@@ -1,4 +1,79 @@
+import {$axios} from './axios.js';
 let accountService = {
+    // /api/v1/sysUser/list
+    // 账户列表查询
+    sysUserList(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysUser/list',
+                params: {
+                    pageSize: 100,
+                    pageNumber: 1
+                },
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/sysUser/userLoginInfo
+    // 获取登录用户信息
+    userLoginInfo(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysUser/userLoginInfo',
+                params: {token: localStorage.token},
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/sysUser/logout
+    // 系统账户退出登陆
+    logout(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysUser/logout',
+                params: {},
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/sysUser/login
+    // 系统账户登陆
+    login(params){
+        let p = new Promise((resolve, reject)=>{
+            let type = '';
+            if(localStorage.sysRoute == 'va'){
+                type = 1;
+            }else{
+                type = 0;
+            }
+            params.type = type;
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysUser/login',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     getAccountList(){
         let p = new Promise((resolve, reject)=>{
             let data = [

@@ -1,5 +1,7 @@
 import {$axios} from './axios.js';
 let commonService = {
+
+    
     allMenu(){
         let menus = [];
         if(localStorage.sysRoute == 'va'){
@@ -166,7 +168,7 @@ let commonService = {
                 },
     
             ]
-        }else if(localStorage.sysRoute == 'vb'){
+        }else{
             items = [
                 {
                     icon: 'el-icon-lx-home',

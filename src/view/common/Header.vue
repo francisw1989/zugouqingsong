@@ -41,6 +41,8 @@
 </template>
 <script>
     import bus from '../../bus';
+    import {commonService} from '../../service/common';
+    import {accountService} from '../../service/account';
     export default {
         data() {
             return {
@@ -53,16 +55,23 @@
         },
         computed:{
             username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
+                let userInfo = JSON.parse(localStorage.userInfo);
+                let username = '';
+                if(userInfo && userInfo.account){
+                    return userInfo.account;
+                }else{
+                    return this.name
+                }
             }
         },
         methods:{
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if(command == 'loginout'){
-                    localStorage.removeItem('ms_username')
-                    this.$router.push('/login?'+localStorage.sysRoute||'vb');
+                    accountService.logout().then(()=>{
+                        localStorage.removeItem('token');
+                        this.$router.push('/login?'+localStorage.sysRoute||'vb');
+                    })
                 }
             },
             // 侧边栏折叠

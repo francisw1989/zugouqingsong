@@ -1,5 +1,27 @@
 import {$axios} from './axios.js';
 let jurisdictionService = {
+    //     /api/v1/sysRole/list
+    // 权限列表查询
+    getList(){
+        
+        let p = new Promise((resolve, reject)=>{
+            let params = {
+                pageSize: 100,
+                pageNumber: 1
+            }
+            params.type = localStorage.sysRoute == 'va'? 1 : 0;
+            let data = {
+                method: 'get',
+                url: '/api/v1/sysRole/list',
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     getJurisdictionList(){
         let p = new Promise((resolve, reject)=>{
             let data = [
