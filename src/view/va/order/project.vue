@@ -38,7 +38,7 @@
                 <el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
                 <el-table-column prop="defaultPrice" label="默认价格(元)"></el-table-column>
                 <el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
-                <el-table-column prop="isAssembleName" label="参与拼团"></el-table-column>
+                <el-table-column prop="isAssembleName" label="是否可拼团"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" width="430" align="center">
                     <template slot-scope="scope">
@@ -72,7 +72,7 @@
                     <el-form-item label="推荐时长" prop="defaultDuration" style="width: 50%" class="left">
                         <el-input v-model="form.defaultDuration" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="价格(分钟/元)" prop="defaultPrice" style="width: 50%"  class="left">
+                    <el-form-item label="价格(元)" prop="defaultPrice" style="width: 50%"  class="left">
                         <el-input v-model="form.defaultPrice" placeholder="0"></el-input>
                     </el-form-item>
                 </div>

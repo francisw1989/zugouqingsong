@@ -19,15 +19,15 @@
                 <el-table-column prop="phoneNum" label="电话"></el-table-column>
                 <el-table-column prop="openingDate" label="开业日期"></el-table-column>
                 <el-table-column prop="maxPeopleNum" label="技师数量"></el-table-column>
-                <el-table-column prop="area" label="面积"></el-table-column>
-                <el-table-column prop="rent" label="租金(万元/年)"></el-table-column>
+                <el-table-column prop="area" label="面积(平方米)"></el-table-column>
+                <el-table-column prop="rent" label="租金(元/年)"></el-table-column>
                 <el-table-column prop="shopowner" label="店长"></el-table-column>
                 <el-table-column label="操作" width="330" align="center">
                     <template slot-scope="scope">
                         <el-button  size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                         <el-button  size="mini" @click="handle2(scope.$index, scope.row)">编辑</el-button>
                         <el-button  size="mini" @click="handle4(scope.$index, scope.row)">推荐</el-button>
-                        <el-button  size="mini" type="danger" @click="handle3(scope.$index, scope.row)">关闭</el-button>
+                        <!--<el-button  size="mini" type="danger" @click="handle3(scope.$index, scope.row)">关闭</el-button>-->
                     </template>
                 </el-table-column>
             </el-table>
