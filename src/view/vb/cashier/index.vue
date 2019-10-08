@@ -37,7 +37,7 @@
                         <div v-if="tab1=='信息'" class="clearfix">
                             <div class="clearfix">
                                 <img src="../../../assets/img/img.jpg" width="50" height="50" style="border-radius: 50%" alt="" class="left right10" />
-                                <p class="top5">李先生</p>
+                                <p class="top5">{{userForm.userName}}</p>
                                 <p class="colye">二星会员</p>
                             </div>
                             <el-form class="top15"  ref="form" :model="form1"  label-width="80px" label-position='left'>
@@ -60,10 +60,10 @@
                                     {{userForm.score}}
                                 </el-form-item>
                                 <el-form-item label="虚拟账户" style="" class="">
-                                    {{userForm.savingsAccount/1000}}
+                                    {{userForm.savingsAccount/100}}
                                 </el-form-item>
                                 <el-form-item label="储值账户" style="" class="">
-                                    {{userForm.virtualAccount/1000}}
+                                    {{userForm.virtualAccount/100}}
                                     <el-button type="primary" class="left10">充值</el-button>
                                     <div class="colye">余额不足</div>
                                 </el-form-item>
@@ -424,6 +424,7 @@
             doChooseProject(){
                 const t = this;
                 t.choosenProject = [];
+                t.choosenProjectIndex = 0;
                 for(const v of t.itemClassList){
                     if(v.itemList && v.itemList.length){
                         for(const v2 of v.itemList){
@@ -437,6 +438,10 @@
                     }
                 }
                 console.log(t.choosenProject);
+                if(!t.choosenProject.length){
+                    t.$message.error('请选择服务项目');
+                    return;
+                }
                 t.serviceTimeVisible = true;
             },
             // 下单
