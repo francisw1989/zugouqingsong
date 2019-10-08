@@ -334,7 +334,8 @@
                 leveName: [],
                 currentOrder: {},
                 currentOrderIndex: 0,
-                choosedItemId: ''
+                choosedItemId: '',
+                choosenProject: []
             }
         },
         components: {
@@ -395,7 +396,14 @@
                 
             },
             projectNumChange(v, i){
-                console.log(v.num)
+                const t = this;
+                console.log(v.num);
+                let data = [];
+                if(v.num>0){
+                    for(let i = 0; i<v.num; i++){
+                        data.push(v)
+                    }
+                }
             },
             customSeach(seachform){
                 const t = this;
