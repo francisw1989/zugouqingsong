@@ -364,7 +364,15 @@
             handle2(index, row) {
                 this.idx = index;
                 this.id = row.id;
-
+                this.$confirm('确认重置密码？').then(() => {
+                    let params = {
+                        employeeId: row.id,
+                        storesId: row.storesId
+                    }
+                    staffService.resetPassword(params).then((res)=>{
+                        this.$message.success('设置成功！');
+                    })
+                }).catch(_ => {});
             },
             getEmployeesList(){
                 const t = this;

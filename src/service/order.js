@@ -49,6 +49,7 @@ let orderService = {
                     v.fivePrice = v.fivePrice/100;
                     v.tenPrice = v.tenPrice/100;
                     v.unitPrice = commonService.getFixed2(v.defaultPrice/v.defaultDuration);
+                    v.defaultDurationShow = v.defaultDuration
                     v.num = 0;
                 }
                 resolve(res)

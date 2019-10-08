@@ -1,10 +1,28 @@
 import {$axios} from './axios.js';
 let staffService = {
-    saveRole(){
+    // /api/v1/employees/resetPassword
+    // 重置员工密码（暂时重置为123456）
+    resetPassword(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'PATCH',
-                url: '/api/v1/employees/' + params.id,
+                url: '/api/v1/employees/resetPassword',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/employees/setRoleId
+    // 分配角色id给员工
+    saveRole(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/employees/setRoleId',
                 params: params,
                 loading: true
             }

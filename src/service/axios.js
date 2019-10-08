@@ -10,7 +10,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 let $axios = (data, otherData)=>{
-    if(localStorage.sysRoute=='vb'){
+    if(localStorage.sysRoute=='vb' && localStorage.userInfo){
         let userInfo = JSON.parse(localStorage.userInfo);
         data.params.storeId = userInfo.storesId;
         data.params.storesId = userInfo.storesId;
@@ -45,6 +45,10 @@ let $axios = (data, otherData)=>{
             
         }).catch((res)=>{
             // 1001 登录失效
+            if(res.response.data.code == 1001){
+                localStorage.removeItem('token');
+                window.location.reload();
+            }
             alert(res.response.data.msg)
             reject(res.response.data)
             loading && loading.close();

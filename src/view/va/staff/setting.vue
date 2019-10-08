@@ -170,10 +170,10 @@
                 t.viewVisible = false;
                 let params = {
                     roleId: t.roleId,
-                    staffId: t.row.id
+                    employeeId: t.row.id
                 }
                 staffService.saveRole(params).then((res)=>{
-                    t.$message.error('设置成功');
+                    t.$message.success('设置成功');
                 })
                 
             },

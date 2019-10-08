@@ -121,22 +121,24 @@
                     <el-col v-if="tab1=='信息'" style="height: 100%; padding: 5px 5px 5px 0" :span="8">
                         <div class="area">
                             <div class="center bor_btm_so font18 col000" style="padding-bottom: 15px">店内项目</div>
-                            <el-tabs v-model="choosedItemId" class="top10" @tab-click="itemClassClick">
-                                <el-tab-pane v-for='(v, i) in itemClassList' :key="i" :name="v.id + ''" :label="v.itemClassName"></el-tab-pane>
+                            <el-tabs v-model="choosedItemIndex" class="top10" @tab-click="itemClassClick">
+                                <el-tab-pane v-for='(v, i) in itemClassList' :key="i" :name="i + ''" :label="v.itemClassName"></el-tab-pane>
                             </el-tabs>
                             <div style="height: 75%; overflow: auto">
-                                <div class="clearfix bor_btm_so pad10TB" v-for="(v, i) in itemList" :key="i">
-                                    <img :src="v.imgs" width="70" height="70" style="border-radius: 3px" alt="" class="left right10" />
-                                    <p class="col000">
-                                        {{v.itemName}}
-                                        <span class="right">默认：{{v.defaultDuration}}分钟</span>
-                                    </p>
-                                    <p class="top5">单价：<span class="colred">{{v.unitPrice}}</span> 元/分钟</p>
-                                    <div class="top5 xmWap">
-                                        <span class="colred">¥{{v.defaultPrice}}</span>
-                                        <el-input-number class="right" size='mini' v-model="v.num" @change="projectNumChange(v, i)" :min="0" :max="10" label="描述文字"></el-input-number>
+                                <template v-if="itemClassList[choosedItemIndex].itemList">
+                                    <div class="clearfix bor_btm_so pad10TB"  v-for="(v, i) in itemList" :key="i">
+                                        <img :src="v.imgs" width="70" height="70" style="border-radius: 3px" alt="" class="left right10" />
+                                        <p class="col000">
+                                            {{v.itemName}}
+                                            <span class="right">默认：{{v.defaultDuration}}分钟</span>
+                                        </p>
+                                        <p class="top5">单价：<span class="colred">{{v.unitPrice}}</span> 元/分钟</p>
+                                        <div class="top5 xmWap">
+                                            <span class="colred">¥{{v.defaultPrice}}</span>
+                                            <el-input-number class="right" size='mini' v-model="v.num" @change="projectNumChange(v, i)" :min="0" :max="10" label="描述文字"></el-input-number>
+                                        </div>
                                     </div>
-                                </div>
+                                </template>
                             </div>
                             <div class="xzFoot clearfix">
                                 <div class="left top5">
@@ -167,46 +169,54 @@
         </span>
     </el-dialog>
     <el-dialog title="选择技师" :visible.sync="changeVisible" width="500px">
-        <el-tabs v-model="tab2" class="" @tab-click="tab2Click">
-            <el-tab-pane v-for='(v, i) in tab2List' :key="i" :label="v"></el-tab-pane>
+        <el-tabs v-model="choosenProjectIndex" class="" @tab-click="tab2Click">
+            <el-tab-pane v-for='(v, i) in choosenProject' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
         </el-tabs>
-        <div class="clearfix bor_btm_so pad10TB" v-for="(v, i) in jsList" :key="i">
-            <div class="imgWap right10">
-                <img src="../../../assets/img/img.jpg" width="50" height="50" style="border-radius: 50%" alt="" class="" />
-                <div class="xinWap">
-                    <img src="../../../assets/img/2.png" class="xin" />
-                    <img src="../../../assets/img/2.png" class="xin" />
+        <template v-for="(v, i) in technicianList">
+            <div class="clearfix bor_btm_so pad10TB"  :key="i"   v-if="!v.hasChoosedByOther">
+                <div class="imgWap right10">
+                    <img :src="v.photo" width="50" height="50" style="border-radius: 50%" alt="" class="" />
+                    <div class="xinWap">
+                        <img src="../../../assets/img/2.png" v-for="(v2, i2) in v.levelArr" :key='i2' class="xin" />
+                    </div>
                 </div>
+                <p class="col000">
+                    <span>{{v.employeeName}}</span>
+                    <span class="left10">¥{{v.pricePerMinute/100}}/分钟</span>
+                    <span class="col999 right">评分:{{Number(v.score).toFixed(1)}}分</span>
+                </p>
+                <p class=""><span class="pointer right" :class="v.choosed?'col999':'colblue'" @click="doChooseTechnic(v, i)">{{v.choosed?'取消':'选择'}}</span></p>
             </div>
-            
-            <p class="col000">
-                <span>张大姐</span>
-                <span class="left10">¥1.5/分钟</span>
-                <span class="col999 right">评分:4.8分</span>
-            </p>
-            <p class="">擅长:颈部按摩</p>
-        </div>
+        </template>
         <span slot="footer" class="dialog-footer">
                 <el-button @click="changeVisible = false">取 消</el-button>
                 <el-button type="primary" @click="confirmChange">确 定</el-button>
             </span>
     </el-dialog>
+    <el-dialog title="服务时间选择" :visible.sync="serviceTimeVisible" width="300px">
+        <el-time-select v-model="time" @change="dateTimeChange" :picker-options="{start: stores.openStartTime, step: '00:30',end: stores.openEndTime}" placeholder="选择时间" style="width: 100%;"></el-time-select>
+        <span slot="footer" class="dialog-footer">
+            <!-- <el-button type="primary" @click="serviceTimePrev">上一步</el-button> -->
+            <el-button type="primary" @click="serviceTimeNext">下一步</el-button>
+        </span>
+    </el-dialog>
+    
     <el-dialog title="项目时长调整" :visible.sync="timeChangeLengthVisible" width="500px">
         <table class="table ">
-            <tr  v-for="(v, i) in selectedXmList" :key="i" class="m-table4">
+            <tr  v-for="(v, i) in choosenProject" :key="i" class="m-table4">
                 <td style="width: 90px">
-                    <img src="../../../assets/img/img.jpg" width="70" height="70" style="border-radius: 3px" alt="" class="" />
+                    <img :src="v.imgs" width="70" height="70" style="border-radius: 3px" alt="" class="" />
                 </td>
                 <td class="relative">
                     <div class="clearfix">
-                        <span>休闲养生SPA</span>
-                        <span class="left20">默认60分钟</span>
-                        <span class="right">{{v.time}}</span>
+                        <span>{{v.itemName}}</span>
+                        <span class="left20">默认{{v.defaultDurationShow}}分钟</span>
+                        <span class="right">{{v.defaultDuration}}</span>
                     </div>
-                    <el-slider v-model="v.time" :step="10" :show-tooltip=false :max='120'></el-slider>
+                    <el-slider v-model="v.defaultDuration" :step="5" :show-tooltip=false :max='120'></el-slider>
                     <div>
-                        <span class="colred font20">￥ {{v.time*1.5}}</span>
-                        <span class="left20 col999">普通技师：￥1.5/分钟</span>
+                        <span class="colred font20">￥ {{(v.defaultDuration*v.unitPrice).toFixed(2)}}</span>
+                        <span class="left20 col999">普通技师：￥{{v.unitPrice}}/分钟</span>
                     </div>
                 </td>
             </tr>
@@ -215,13 +225,7 @@
             <el-button type="primary" @click="timeLengthChangeNext">下一步</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="服务时间选择" :visible.sync="serviceTimeVisible" width="300px">
-        <el-time-select v-model="serviceTime" :picker-options="{start: '08:30',step: '00:15',end: '18:30'}" placeholder="选择时间"></el-time-select>
-        <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="serviceTimePrev">上一步</el-button>
-            <el-button type="primary" @click="serviceTimeNext">下一步</el-button>
-        </span>
-    </el-dialog>
+    
     <!--成功-->
     <el-dialog title="预约成功" :visible.sync="successVisible" width="360px">
         <el-card shadow="hover" >
@@ -334,8 +338,15 @@
                 leveName: [],
                 currentOrder: {},
                 currentOrderIndex: 0,
-                choosedItemId: '',
-                choosenProject: []
+                choosedItemIndex: 0,
+                choosenProject: [],
+                choosenProjectIndex: 0,
+                dateTime: '',
+                time: '',
+                technicianList: [],
+                stores: {},
+                userInfo: {},
+                chooseTechnicIdAll: []
             }
         },
         components: {
@@ -345,23 +356,107 @@
             
         },
         methods:{
-            doChooseProject(){
-                
+            // 给项目选择技师
+            doChooseTechnic(v, i){
+                const t = this;
+
+                if(v.choosed){
+                    v.choosed = false;
+                    let index = t.chooseTechnicIdAll.indexOf(v.id)
+                    t.chooseTechnicIdAll.splice(index, 1)
+                }else{
+                    v.choosed = true;
+                    t.chooseTechnicIdAll.push(v.id)
+                }
+                t.choosenProject[t.choosenProjectIndex].choosenTechnician = [];
+                for(const v of t.technicianList){
+                    if(v.choosed){
+                        t.choosenProject[t.choosenProjectIndex].choosenTechnician.push(v);
+                    }else{
+
+                    }
+                }
+                console.log(t.chooseTechnicIdAll)
             },
+            dateTimeChange(){
+                const t = this;
+                let day2 = new Date();
+                day2.setTime(day2.getTime());
+                let Y = day2.getFullYear();
+                let M = day2.getMonth()+1;
+                M = M <10 ? '0'+M : M;
+                let D = day2.getDate();
+                D = D <10 ? '0'+D : D;
+                let dateTime = Y+"-" + M + "-" + D + ' ' + t.time + ':00';
+                t.dateTime = dateTime;
+            },
+            // 根据服务时长&&项目&&服务时间 选择技师
+            selectTechnician(){
+                let p = new Promise((resolve, reject)=>{
+                    const t = this;
+                    
+                    let params = {
+                        itemIdsStr: t.choosenProject[t.choosenProjectIndex].id,
+                        timesStr:  t.choosenProject[t.choosenProjectIndex].defaultDuration,
+                        dateTime: t.dateTime
+                    };
+                    cashierService.selectTechnician(params).then((res)=>{
+                        let selfChoosedIds = t.choosenProject[t.choosenProjectIndex].choosenTechnician.map((item)=>{
+                            return item.id;
+                        })
+                        for(const v of res[0].employees){
+                            if(t.chooseTechnicIdAll.indexOf(v.id)>-1 && selfChoosedIds.indexOf(v.id)<0){
+                                v.hasChoosedByOther = true
+                            }else{
+                                if(selfChoosedIds.indexOf(v.id)>-1){
+                                    v.choosed = true;
+                                }
+                                v.hasChoosedByOther = false
+                            }
+                        }
+                        t.technicianList = res[0].employees;
+                         
+                        resolve();
+                    })
+                })
+                return p;
+            },
+            doChooseProject(){
+                const t = this;
+                t.choosenProject = [];
+                for(const v of t.itemClassList){
+                    if(v.itemList && v.itemList.length){
+                        for(const v2 of v.itemList){
+                            if(v2.num > 0){
+                                for(let i = 0; i< v2.num; i++){
+                                    v2.choosenTechnician = [];
+                                    t.choosenProject.push(JSON.parse(JSON.stringify(v2)))
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log(t.choosenProject);
+                t.serviceTimeVisible = true;
+            },
+            // 下单
             customOrder(){
                 const t = this;
-                let data = [];
+                let orderReqForms = [];
+                let params = {
+                    userId: t.userForm.id
+                }
                 for(const v of t.choosenProject){
-                    data.push({
+                    orderReqForms.push({
                         itemId: v.id,
-                        orderStartTime: t.orderStartTime,
+                        orderStartTime: t.dateTime,
                         orderTime: t.defaultDuration,
-                        technicianIds: t.choosenTechnician.map((res)=>{
+                        technicianIds: v.choosenTechnician.map((res)=>{
                             return res.id
                         })
                     })
                 }
-                cashierService.customOrder(data).then((res)=>{
+                cashierService.customOrder(params, orderReqForms).then((res)=>{
                     t.$message.success('下单成功');
                 })
             },
@@ -395,16 +490,7 @@
                 })
                 
             },
-            projectNumChange(v, i){
-                const t = this;
-                console.log(v.num);
-                let data = [];
-                if(v.num>0){
-                    for(let i = 0; i<v.num; i++){
-                        data.push(v)
-                    }
-                }
-            },
+           
             customSeach(seachform){
                 const t = this;
                 t.tab1 = '信息';
@@ -434,7 +520,8 @@
                 this.getData();
             },
             tab2Click(){
-
+                const t = this;
+                t.selectTechnician()
             },
             confirmDoFpfj(){
                 const t = this;
@@ -480,11 +567,13 @@
             // 项目时长调整下一步
             timeLengthChangeNext(){
                 const t = this;
-                t.timeChangeLengthVisible = false;
-                setTimeout(() => {
-                    t.serviceTimeVisible = true;    
-                }, 300);
-                
+                t.choosenProjectIndex = 0;
+                t.selectTechnician().then(()=>{
+                    t.timeChangeLengthVisible = false;
+                    setTimeout(() => {
+                        t.changeVisible = true;
+                    }, 300);
+                })
             },
             // 服务时间上一步
             serviceTimePrev(){
@@ -496,21 +585,25 @@
             serviceTimeNext(){
                 const t = this;
                 t.serviceTimeVisible = false;
-                
                 setTimeout(() => {
                     t.directBook = true;
-                    t.doChangeJishi();
+                    t.timeChangeLengthVisible = true;
                 }, 300);
             },
             
             back(){
                 window.location.href = '/'
             },
+            projectNumChange(v, i){
+                const t = this;
+                console.log(v.num);
+                t.choosenProject = [];
+                t.itemClassList[t.choosedItemIndex].itemList = t.itemList;
+            },
             getItemClassList(){
                 const t = this;
                 orderService.getItemClassList().then((res)=>{
                     t.itemClassList = res.records;
-                    t.choosedItemId = t.itemClassList[0].id + '';
                     t.getItemList()
                 })
             },
@@ -519,8 +612,9 @@
                 orderService.getItemList({
                     pageSize: 100,
                     pageNumber: 1,
-                    itemClassId: t.choosedItemId
+                    itemClassId: t.itemClassList[t.choosedItemIndex].id
                 }).then((res)=>{
+                    t.itemClassList[t.choosedItemIndex].itemList = res.records;
                     t.itemList = res.records
                 }); 
             },
@@ -534,17 +628,32 @@
             itemClassClick(res){
                 const t = this;
                 t.getItemList()
+            },
+            cal(){
+                const t = this;
+                t.stores = t.userInfo.stores;
+                let now = new Date();
+                let nowHour = now.getHours();
+                let nowMin = now.getMinutes();
+                let min;
+                min = Number(t.stores.openStartTime.split(':')[0]) > nowHour ? Number(t.data.I.openStartTime.split(':')[0]) : nowHour;
+                if (nowMin > t.stores.openStartTime.split(':')[1]) {
+                    min = min + 1;
+                    t.stores.openStartTime = min+':'+'00'
+                } else {
+                    t.stores.openStartTime = min+':'+'30'
+                }
             }
 
         },
         mounted(){
             const t = this;
-            let userInfo = JSON.parse(localStorage.userInfo);
+            t.userInfo = JSON.parse(localStorage.userInfo);
+            t.cal();
             t.leveName = t.$GD.leveName;
             t.getAppointList();
             t.getItemClassList();
             t.getRoomList();
-
 
             setTimeout(()=>{
                 this.$notify({

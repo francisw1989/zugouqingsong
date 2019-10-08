@@ -1,5 +1,31 @@
 import {$axios} from './axios.js';
 let cashierService = {
+
+    // /api/v1/custom/selectTechnician
+    // 客服台选择技师页面
+    selectTechnician(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/custom/selectTechnician',
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                for(const v of res[0].employees){
+                    if(!v.level){v.level = 0};
+                    let levelArr = [];
+                    for(let i =0; i<v.level; i++){
+                        levelArr.push('')
+                    }
+                    v.choosed = false;
+                    v.levelArr = levelArr;
+                }
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/custom/arrivalStores/{orderId}
     // 确认到店
     arrivalStores(params){
@@ -96,17 +122,15 @@ let cashierService = {
     },
     //     /api/v1/custom/order
     // 服务项目下单接口
-    customOrder(params){        
+    customOrder(params, orderReqForms){        
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'post',
                 url: '/api/v1/custom/order',
                 loading: true,
-                params: {
-                    userId: window.userId
-                }
+                params: params
             }
-            $axios(data, params).then((res)=>{
+            $axios(data, orderReqForms).then((res)=>{
                 resolve(res)
             })
         })
