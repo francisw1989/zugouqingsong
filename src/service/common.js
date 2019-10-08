@@ -9,7 +9,7 @@ let commonService = {
                     icon: 'el-icon-lx-home',
                     index: '/va/dashboard',
                     title: '首页',
-                    id: 1000
+                    id: 40
                 },
                 {
                     icon: 'el-icon-picture-outline',
@@ -83,7 +83,7 @@ let commonService = {
                     icon: 'el-icon-lx-group',
                     index: '3',
                     title: '客户管理',
-                    id: 12,
+                    id: 13,
                     subs: [
                         {
                             index:'/va/customerList', title:'客户列表',
@@ -122,9 +122,10 @@ let commonService = {
                     icon: 'el-icon-lx-recharge',
                     index: '5',
                     title: '优惠卷管理',
+                    id:57,
                     subs: [
-                        {index: '/va/couponList',title: '优惠券列表'},
-                        {index: '/va/lingquList',title: '领用记录'},
+                        {index: '/va/couponList',title: '优惠券列表', id: 58},
+                        {index: '/va/lingquList',title: '领用记录', id: 59},
                     ]
                 },
                 {
@@ -168,30 +169,35 @@ let commonService = {
     
             ]
         }else{
-            items = [
+            menus = [
                 {
                     icon: 'el-icon-lx-home',
                     index: '/vb/dashboard',
-                    title: '首页'
+                    title: '首页',
+                    id: 41
                 },
                 {
                     icon: 'el-icon-lx-recharge',
                     index: '/cashier',
-                    title: '收银台'
+                    title: '收银台',
+                    id: 42
                 },
                 {
                     icon: 'el-icon-lx-shop',
                     index: '/vb/room',
-                    title: '房间管理'
+                    title: '房间管理',
+                    id: 43
                 },
                 {
                     icon: 'el-icon-lx-goods',
                     index: '1',
                     title: '订单管理',
+                    id: 44,
                     subs: [
                         {
                             index: '/vb/orderList',
-                            title: '订单列表'
+                            title: '订单列表',
+                            id: 44
                         },
                     ]
                 },
@@ -199,22 +205,27 @@ let commonService = {
                     icon: 'el-icon-lx-friend',
                     index: '2',
                     title: '员工管理',
+                    id: 46,
                     subs: [
                         {
                             index: '/vb/staffList',
-                            title: '员工列表'
+                            title: '员工列表',
+                            id: 47
                         },
                         {
-                            index: '/vb/setting',
-                            title: '账号管理'
+                            index: '/vb/accountSetting',
+                            title: '账号管理',
+                            id: 48
                         },
                         {
                             index: '/vb/staffScheduling',
-                            title: '员工排班'
+                            title: '员工排班',
+                            id: 49
                         },
                         {
                             index: '/vb/staffWorktime',
-                            title: '员工考勤'
+                            title: '员工考勤',
+                            id: 50
                         }
                     ]
                 },
@@ -222,27 +233,31 @@ let commonService = {
                     icon: 'el-icon-lx-group',
                     index: '3',
                     title: '客户管理',
+                    id:51,
                     subs: [
                         {
-                            index:'/vb/customerList', title:'客户列表'
+                            index:'/vb/customerList', title:'客户列表',
+                            id: 55
                         }
-                        
-
                     ]
                 },
                 {
                     icon: 'el-icon-lx-global',
                     index: '4',
                     title: '物料商品管理',
+                    id: 17,
                     subs: [
                         {
-                            index: '/vb/stockList', title: '库存管理'
+                            index: '/vb/stockList', title: '库存管理',
+                            id: 18
                         },
                         {
-                            index: '/vb/outStock', title: '出库管理'
+                            index: '/vb/outStock', title: '出库管理',
+                            id: 19
                         },
                         {
-                            index: '/vb/procurementList', title: '入库管理'
+                            index: '/vb/procurementList', title: '入库管理',
+                            id: 20
                         }
                     ]
                 },
@@ -250,8 +265,9 @@ let commonService = {
                     icon: 'el-icon-lx-message',
                     index: '7',
                     title: '评价管理',
+                    id: 52,
                     subs: [
-                        {index: '/vb/evaluateList', title: '评价列表'},
+                        {index: '/vb/evaluateList', title: '评价列表', id: 56},
                     ]
                 },
                 // {
@@ -262,12 +278,14 @@ let commonService = {
                 {
                     icon: 'el-icon-lx-lock',
                     index: '/vb/jurisdictionList',
-                    title: '权限管理'
+                    title: '权限管理',
+                    id: 53
                 },
                  {
-                    icon: 'el-icon-lx-lock',
+                    icon: 'el-icon-lx-settings',
                     index: '/vb/setting',
-                    title: '门店设置'
+                    title: '门店设置',
+                    id: 54
                 }
             ]
         }
@@ -317,7 +335,8 @@ let commonService = {
                 xmflList: ['职场女性','休闲放松'],
                 pjflList: ['好'],
                 jueseList: ['管理员','开发'],
-                yuangongList: ['章三']
+                yuangongList: ['章三'],
+                leveName:['普通会员', '一星会员', '二星会员', '三星会员']
 
             }
             resolve(data)
@@ -487,36 +506,50 @@ let commonService = {
             m = Math.floor((a - b)/1000/60%60);//获取剩余分钟
             s = Math.floor((a - b)/1000%60);//获取剩余秒数
             //中间这块区域是用来判断，当前时间数值小于10的时候给他前面加个0，这里可以根据具体情况可加可不加，以下同理
-            if(d < 10){
-                d = "0" + d
-            }else if(d < 0){
-                d = 0
+            if(d < 10 && d >1){
+                d = "0" + d + '天 '
+            }else if(d>=10){
+                d = d + '天 '
+            }else{
+                d = ''
             }
-            if(h < 10){
-                h = "0" + h
-            }else if(h < 0){
-                h = 0
+            if(h < 10 && h >0){
+                h = "0" + h + ':'
+            }else if(h >= 10){
+                h = h + ':'
+            }else{
+                h = ''
             }
             if(m < 10){
-                m = "0" + m;
-            }else if(m < 0){
-                m = 0;
+                m = "0" + m + ':';
+            }else{
+                m = m + ':';
             }
             if(s < 10){
                 s = "0" + s;
             }else if(s < 0){
                 s = 0;
             }
-            if(d){
-                d = d + '天'
-            }
-            let str = d + ' ' + h +':' + m + ':' +s;
+            let str = d + ' ' + h + m + s;
             obj.innerHTML = str;
             if(a <= b){//当我们的时间到期的时候，清除计时器，然后把当前标签的内容设置为0；
                 clearInterval(timer);
                 obj.innerHTML = '已到店'
             }
         },1000)
+    },
+    getFixed2(num){
+        let _num = num.toFixed(3).split('.');
+        let _num_0 = _num[0];
+        let _num_1 = _num[1];
+        let __num_1 = _num_1.split('');
+        if(__num_1[__num_1.length-1]>0){
+            _num_1 = __num_1[0] + (Number(__num_1[1]) + 1)
+        }else{
+            _num_1 = __num_1[0] + __num_1[1];
+        }
+        return _num_0 + '.' + _num_1
+
     }
 }
 window.Store = {

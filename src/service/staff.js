@@ -1,7 +1,33 @@
 import {$axios} from './axios.js';
 let staffService = {
-    
-
+    saveRole(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/employees/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    setPassword(){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/employees/' + params.id,
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 查询某个门店下的所有员工 某月份的考勤记录
     getStoreWorkingTimeList(params){
         let p = new Promise((resolve, reject)=>{

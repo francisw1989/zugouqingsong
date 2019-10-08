@@ -1,5 +1,21 @@
 import {$axios} from './axios.js';
 let cashierService = {
+    // /api/v1/custom/arrivalStores/{orderId}
+    // 确认到店
+    arrivalStores(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/custom/arrivalStores/' + params.orderId,
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     //     /api/v1/custom/
     // 根据条件检索会员订单
     customSeach(params){
@@ -80,12 +96,15 @@ let cashierService = {
     },
     //     /api/v1/custom/order
     // 服务项目下单接口
-    customOrder(params){
+    customOrder(params){        
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'post',
                 url: '/api/v1/custom/order',
-                loading: true
+                loading: true,
+                params: {
+                    userId: window.userId
+                }
             }
             $axios(data, params).then((res)=>{
                 resolve(res)
@@ -115,11 +134,12 @@ let cashierService = {
     setRoom(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
-                method: 'post',
+                method: 'PATCH',
                 url: '/api/v1/custom/room/' + params.orderItemId,
-                loading: true
+                loading: true,
+                params: params
             }
-            $axios(data, params).then((res)=>{
+            $axios(data).then((res)=>{
                 resolve(res)
             })
         })

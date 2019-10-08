@@ -14,7 +14,7 @@
                     <i class="el-icon-caret-right pointer" @click="nextMouth"></i>
                 </p>
             </div>
-            <div class=" clearfix top10">
+            <div class=" clearfix top10" v-if="sysRoute=='va'">
                 <!-- <el-input v-model="select_word" placeholder="请输入员工姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button> -->
                 <el-checkbox-group v-model="checkList" class="" style="display: inline" @change='checkBoxChange'>
@@ -22,7 +22,7 @@
                 </el-checkbox-group>
             </div>
             
-            <table class="m-table top20">
+            <table class="m-table top20" style="min-width: 1200px">
                 <tr class="tr2">
                     <td style="width: 80px">姓名</td><td style="width: 80px">职务</td>
                     <template v-if="loadDay">
@@ -31,7 +31,7 @@
                 </tr>
             </table>
             <div v-if="loadDay">
-                <table class="m-table" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex"  v-if="shopItem.show">
+                <table class="m-table" style="min-width: 1200px" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex"  v-if="shopItem.show">
                     <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeScheduleList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
                     <template  v-if='shopItem.showAll' >
                         <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
@@ -65,13 +65,14 @@
                 shopList: [],
                 is_search: false,
                 select_word: '',
-                checkList:[],
+                checkList: [],
                 dayLength: 0,
                 dayList: [],
                 year: new Date().getFullYear(),
                 mouth: '',
                 loadDay: false,
-                shiftsSettingList: []
+                shiftsSettingList: [],
+                sysRoute: window.sysRoute || ''
             }
         },
         components:{
@@ -81,9 +82,12 @@
             mouth(){
                 const t = this;
                 t.loadDay = false;
-                t.shopList[0].showAll = false
-                t.shopList[0].peopleList = null;
-                t.showAll(0)
+                if(t.shopList.length){
+                    t.shopList[0].showAll = false
+                    t.shopList[0].peopleList = null;
+                    t.showAll(0)
+                }
+                
             },
             year(){
                 const t = this;
@@ -219,6 +223,12 @@
                     v.show = true;
                 }
                 t.shopList = res.records;
+                if(window.sysRoute=='vb'){
+                    // 门店处理
+                    t.shopList = t.shopList.filter((v)=>{
+                        return v.id == window.storeId;
+                    })
+                }
                 t.showAll(0)
             });
             // 排班列表

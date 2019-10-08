@@ -14,10 +14,12 @@
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
             </div>
             <div v-if='showMore' class="top10">
-                <span class="">服务门店</span>
-                <el-select class="left10" v-model="storeId" placeholder="请选择" filterable  clearable style="width: 140px">
-                    <el-option v-for="(v, i) in storeList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
-                </el-select>
+                <template v-if="sysRoute=='va'">
+                    <span class="">服务门店</span>
+                    <el-select class="left10" v-model="storeId" placeholder="请选择" filterable  clearable style="width: 140px">
+                        <el-option v-for="(v, i) in storeList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
+                    </el-select>
+                </template>
                 <span class="left20">开始时间</span>
                 <el-date-picker class="left10" v-model="startTime" type="date"  style="width: 140px"placeholder="选择日期" value-format="yyyy-MM-dd" ></el-date-picker>
                 <span class="left20">结束时间</span>
@@ -130,7 +132,8 @@
                 statusN:['','1','4','5'],
                 info: {},
                 payTypeList:['','虚拟账户','现金账户','微信支付','现金','微信转账','支付宝转账'],
-                sexList:['女','男','未知']
+                sexList:['女','男','未知'],
+                sysRoute: window.sysRoute || ''
             }
         },
         components:{
@@ -266,6 +269,7 @@
         },
         mounted(){
            const t = this;
+           
            t.getOrderList();
            storeService.list({pageSize: 100,pageNumber: 1}).then((res)=>{
                t.storeList = res.records;

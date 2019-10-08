@@ -18,7 +18,7 @@
                     </div>
                     <div class="top15">
                         <div v-if="tab1=='检索'" class="clearfix">
-                            <el-form  ref="form" :model="seachForm"  :rules="rules"   label-width="70px">
+                            <el-form ref="seachForm" :model="seachForm"  :rules="rules"   label-width="70px">
                                 <el-form-item label="会员号" style="" class="">
                                     <el-input v-model="seachForm.memberNum" placeholder=""></el-input>
                                 </el-form-item>
@@ -77,61 +77,64 @@
                 <el-row style="height: 100%;">
                     <el-col style="height: 100%; padding: 5px 5px 5px 0" :span="tab1=='信息'?16:24">
                         <div class="area" >
-                            <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待到店({{appointList.length}})</div>
+                            <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待服务({{appointList.length}})</div>
                             <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
                             <div style="height: 80%; overflow: auto">
-                                <table class="m-table3">
-                                    <tr class="tr">
-                                        <td>姓名</td>
-                                        <td>会员等级</td>
-                                        <td>预约项目</td>
-                                        <td>预约时间</td>
-                                        <td>手机号</td>
-                                        <td>距离到店</td>
-                                    </tr>
-                                    <template v-for="(v, i) in appointList">
-                                        <tr>
-                                            <td>{{v.a}}</td>
-                                            <td>{{v.a}}</td>
-                                            <td>{{v.a}}</td>
-                                            <td>{{v.a}}</td>
-                                            <td>{{v.a}}</td>
-                                            <td style="width: 100px" class="align-right"><span v-bind:time='v.time' :id="'time' + i"></span></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6" class="align-right">
-                                                <el-button type="primary" size="mini" v-if='!v.isArrived' @click='confirmArrived(v)'>确认到店</el-button>
-                                                <el-button v-if="v.isArrived && !v.isRoomed" type="primary" size="mini" class="left10" @click="doFpfj(i ,v)">分配房间</el-button>
-                                                <el-button v-if="v.isArrived && v.isRoomed" type="primary" size="mini" class="left10" @click="doChangeJishi(i ,v)">更换技师</el-button>
-                                                <el-button v-if="v.isArrived && v.isRoomed" type="primary" size="mini" class="left10" @click="doChangeRoom(i ,v)">更换房间</el-button>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </table>
+                                <div v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
+                                    <div class="pad10TB bor_btm_so clearfix col000">
+                                        订单编号：<span class='col999'>{{v.outTradeNo}}</span>
+                                        <span class="right colblue">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
+                                    </div>
+                                    <div class="" style="padding: 0 15px">
+                                        <div class="bor_btm_so pad10TB clearfix">
+                                            <span class="left5"><i class="el-icon-lx-people"></i><span class="left10">{{v.user.userName}}</span></span>
+                                            <span class="left20">{{leveName[v.user.memberLevel]}}</span>
+                                            <span class="left20">手机号：<span class='col999'>{{v.user.telephoneNum}}</span></span>
+                                            
+                                        </div>
+                                        <div class=" pad10TB">
+                                            <table class="m-table1">
+                                                <tr v-for='(oItem, oIndex) in v.orderItems' :key="oIndex">
+                                                    <td style="width: 15px"><i v-if="oIndex==0" class="el-icon-lx-tag"></i></td>
+                                                    <td style="width: 100px">{{oItem.itemName}}</td>
+                                                    <td style="width: 200px">技师：{{oItem.orderTechniciansNames}}</td>
+                                                    <td class="col999">{{oItem.orderStartTime}}</td>
+                                                    <td class="align-right">
+                                                        <div v-if="oIndex==v.orderItems.length-1">
+                                                            <el-button type="primary" size="mini" v-if='v.status==2' @click='confirmArrived(i, v)'>确认到店</el-button>
+                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click="doFpfj(i ,v)">分配房间</el-button>
+                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click="doChangeJishi(i ,v)">更换技师</el-button>
+                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click="doChangeRoom(i ,v)">更换房间</el-button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                           
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
-                            <!-- <div class="pagination">
-                                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
-                                </el-pagination>
-                            </div> -->
+                                
                         </div>
                     </el-col>
                     <el-col v-if="tab1=='信息'" style="height: 100%; padding: 5px 5px 5px 0" :span="8">
                         <div class="area">
                             <div class="center bor_btm_so font18 col000" style="padding-bottom: 15px">店内项目</div>
-                            <el-tabs v-model="tab2" class="top10" @tab-click="tab2Click">
-                                <el-tab-pane v-for='(v, i) in tab2List' :key="i" :label="v"></el-tab-pane>
+                            <el-tabs v-model="choosedItemId" class="top10" @tab-click="itemClassClick">
+                                <el-tab-pane v-for='(v, i) in itemClassList' :key="i" :name="v.id + ''" :label="v.itemClassName"></el-tab-pane>
                             </el-tabs>
                             <div style="height: 75%; overflow: auto">
-                                <div class="clearfix bor_btm_so pad10TB" v-for="(v, i) in xmList" :key="i">
-                                    <img src="../../../assets/img/img.jpg" width="70" height="70" style="border-radius: 3px" alt="" class="left right10" />
+                                <div class="clearfix bor_btm_so pad10TB" v-for="(v, i) in itemList" :key="i">
+                                    <img :src="v.imgs" width="70" height="70" style="border-radius: 3px" alt="" class="left right10" />
                                     <p class="col000">
-                                        【颈椎放松】
-                                        <span class="right">默认：60分钟</span>
+                                        {{v.itemName}}
+                                        <span class="right">默认：{{v.defaultDuration}}分钟</span>
                                     </p>
-                                    <p class="top5">单价：<span class="colred">60</span> 元/小时</p>
+                                    <p class="top5">单价：<span class="colred">{{v.unitPrice}}</span> 元/分钟</p>
                                     <div class="top5 xmWap">
-                                        <span class="colred">¥168</span>
-                                        <el-input-number class="right" size='mini' v-model="v.num" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
+                                        <span class="colred">¥{{v.defaultPrice}}</span>
+                                        <el-input-number class="right" size='mini' v-model="v.num" @change="projectNumChange(v, i)" :min="0" :max="10" label="描述文字"></el-input-number>
                                     </div>
                                 </div>
                             </div>
@@ -141,7 +144,7 @@
                                         <span class="pad10RL">选择项目</span>
                                     </el-badge>
                                 </div>
-                                <el-button type="primary" @click="timeChangeLengthVisible = true" size="mini" class="right">下一步</el-button>
+                                <el-button type="primary" @click="doChooseProject" size="mini" class="right">下一步</el-button>
                             </div>
                         </div>
                     </el-col>
@@ -150,18 +153,18 @@
         </el-row>
     </div>
     <el-dialog title="分配房间" :visible.sync="fpfjVisible" width="350px">
-        <div v-for="(v, i) in roomList" :key="i">
-            <el-radio v-model="roomNum" :label="i">
-                <span>201</span>
-                <span class="left10">剩余：2位/4位</span>
-                <span class="left10">无烟|娴静|足疗|可SPA</span>
+        
+        <el-radio-group v-model="roomId">
+            <el-radio :label="v.id" v-for="(v) in roomList" :key="v.id" style="margin: 10px 0 0 0">
+                <span>{{v.name}}</span>
+                <span class="left10">剩余：{{v.useNum || 0}}位/{{v.peopleNum}}位</span>
+                <span class="left10">{{v.labels}}</span>
             </el-radio>
-            
-        </div>
+        </el-radio-group>
         <span slot="footer" class="dialog-footer">
-                <el-button @click="fpfjVisible = false">取 消</el-button>
-                <el-button type="primary" @click="confirmDoFpfj">确 定</el-button>
-            </span>
+            <el-button @click="fpfjVisible = false">取 消</el-button>
+            <el-button type="primary" @click="confirmDoFpfj">确 定</el-button>
+        </span>
     </el-dialog>
     <el-dialog title="选择技师" :visible.sync="changeVisible" width="500px">
         <el-tabs v-model="tab2" class="" @tab-click="tab2Click">
@@ -317,7 +320,7 @@
                 chosed: false,
                 fpfjVisible: false,
                 roomList: ['','',''],
-                roomNum: 0,
+                roomId: 0,
                 changeVisible: false,
                 timeChangeLengthVisible: false,
                 selectedXmList: [{time: 30},{time: 30}],
@@ -328,7 +331,10 @@
                 payType: '0',
                 onlineBookingStep: 0,
                 underLineBookingStep: 0,
-                
+                leveName: [],
+                currentOrder: {},
+                currentOrderIndex: 0,
+                choosedItemId: ''
             }
         },
         components: {
@@ -338,24 +344,58 @@
             
         },
         methods:{
+            doChooseProject(){
+                
+            },
+            customOrder(){
+                const t = this;
+                let data = [];
+                for(const v of t.choosenProject){
+                    data.push({
+                        itemId: v.id,
+                        orderStartTime: t.orderStartTime,
+                        orderTime: t.defaultDuration,
+                        technicianIds: t.choosenTechnician.map((res)=>{
+                            return res.id
+                        })
+                    })
+                }
+                cashierService.customOrder(data).then((res)=>{
+                    t.$message.success('下单成功');
+                })
+            },
             getAppointList(){
                 const t = this;
                 cashierService.getAppointList({
                     pageSize: 100, 
-                    pageNumber: 1,
-                    storeId: 2,
-                    userId: ''
+                    pageNumber: 1
+                    // userId: window.userId
                 }).then((res)=>{
-                    t.appointList = res.records
+                    for(const v of res.records){
+                        v.orderStartTimeObj = v.orderStartTime.replace(/-/g,"/");
+                        for(const v2 of v.orderItems){
+                            v2.orderTechniciansNames = v2.orderTechnicians.map((v3)=>{return v3.employeeName}).join(',')
+                        }
+                    }
+                    t.appointList = res.records;
+
+                    setTimeout(() => {
+                        for(const i in t.appointList){
+                            t.$commonService.getTime('time' + i)
+                        }
+                    }, 100);
                 });
             },
-            confirmArrived(v){
+            confirmArrived(i, v){
                 const t = this;
-                v.isArrived = true;
-                t.list = JSON.parse(JSON.stringify(t.list))
+                cashierService.arrivalStores({orderId: v.id}).then((res)=>{
+                    t.appointList[i].status = 3;
+                    t.$set(t.appointList, i, t.appointList[i])
+                })
+                
             },
-            handleChange(){
-
+            projectNumChange(v, i){
+                console.log(v.num)
             },
             customSeach(seachform){
                 const t = this;
@@ -367,8 +407,9 @@
                         for(let key in SeachForm){
                             params[key] = t.seachForm[key]
                         }
-                        cashierService.customSeach(params).then(()=>{
-                            
+                        cashierService.customSeach(params).then((res)=>{
+                            t.appointList = res.records;
+                            t.userForm = t.appointList[0].user;
                         })
                     } else {
                         console.log('error submit!!');
@@ -390,8 +431,13 @@
             confirmDoFpfj(){
                 const t = this;
                 t.fpfjVisible = false;
-                t.list[t.idx].isRoomed = true;
-                t.list = JSON.parse(JSON.stringify(t.list))
+                cashierService.setRoom({
+                    orderItemId: t.currentOrder.id,
+                    roomId: t.roomId
+                }).then(()=>{
+
+                })
+                t.list = JSON.parse(JSON.stringify(t.list));
             },
             // 跟换技师确认
             confirmChange(){
@@ -410,7 +456,8 @@
             doFpfj(i, v){
                 const t = this;
                 t.fpfjVisible = true;
-                t.idx = i;
+                t.currentOrder = v;
+                t.currentOrderIndex = i;
             },
             // 更换技师
             doChangeJishi(){
@@ -455,15 +502,16 @@
                 const t = this;
                 orderService.getItemClassList().then((res)=>{
                     t.itemClassList = res.records;
-                    t.getItemList(t.itemClassList[0].id)
+                    t.choosedItemId = t.itemClassList[0].id + '';
+                    t.getItemList()
                 })
             },
-            getItemList(itemClassId){
+            getItemList(){
                 const t = this;
                 orderService.getItemList({
                     pageSize: 100,
                     pageNumber: 1,
-                    itemClassId: itemClassId
+                    itemClassId: t.choosedItemId
                 }).then((res)=>{
                     t.itemList = res.records
                 }); 
@@ -471,33 +519,41 @@
             getRoomList(){
                 const t = this;
                 roomService.getRoomList({pageSize: '100',pageNumber: '1',}).then((res)=>{
-                    t.roomList = res.records
+                    t.roomList = res.records;
+                    t.roomId = t.roomList[0].id;
                 })
+            },
+            itemClassClick(res){
+                const t = this;
+                t.getItemList()
             }
 
         },
         mounted(){
             const t = this;
+            let userInfo = JSON.parse(localStorage.userInfo);
+            t.leveName = t.$GD.leveName;
             t.getAppointList();
             t.getItemClassList();
             t.getRoomList();
 
 
-           setTimeout(()=>{
+            setTimeout(()=>{
                 this.$notify({
                     message: '您有新的订单',
                     duration: 0
                 });
-           }, 3000)
-           document.body.style.zoom = '1'
-           cashierService.list().then((res)=>{
-               t.list = res;
-               setTimeout(() => {
-                   for(const i in t.list){
-                       t.$commonService.getTime('time' + i)
-                   }
-               }, 100);
-           })
+            }, 3000)
+            document.body.style.zoom = '1'
+            // cashierService.list().then((res)=>{
+            //     t.list = res.records;
+            //     setTimeout(() => {
+            //         for(const i in t.list){
+            //             t.$commonService.getTime('time' + i)
+            //         }
+            //     }, 100);
+                
+            // })
 
         }
     }

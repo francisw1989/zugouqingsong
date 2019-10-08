@@ -1,6 +1,26 @@
 import {$axios} from './axios.js';
 
 let storeService = {
+
+    // /api/v1/stores/{id}
+    // 根据门店id查询门店基本详情
+    getDetail(){
+        
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/stores/' + window.storeId,
+                params: {
+                    id: window.storeId
+                },
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     list(params){
         let p = new Promise((resolve, reject)=>{
             let data = {

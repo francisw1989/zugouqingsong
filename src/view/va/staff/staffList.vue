@@ -14,10 +14,12 @@
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
             </div>
             <div v-if='showMore' class="top10">
-                <span class="">所属门店</span>
-                <el-select class="left10" v-model="storesId" placeholder="" filterable clearable style="width: 130px">
-                    <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
-                </el-select>
+                <template v-if="sysRoute=='va'">
+                    <span class="">所属门店</span>
+                    <el-select class="left10" v-model="storesId" placeholder="" filterable clearable style="width: 130px">
+                        <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
+                    </el-select>
+                </template>
                 <span class="left20">岗位</span>
                 <el-select class="left10" v-model="post" placeholder="" filterable clearable style="width: 130px">
                     <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
@@ -112,7 +114,7 @@
                     <el-form-item label="是否流动" style="width: 50%"  class="left">
                         <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                     </el-form-item>
-                    <el-form-item label="所属门店" prop="" style="width: 50%"  class="left">
+                    <el-form-item v-if="sysRoute=='va'" label="所属门店" prop="" style="width: 50%"  class="left">
                         <el-select v-model="form.storesId"  filterable clearable>
                             <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                         </el-select>
@@ -234,7 +236,8 @@
                 isMobilePosition: '',
 
                 postGradeList:[],
-                row: {}
+                row: {},
+                sysRoute: window.sysRoute || ''
             }
         },
         watch: {
@@ -315,7 +318,6 @@
                         }
                         params.isMobilePosition = params.isMobilePosition?'1':'0';
                         params.isTechnician = params.isTechnician?'1':'0';
-                        
                         staffService.employeesAdd(params).then((res)=>{
                             t.getEmployeesList();
                         })

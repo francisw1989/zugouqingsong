@@ -1,4 +1,5 @@
 import {$axios} from './axios.js';
+import {commonService} from './common.js';
 let orderService = {
     //获取订单列表
     getOrderList(params){
@@ -47,6 +48,8 @@ let orderService = {
                     v.threePrice = v.threePrice/100;
                     v.fivePrice = v.fivePrice/100;
                     v.tenPrice = v.tenPrice/100;
+                    v.unitPrice = commonService.getFixed2(v.defaultPrice/v.defaultDuration);
+                    v.num = 0;
                 }
                 resolve(res)
             })

@@ -53,6 +53,7 @@
                         accountService.login(params).then((res)=>{
                             localStorage.token = res.token;
                             accountService.userLoginInfo().then((userInfo)=>{
+                                
                                 localStorage.userInfo = JSON.stringify(userInfo)
                                 window.location.href = '/';
                             })

@@ -10,6 +10,11 @@ axios.interceptors.request.use(function (config) {
 });
 
 let $axios = (data, otherData)=>{
+    if(localStorage.sysRoute=='vb'){
+        let userInfo = JSON.parse(localStorage.userInfo);
+        data.params.storeId = userInfo.storesId;
+        data.params.storesId = userInfo.storesId;
+    }
     let p = new Promise((resolve, reject)=>{
         let loading, loadingText = 'loading...';
         if(data.loadingText){

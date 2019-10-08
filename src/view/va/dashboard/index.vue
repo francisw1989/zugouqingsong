@@ -61,7 +61,7 @@
                 </el-card>
             </el-col>
         </el-row>
-        <el-card shadow="hover" class="top10">
+        <el-card shadow="hover" class="top10" v-if="sysRoute=='va'">
             <div slot="header" class="clearfix">
                 <span>陆琴门店分布情况</span>
             </div>
@@ -240,7 +240,8 @@
                 selShopId_nums: '-10000',
                 mdsrList: [],
                 jsfwList: [],
-                jssrList: []
+                jssrList: [],
+                sysRoute: window.sysRoute || ''
             }
         },
         methods:{

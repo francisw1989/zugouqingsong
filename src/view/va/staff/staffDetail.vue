@@ -33,7 +33,7 @@
                 <el-form-item label="是否流动" >
                     <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                 </el-form-item>
-                <el-form-item label="所属门店">
+                <el-form-item label="所属门店" v-if="sysRoute=='va'">
                     <el-select v-model="form.storesId" filterable clearable>
                         <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
                     </el-select>
@@ -331,7 +331,8 @@
         info: '',
         itemClassIds: '',
         isTechnician: true,
-        storesIds:'' // 可服务门店
+        storesIds:'', // 可服务门店
+        
     };
     const LcForm = {
         id: '',
@@ -367,7 +368,8 @@
                 mouth: '8',
                 res: '',
                 postGradeList: [],
-                postGradeBean:{}// 岗位职级bean
+                postGradeBean:{},// 岗位职级bean
+                sysRoute: window.sysRoute || ''
             }
         },
         computed:{
@@ -568,6 +570,9 @@
                 
                 for(let key in Form){
                     params[key] = t.form[key]
+                }
+                if(window.sysRoute=='vb'){
+                    params.storesId = window.storesId
                 }
                 staffService.employeesEdit(params).then((res)=>{
                     

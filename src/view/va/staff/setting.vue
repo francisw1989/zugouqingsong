@@ -8,25 +8,30 @@
         </div>
         <div class="container">
             <div class=" clearfix">
-                <el-input v-model="select_word" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
+                <el-input v-model="employeeName" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left10 font12 colblue pointer" @click="moreSeach">更多筛选条件  <i class="el-icon-caret-bottom"></i></span>
             </div>
             <div v-if='showMore' class="top10">
-                <span class="">所属门店</span>
-                <el-select class="left10" v-model="shop" placeholder="" filterable>
-                    <el-option v-for="(item, index) in shopList" :key="index" :value="item.shopId"  :label="item.shopName"></el-option>
-                </el-select>
+                <template v-if="sysRoute=='va'">
+                    <span class="">所属门店</span>
+                    <el-select class="left10" v-model="storesId" placeholder="" filterable clearable style="width: 130px">
+                        <el-option v-for="(v) in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
+                    </el-select>
+                </template>
                 <span class="left20">岗位</span>
-                <el-select class="left10" v-model="gw" placeholder="" filterable>
-                    <el-option v-for="(v, i) in gwList" :key="i" :label="v.a" :value="v.a"></el-option>
+                <el-select class="left10" v-model="post" placeholder="" filterable clearable style="width: 130px">
+                    <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">可服务项目</span>
-                <el-select class="left10" v-model="project" placeholder="" filterable>
-                    <el-option v-for="(v) in projectList" :key="v.a" :label="v.a" :value="v.a"></el-option>
+                <el-select class="left10" v-model="itemClassId" placeholder="" filterable clearable style="width: 130px">
+                    <el-option v-for="(v) in projectList" :key="v.id" :label="v.itemClassName" :value="v.id"></el-option>
                 </el-select>
                 <span class="left20">是否流动</span>
-                <el-switch v-model="isLiudong" class="left10"></el-switch>
+                <el-select class="left10" v-model="isMobilePosition" placeholder="" filterable clearable style="width: 80px">
+                    <el-option label="是" value="1"></el-option>
+                    <el-option label="否" value="0"></el-option>
+                </el-select>
             </div>
 
 
@@ -34,44 +39,38 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="工号" sortable width="150"></el-table-column>
-                <el-table-column prop="b" label="姓名" width="120"></el-table-column>
-                <el-table-column prop="c" label="性别"></el-table-column>
-                <el-table-column prop="c" label="所属门店"></el-table-column>
-                <el-table-column prop="c" label="岗位"></el-table-column>
-                <el-table-column prop="c" label="等级"></el-table-column>
-                <el-table-column prop="c" label="是否流动"></el-table-column>
-                <el-table-column prop="c" label="手机号"></el-table-column>
-                <el-table-column label="操作" width="150" align="center">
+                <el-table-column prop="jobNumber" label="工号"  width="150" sortable></el-table-column>
+                <el-table-column prop="employeeName" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="sexName" label="性别"></el-table-column>
+                <el-table-column prop="storeName" label="所属门店"></el-table-column>
+                <el-table-column prop="postName" label="岗位"></el-table-column>
+                <el-table-column prop="gradeNameN" label="等级"></el-table-column>
+                <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
+                <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
+                <el-table-column prop="status" label="状态">
+                	<template slot-scope="scope">
+                        <span v-if="scope.row.status==0">正常</span>
+                        <span v-if="scope.row.status==1">离职</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="120" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">分配角色</el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
-
-      
-        <!-- 新增 -->
-        <el-dialog title="新增员工" :visible.sync="editVisible" width="300px">
-            <el-form ref="form" :model="form"  :rules="rules"   label-width="80px" label-position='left'>
-                <el-form-item label="姓名" prop="a">
-                    <el-input v-model="form.a" placeholder="" disabled></el-input>
-                </el-form-item>
-                <el-form-item label="角色" prop="a">
-                    <el-select class="" v-model="shop" placeholder="" filterable>
-                        <el-option v-for="(item, index) in roleList" :key="index" :value="index"  :label="item"></el-option>
-                    </el-select>
-                </el-form-item>
-                
-
-            </el-form>
+        <el-dialog title="分配角色" :visible.sync="viewVisible" width="300px">
+            <el-select v-model="roleId"  filterable clearable style="width: 100%">
+                <el-option v-for="v in jueseList" :key="v.id" :value="v.id"  :label="v.roleName"></el-option>
+            </el-select>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit('form')">保存</el-button>
+                <el-button @click="viewVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit()">保存</el-button>
             </span>
         </el-dialog>
 
@@ -82,33 +81,34 @@
     import bus from '../../../bus';
     import {staffService} from '../../../service/staff';
     import {orderService} from '../../../service/order';
-    import StaffDetail from './staffDetail';
+    import {storeService} from '../../../service/store';
+    import {jurisdictionService} from '../../../service/jurisdiction';
+    
+   
     export default {
         data() {
             return {
+                roleId: '',
                 list: [],
-                cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
-                select_word: '',
                 del_list: [],
                 is_search: false,
                 
-                form: {
-                    a: '',
-                    b: '',
-                    c: '',
-                    gender: '男'
-                },
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    requery: [
+                        { required: true, message: '请输入或选择' },
                     ]
                 },
                 idx: -1,
                 id: -1,
                 showMore: false,
                 shopList: [],
+                jobNumber: '',
+                sexName: '',
+                
+                postName: '',
+                storeName: '',
                 shop: '',
                 gwList: [],
                 gw: [],
@@ -116,43 +116,68 @@
                 project: '',
                 isLiudong: false,
                 viewVisible: false,
-                editVisible: false,
-                roleList: ['超级管理员','管理员','员工']
+                total: 0,
+                pageSize: 50,
+                pageNumber: 1,
+
+                // 头部查询参数
+                employeeName: '', 
+                storesId: '',
+                post: '',
+                itemClassId: '',
+                isMobilePosition: '',
+
+                postGradeList:[],
+                row: {},
+                sysRoute: window.sysRoute || '',
+                jueseList: []
             }
         },
+        watch: {
+            storesId(){
+                this.getEmployeesList()
+            },
+            post(){
+                this.getEmployeesList()
+            },
+            itemClassId(){
+                this.getEmployeesList()
+            },
+            isMobilePosition(){
+                this.getEmployeesList()
+            },
+        },
         components:{
-            StaffDetail
+            
         },
         methods:{
-            // 保存编辑
-            saveEdit(form) {
-                this.$refs[form].validate((valid) => {
-                    if (valid) {
-                        this.editVisible = false;
-                        this.$message.success(`修改第 ${this.idx+1} 行成功`);
-                        if(this.list[this.idx].id === this.id){
-                            this.$set(this.list, this.idx, this.form);
-                        }else{
-                            for(let i = 0; i < this.list.length; i++){
-                                if(this.list[i].id === this.id){
-                                    this.$set(this.list, i, this.form);
-                                    return ;
-                                }
-                            }
-                        }
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+            
+            // 岗位改变 联动 岗位等级
+            gwChange(id){
+                const t = this;
+                t.postGradeList = t.gwList.filter((v)=>{
+                    return v.id == id
+                })[0].postGradeList
+            },
+            
+            // 设置角色
+            saveEdit() {
+                const t = this;
+                if(!t.roleId){
+                    t.$message.error('请选择角色');
+                    return
+                }
+                t.viewVisible = false;
+                let params = {
+                    roleId: t.roleId,
+                    staffId: t.row.id
+                }
+                staffService.saveRole(params).then((res)=>{
+                    t.$message.error('设置成功');
+                })
                 
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            add(){
-                this.editVisible = true;
-            },
+            
             moreSeach(){
                 const t = this;
                 if(t.showMore){
@@ -162,11 +187,12 @@
                 }
             },
             handleCurrentChange(val) {
-                this.cur_page = val;
-                this.getData();
+                this.pageNumber = val;
+                this.getEmployeesList();
             },
             search() {
                 this.is_search = true;
+                this.getEmployeesList();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -174,28 +200,50 @@
             // 分配角色
             handle1(index, row) {
                 this.idx = index;
-                this.id = row.id;
-                this.editVisible = true;
+                this.row = row;
+                this.viewVisible = true;
             },
+            getEmployeesList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: t.pageNumber,
+                    employeeName: t.employeeName, 
+                    storesId: t.storesId,
+                    post: t.post,
+                    itemClassId: t.itemClassId,
+                    isMobilePosition: t.isMobilePosition,
+                }
+                staffService.getEmployeesList(params).then((res)=>{
+                    for(const v of res.records){
+                        v.postName = v.postBean?v.postBean.postName: '';
+                        v.storeName = v.stores?v.stores.name: '';
+                        if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
+                        v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
+                        v.gradeNameN = v.postGrade?v.postGrade.gradeName:'';
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
+            }
         },
         mounted(){
             const t = this;
             // 员工列表
-            staffService.getStaffList().then((res)=>{
-                t.list = res;
-            });
+            t.getEmployeesList();
             // 岗位列表
-            staffService.getGwList().then((res)=>{
-                t.gwList = res;
-            });
-            // 门店列表
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
+            staffService.getPostList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.gwList = res.records;
             });
             // 服务项目列表
-            t.$commonService.getProjectList().then((res)=>{
-               t.projectList = res;
-           });
+            orderService.getItemClassList({pageSize: 100,pageNumber: 1}).then((res)=>{
+                t.projectList = res.records;
+            })
+            // 角色列表
+            jurisdictionService.getList().then((res)=>{
+                t.jueseList = res.records;
+            });
 
         }
     }

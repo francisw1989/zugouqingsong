@@ -16,7 +16,7 @@ let vbRouter = [
         children:[
             {
                 path: 'dashboard',
-                component: resolve => require(['../view/vb/dashboard/index.vue'], resolve),
+                component: resolve => require(['../view/va/dashboard/index.vue'], resolve),
                 meta: { title: '首页' },
             },
             {
@@ -35,7 +35,7 @@ let vbRouter = [
                 meta: { title: '员工列表' },
             },
             {
-                path: 'setting',
+                path: 'accountSetting',
                 component: resolve => require(['../view/va/staff/setting.vue'], resolve),
                 meta: { title: '账号管理' },
             },

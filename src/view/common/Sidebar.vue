@@ -55,18 +55,23 @@
                     let item = res.filter((v2)=>{
                         return v2.id == v1.id
                     });
+                    console.log(v1.title)
                     if(item && item.length){
                         v1.show = true;
+                        console.log(v1.title)
                         if(v1.subs && v1.subs.length){
                             for(const v3 of v1.subs){
-                                let item2 = item[0].sysMenu.filter((v4)=>{
-                                    return v4.id == v3.id
-                                })
-                                if(item2 && item2.length){
-                                    v3.show = true
-                                }else{
-                                    v3.show = false
+                                if(item[0].sysMenu && item[0].sysMenu.length){
+                                    let item2 = item[0].sysMenu.filter((v4)=>{
+                                        return v4.id == v3.id
+                                    })
+                                    if(item2 && item2.length){
+                                        v3.show = true
+                                    }else{
+                                        v3.show = false
+                                    }
                                 }
+                                
                             }
                         }
                     }else{
@@ -85,7 +90,13 @@
             })
             
             let userInfo = JSON.parse(localStorage.userInfo);
-            if(userInfo && userInfo.account == 'admin'){
+            window.userId = userInfo.id;
+            window.sysRoute = localStorage.sysRoute;
+            if(localStorage.sysRoute=='vb'){
+                window.storeId = userInfo.stores.id;
+            }
+            
+            if((userInfo && userInfo.account == 'admin') || (userInfo && userInfo.isShopponer==1)){
                 commonService.getSysMenu('1').then((res)=>{
                     t.menuDeal(res)
                 })
