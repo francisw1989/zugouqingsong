@@ -230,7 +230,7 @@
             <el-button type="primary" @click="timeLengthChangeNext">下一步</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="添加会员" :visible.sync="addCustomerVisible" width="500px">
+    <el-dialog title="添加会员" :visible.sync="addCustomerVisible" width="300px">
         <el-form ref="addCustomerForm" :model="addCustomerForm"  :rules="addCustomerRules"   label-width="70px">
             <el-form-item label="姓名" style="" class="" prop="userName">
                 <el-input v-model="addCustomerForm.userName" placeholder=""></el-input>
@@ -245,7 +245,7 @@
                 <el-input v-model="addCustomerForm.telephoneNum" placeholder=""></el-input>
             </el-form-item>
             <el-form-item label="出身日期" style="" class="" prop="birthday">
-                <el-date-picker v-model="addCustomerForm.birthday" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker style='width: 100%' v-model="addCustomerForm.birthday" value-format="yyyy-MM-dd" type="date" placeholder="选择日期"></el-date-picker>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -417,6 +417,8 @@
                         cashierService.addCustom(t.addCustomerForm).then((res)=>{
                             t.$message.success('添加会员成功');
                             t.seachForm.telephoneNum = t.addCustomerForm.telephoneNum;
+                            t.addCustomerVisible = false;
+                            t.addCustomerForm = JSON.parse(JSON.stringify(AddCustomerForm));
                             t.customSeach('seachForm');
                         })
                     } else {
