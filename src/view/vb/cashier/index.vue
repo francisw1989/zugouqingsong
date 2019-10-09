@@ -13,7 +13,7 @@
                     <div class="top15 center">
                         <el-radio-group v-model="tab1">
                             <el-radio-button label="检索"></el-radio-button>
-                            <el-radio-button label="信息"></el-radio-button>
+                            <el-radio-button label="信息" disabled></el-radio-button>
                         </el-radio-group>
                     </div>
                     <div class="top15">
@@ -38,7 +38,7 @@
                             <div class="clearfix">
                                 <img src="../../../assets/img/img.jpg" width="50" height="50" style="border-radius: 50%" alt="" class="left right10" />
                                 <p class="top5">{{userForm.userName}}</p>
-                                <p class="colye">二星会员</p>
+                                <p class="colye">{{leveName[userForm.memberLevel]}}</p>
                             </div>
                             <el-form class="top15"  ref="form" :model="form1"  label-width="80px" label-position='left'>
                                 <el-form-item label="会员号" style="" class="">
@@ -79,8 +79,8 @@
                         <div class="area" >
                             <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待服务({{appointList.length}})</div>
                             <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
-                            <div style="height: 80%; overflow: auto">
-                                <div v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
+                            <div style="height: 80%; overflow: auto" class="clearfix">
+                                <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
                                         <span class="right colblue">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
@@ -101,10 +101,10 @@
                                                     <td class="col999">{{oItem.orderStartTime}}</td>
                                                     <td class="align-right">
                                                         <div v-if="oIndex==v.orderItems.length-1">
-                                                            <el-button type="primary" size="mini" v-if='v.status==2' @click='confirmArrived(i, v)'>确认到店</el-button>
-                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click="doFpfj(i ,v)">分配房间</el-button>
-                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click="doChangeJishi(i ,v)">更换技师</el-button>
-                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click="doChangeRoom(i ,v)">更换房间</el-button>
+                                                            <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
+                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(i ,v)">分配房间</el-button>
+                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(i ,v)">更换技师</el-button>
+                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="doChangeRoom(i ,v)">更换房间</el-button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -114,6 +114,7 @@
 
                                     </div>
                                 </div>
+                                <div class="center top40 col999" v-if="!appointList.length">暂无订单，点击右侧添加订单</div>
                             </div>
                                 
                         </div>
@@ -355,7 +356,24 @@
         computed:{
             
         },
+        watch:{
+            tab1(val){
+                const t = this;
+                if(val=='检索'){
+                    t.getAppointList()
+                }
+            }
+        },
         methods:{
+            appointListClick(v, i){
+                const t = this;
+                if(t.tab1=='检索'){
+                    t.seachForm.telephoneNum = v.user.telephoneNum;
+                    t.customSeach('seachForm')
+                }
+               
+                
+            },
             // 给项目选择技师
             doChooseTechnic(v, i){
                 const t = this;
@@ -451,19 +469,23 @@
                 let params = {
                     userId: t.userForm.id
                 }
-                for(const v of t.choosenProject){
-                    orderReqForms.push({
-                        itemId: v.id,
-                        orderStartTime: t.dateTime,
-                        orderTime: t.defaultDuration,
-                        technicianIds: v.choosenTechnician.map((res)=>{
-                            return res.id
+                let p = new Promise((resolve, reject)=>{
+                    for(const v of t.choosenProject){
+                        orderReqForms.push({
+                            itemId: v.id,
+                            orderStartTime: t.dateTime,
+                            orderTime: v.defaultDuration,
+                            technicianIds: v.choosenTechnician.map((res)=>{
+                                return res.id
+                            })
                         })
+                    }
+                    cashierService.customOrder(params, orderReqForms).then((res)=>{
+                        resolve(res)
+                        t.$message.success('下单成功');
                     })
-                }
-                cashierService.customOrder(params, orderReqForms).then((res)=>{
-                    t.$message.success('下单成功');
                 })
+                return p;
             },
             getAppointList(){
                 const t = this;
@@ -507,8 +529,10 @@
                             params[key] = t.seachForm[key]
                         }
                         cashierService.customSeach(params).then((res)=>{
-                            t.appointList = res.records;
-                            t.userForm = t.appointList[0].user;
+                            if(res && res.userInfo.id){
+                                t.appointList = res.orderInfo.records;
+                                t.userForm = res.userInfo;
+                            }
                         })
                     } else {
                         console.log('error submit!!');
@@ -542,13 +566,33 @@
             // 跟换技师确认
             confirmChange(){
                 const t = this;
-                t.changeVisible = false;
+                
                 if(t.directBook){
-                    t.directBook = false;
-                    setTimeout(() => {
-                        t.successVisible = true;
-                        t.$commonService.getTime('payCountTime')
-                    }, 300);
+                    
+                    let canGoNext = true;
+                    for(const v of t.choosenProject){
+                        if(!v.choosenTechnician.length){
+                            t.$message.error("请选择"+v.itemName+"的服务技师");
+                            canGoNext = false;
+                            break;
+                        }
+                    }
+                    if(!canGoNext){
+                        return;
+                    }
+                    t.customOrder().then((res)=>{
+                        
+                        cashierService.orderDetail({outTradeNo: res.outTradeNo}).then((res)=>{
+                            t.changeVisible = false;
+                            t.directBook = false;
+                            setTimeout(() => {
+                                t.successVisible = true;
+                                // t.$commonService.getTime('payCountTime')
+                            }, 300);
+                        })
+                        
+                    });
+                    
                 }
                 
             },
@@ -590,6 +634,7 @@
             serviceTimeNext(){
                 const t = this;
                 t.serviceTimeVisible = false;
+                // directBook 直接下单  用来区分跟换技师弹框
                 setTimeout(() => {
                     t.directBook = true;
                     t.timeChangeLengthVisible = true;

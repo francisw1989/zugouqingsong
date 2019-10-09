@@ -1,6 +1,21 @@
 import {$axios} from './axios.js';
 let cashierService = {
-
+    // /api/v1/custom/orderDetail
+    // 根据商户订单号 获取下单结果和详情
+    orderDetail(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/custom/orderDetail',
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/custom/selectTechnician
     // 客服台选择技师页面
     selectTechnician(params){
