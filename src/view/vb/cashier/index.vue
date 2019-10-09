@@ -9,12 +9,16 @@
         <el-row style="height: 100%">
             <el-col :span="6" style="height: 100%; padding: 5px">
                 <div class="area relative" style='background-color: #f5f5f5'>
-                    <div class="center bor_btm_so font18 col000" style="padding-bottom: 15px">会员信息</div>
-                    <div class="top15 center">
+                    <div class="center bor_btm_so font18 col000 relative" style="padding-bottom: 15px">
+                        会员信息
+                        <el-button size="mini" class="absolute" @click="addCustomerVisible=true" style="top: 0; right:0">添加会员</el-button>
+                    </div>
+                    <div class="top15 center ">
                         <el-radio-group v-model="tab1">
                             <el-radio-button label="检索"></el-radio-button>
                             <el-radio-button label="信息" disabled></el-radio-button>
                         </el-radio-group>
+                        
                     </div>
                     <div class="top15">
                         <div v-if="tab1=='检索'" class="clearfix">
@@ -114,7 +118,7 @@
 
                                     </div>
                                 </div>
-                                <div class="center top40 col999" v-if="!appointList.length">暂无订单，点击右侧添加订单</div>
+                                <div class="center top40 col999" v-if="!appointList.length">暂无订单</div>
                             </div>
                                 
                         </div>
@@ -226,6 +230,28 @@
             <el-button type="primary" @click="timeLengthChangeNext">下一步</el-button>
         </span>
     </el-dialog>
+    <el-dialog title="添加会员" :visible.sync="addCustomerVisible" width="500px">
+        <el-form ref="addCustomerForm" :model="addCustomerForm"  :rules="addCustomerRules"   label-width="70px">
+            <el-form-item label="姓名" style="" class="" prop="userName">
+                <el-input v-model="addCustomerForm.userName" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="性别" style="" class="" prop="sex">
+                <el-radio-group v-model="addCustomerForm.sex">
+                    <el-radio-button label="1">男</el-radio-button>
+                    <el-radio-button label="0">女</el-radio-button>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item label="手机号" style="" class="" prop="telephoneNum">
+                <el-input v-model="addCustomerForm.telephoneNum" placeholder=""></el-input>
+            </el-form-item>
+            <el-form-item label="出身日期" style="" class="" prop="birthday">
+                <el-date-picker v-model="addCustomerForm.birthday" type="date" placeholder="选择日期"></el-date-picker>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="addCustom('addCustomerForm')">确定</el-button>
+        </span>
+    </el-dialog>
     
     <!--成功-->
     <el-dialog title="预约成功" :visible.sync="successVisible" width="360px">
@@ -279,6 +305,12 @@
         b: '',
         c: ''
     }
+    const AddCustomerForm = {
+        userName: '',
+        sex: 1,
+        telephoneNum: '',
+        birthday: ''
+    }
     const SeachForm = {
         memberNum: '',
         telephoneNum:'',
@@ -295,6 +327,7 @@
     export default {
         data() {
             return {
+                addCustomerVisible: false,
                 seachForm: JSON.parse(JSON.stringify(SeachForm)),
                 userForm: {},
                 appointList: [], // 待到店列表
@@ -313,6 +346,18 @@
                     a: [
                         { required: true, message: '请输入', trigger: 'change' },
                     ]
+                },
+                addCustomerForm: JSON.parse(JSON.stringify(AddCustomerForm)),
+                addCustomerRules:{
+                    userName: [
+                        { required: true, message: '请输入姓名' }
+                    ],
+                    sex: [
+                        { required: true, message: '请选择性别' }
+                    ],
+                    telephoneNum: [
+                        { required: true, message: '请输入手机号码' }
+                    ],
                 },
                 form1: {
                     a: '',
@@ -365,6 +410,22 @@
             }
         },
         methods:{
+            addCustom(form){
+                const t = this;
+                this.$refs[form].validate((valid) => {
+                    if (valid) {
+                        cashierService.addCustom(t.addCustomerForm).then((res)=>{
+                            t.$message.success('添加会员成功');
+                            t.seachForm.telephoneNum = t.addCustomerForm.telephoneNum;
+                            t.customSeach('seachForm');
+                        })
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+               
+            },
             appointListClick(v, i){
                 const t = this;
                 if(t.tab1=='检索'){
@@ -520,7 +581,7 @@
            
             customSeach(seachform){
                 const t = this;
-                t.tab1 = '信息';
+                
                 this.$refs[seachform].validate((valid) => {
                     if (valid) {
                         let params = {};
@@ -532,6 +593,7 @@
                             if(res && res.userInfo.id){
                                 t.appointList = res.orderInfo.records;
                                 t.userForm = res.userInfo;
+                                t.tab1 = '信息';
                             }
                         })
                     } else {
