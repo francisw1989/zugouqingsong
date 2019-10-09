@@ -106,9 +106,9 @@
                                                     <td class="align-right">
                                                         <div v-if="oIndex==v.orderItems.length-1">
                                                             <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
-                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(i ,v)">分配房间</el-button>
-                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(i ,v)">更换技师</el-button>
-                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="doChangeRoom(i ,v)">更换房间</el-button>
+                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'跟换房间':'分配房间'}}</el-button>
+                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(v, i)">更换技师</el-button>
+                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="finishOrder(v, i)">结束服务</el-button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -147,7 +147,7 @@
                             </div>
                             <div class="xzFoot clearfix">
                                 <div class="left top5">
-                                    <el-badge :value="2" class="item">
+                                    <el-badge :value="chooseTechnicIdAll.length" class="item">
                                         <span class="pad10RL">选择项目</span>
                                     </el-badge>
                                 </div>
@@ -159,21 +159,67 @@
             </el-col>
         </el-row>
     </div>
-    <el-dialog title="分配房间" :visible.sync="fpfjVisible" width="350px">
-        
-        <el-radio-group v-model="roomId">
-            <el-radio :label="v.id" v-for="(v) in roomList" :key="v.id" style="margin: 10px 0 0 0">
-                <span>{{v.name}}</span>
-                <span class="left10">剩余：{{v.useNum || 0}}位/{{v.peopleNum}}位</span>
-                <span class="left10">{{v.labels}}</span>
-            </el-radio>
-        </el-radio-group>
+    <el-dialog title="选择替换技师" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="replaceJishiVisible" width="500px">
+        <template v-for="(v, i) in technicianList">
+            <div class="clearfix bor_btm_so pad10TB"  :key="i"   v-if="!v.hasChoosedByOther">
+                <div class="imgWap right10">
+                    <img :src="v.photo" width="50" height="50" style="border-radius: 50%" alt="" class="" />
+                    <div class="xinWap">
+                        <img src="../../../assets/img/2.png" v-for="(v2, i2) in v.levelArr" :key='i2' class="xin" />
+                    </div>
+                </div>
+                <p class="col000">
+                    <span>{{v.employeeName}}</span>
+                    <span class="left10">¥{{v.pricePerMinute/100}}/分钟</span>
+                    <span class="col999 right">评分:{{Number(v.score).toFixed(1)}}分</span>
+                </p>
+                <p class=""><span class="pointer right colblue" @click="confirmChangeJishi(v, i)">选择并替换</span></p>
+            </div>
+        </template>
+        <p class="pad20 center col999" v-if="!technicianList.length">暂无可替换技师</p>
+    </el-dialog>
+    <el-dialog title="跟换技师" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="changeJishiVisible" width="500px">
+        <div v-if="currentOrder.orderItems && currentOrder.orderItems.length"> 
+            <el-tabs v-model="currentOrderItemIndex" class="" @tab-click="tab3Click">
+                <el-tab-pane v-for='(v, i) in currentOrder.orderItems' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
+            </el-tabs>
+            <template v-for="(v, i) in currentOrder.orderItems[currentOrderItemIndex].orderTechnicians">
+                <div class="clearfix bor_btm_so pad10TB"  :key="i"  >
+                    <div class="imgWap right10">
+                        <img :src="v.photo" width="50" height="50" style="border-radius: 50%" alt="" class="" />
+                        <div class="xinWap">
+                            <img src="../../../assets/img/2.png" v-for="(v2, i2) in v.levelArr" :key='i2' class="xin" />
+                        </div>
+                    </div>
+                    <p class="col000">
+                        <span>{{v.employeeName}}</span>
+                        <span class="left10">¥{{v.pricePerMinute/100}}/分钟</span>
+                        <span class="col999 right">评分:{{Number(v.score).toFixed(1)}}分</span>
+                    </p>
+                    <p class=""><span class="pointer right colblue" @click="openReplaceJishiModal(v, i)">选择替换该技师</span></p>
+                </div>
+            </template>
+        </div>
+    </el-dialog>
+    <el-dialog title="分配房间" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="fpfjVisible" width="350px">
+        <el-tabs v-model="currentOrderItemIndex" class="" @tab-click="tab3Click">
+            <el-tab-pane v-for='(v, i) in currentOrder.orderItems' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
+        </el-tabs>
+        <template v-for='(v, i) in currentOrder.orderItems'>
+            <el-radio-group v-model="v.roomId" :key="i" v-if="i==currentOrderItemIndex">
+                <el-radio :label="v2.id" v-for="(v2) in roomList" :key="v2.id" style="margin: 10px 0 0 0">
+                    <span>{{v2.name}}</span>
+                    <span class="left10">剩余：{{v2.useNum || 0}}位/{{v2.peopleNum}}位</span>
+                    <span class="left10">{{v2.labels}}</span>
+                </el-radio>
+            </el-radio-group>
+        </template>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="fpfjVisible = false">取 消</el-button>
+            <!-- <el-button @click="fpfjVisible = false">取 消</el-button> -->
             <el-button type="primary" @click="confirmDoFpfj">确 定</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="选择技师" :visible.sync="changeVisible" width="500px">
+    <el-dialog title="选择技师" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="changeVisible" width="500px">
         <el-tabs v-model="choosenProjectIndex" class="" @tab-click="tab2Click">
             <el-tab-pane v-for='(v, i) in choosenProject' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
         </el-tabs>
@@ -194,11 +240,11 @@
             </div>
         </template>
         <span slot="footer" class="dialog-footer">
-                <el-button @click="changeVisible = false">取 消</el-button>
-                <el-button type="primary" @click="confirmChange">确 定</el-button>
-            </span>
+            <!-- <el-button @click="changeVisible = false">取 消</el-button> -->
+            <el-button type="primary" @click="confirmChange">确 定</el-button>
+        </span>
     </el-dialog>
-    <el-dialog title="服务时间选择" :visible.sync="serviceTimeVisible" width="300px">
+    <el-dialog title="服务时间选择" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="serviceTimeVisible" width="300px">
         <el-time-select v-model="time" @change="dateTimeChange" :picker-options="{start: stores.openStartTime, step: '00:30',end: stores.openEndTime}" placeholder="选择时间" style="width: 100%;"></el-time-select>
         <span slot="footer" class="dialog-footer">
             <!-- <el-button type="primary" @click="serviceTimePrev">上一步</el-button> -->
@@ -206,7 +252,7 @@
         </span>
     </el-dialog>
     
-    <el-dialog title="项目时长调整" :visible.sync="timeChangeLengthVisible" width="500px">
+    <el-dialog title="项目时长调整" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="timeChangeLengthVisible" width="500px">
         <table class="table ">
             <tr  v-for="(v, i) in choosenProject" :key="i" class="m-table4">
                 <td style="width: 90px">
@@ -230,7 +276,7 @@
             <el-button type="primary" @click="timeLengthChangeNext">下一步</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="添加会员" :visible.sync="addCustomerVisible" width="300px">
+    <el-dialog title="添加会员" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="addCustomerVisible" width="300px">
         <el-form ref="addCustomerForm" :model="addCustomerForm"  :rules="addCustomerRules"   label-width="70px">
             <el-form-item label="姓名" style="" class="" prop="userName">
                 <el-input v-model="addCustomerForm.userName" placeholder=""></el-input>
@@ -254,10 +300,10 @@
     </el-dialog>
     
     <!--成功-->
-    <el-dialog title="预约成功" :visible.sync="successVisible" width="360px">
+    <el-dialog title="预约成功" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="successVisible" width="360px">
         <el-card shadow="hover" >
             <div class="clearfix">
-                <span class="right">今天 21:30</span>
+                <span class="right">{{D.orderStartTime}}</span>
                 <span class="col999">时间</span>
             </div>
             <div class="clearfix">
@@ -299,7 +345,7 @@
 </template>
 <script>
 // 场景一  线上预约过来的    出现的按钮依次： 确认到店--分配房间 -- 更换技师  更换房间
-// 场景二   直接到店消费       操作步骤：选择项目--选择时长---选择预约时间-- 选择技师 --- 支付  可出现的按钮：分配房间
+// 场景二   直接到店消费       操作步骤：选择项目--选择时长--- -- 选择技师 --- 支付  可出现的按钮：分配房间
     const Form = {
         a: '',
         b: '',
@@ -321,12 +367,16 @@
         
 
     }
+    import { Loading } from 'element-ui';
     import {cashierService} from '../../../service/cashier';
     import {orderService} from '../../../service/order';
     import {roomService} from '../../../service/room';
     export default {
         data() {
             return {
+                changeJishiVisible: false,
+                currentOrderItemIndex: '0',
+                D:{},
                 addCustomerVisible: false,
                 seachForm: JSON.parse(JSON.stringify(SeachForm)),
                 userForm: {},
@@ -384,15 +434,17 @@
                 leveName: [],
                 currentOrder: {},
                 currentOrderIndex: 0,
-                choosedItemIndex: 0,
+                choosedItemIndex: '0',
                 choosenProject: [],
-                choosenProjectIndex: 0,
+                choosenProjectIndex: '0',
                 dateTime: '',
                 time: '',
                 technicianList: [],
                 stores: {},
                 userInfo: {},
-                chooseTechnicIdAll: []
+                chooseTechnicIdAll: [],
+                replaceJishiVisible: false,
+                currentTechnic: {}
             }
         },
         components: {
@@ -410,6 +462,46 @@
             }
         },
         methods:{
+            // 打开可替换技师弹框
+            openReplaceJishiModal(v, i){
+                const t = this;
+                t.selectTechnician('change').then(res=>{
+                    t.replaceJishiVisible=true;
+                    t.currentTechnic = v;    
+                })
+            },
+            // 确认跟换技师
+            confirmChangeJishi(v, i){
+                const t =  this;
+                let params = {
+                    orderItemId: t.currentOrder.orderItems[t.currentOrderItemIndex].id,
+                    oldEmployeeId: t.currentTechnic.employeeId,
+                    newEmployeeId:  v.id
+                }
+                cashierService.changeEmployee(params).then(()=>{
+                    t.$message.success('更换成功');
+                    t.replaceJishiVisible = false;
+                    if(t.tab1=='检索'){
+                        t.getAppointList();
+                    }else{
+                        t.customSeach('seachForm')
+                    }
+                })
+            },
+            // 打开现有需要更换技师接口弹框
+            doChangeJishi(v, i){
+                const t = this;
+                t.currentOrder = v;
+                t.currentOrderIndex = i;
+                t.currentOrderItemIndex = '0';
+                t.changeJishiVisible = true;
+            },
+            finishOrder(v, i){
+                const t = this;
+                cashierService.finishOrder({orderId: v.id}).then((res)=>{
+                    t.$message.success('设置成功');
+                })
+            },
             addCustom(form){
                 const t = this;
                 this.$refs[form].validate((valid) => {
@@ -472,40 +564,59 @@
                 t.dateTime = dateTime;
             },
             // 根据服务时长&&项目&&服务时间 选择技师
-            selectTechnician(){
+            selectTechnician(type){
                 let p = new Promise((resolve, reject)=>{
                     const t = this;
-                    
-                    let params = {
-                        itemIdsStr: t.choosenProject[t.choosenProjectIndex].id,
-                        timesStr:  t.choosenProject[t.choosenProjectIndex].defaultDuration,
-                        dateTime: t.dateTime
-                    };
-                    cashierService.selectTechnician(params).then((res)=>{
-                        let selfChoosedIds = t.choosenProject[t.choosenProjectIndex].choosenTechnician.map((item)=>{
-                            return item.id;
-                        })
-                        for(const v of res[0].employees){
-                            if(t.chooseTechnicIdAll.indexOf(v.id)>-1 && selfChoosedIds.indexOf(v.id)<0){
-                                v.hasChoosedByOther = true
-                            }else{
-                                if(selfChoosedIds.indexOf(v.id)>-1){
-                                    v.choosed = true;
-                                }
-                                v.hasChoosedByOther = false
-                            }
+                    let params;
+                    if(type=='change'){
+                        params = {
+                            itemIdsStr: t.currentOrder.orderItems[t.currentOrderItemIndex].itemId,
+                            timesStr:  t.currentOrder.orderItems[t.currentOrderItemIndex].orderTime,
+                            dateTime: t.currentOrder.orderItems[t.currentOrderItemIndex].orderStartTime
                         }
-                        t.technicianList = res[0].employees;
-                         
-                        resolve();
-                    })
+                        cashierService.selectTechnician(params).then((res)=>{
+                            if(res.length && res[0].employees.length){
+                                t.technicianList = res[0].employees;
+                            }
+                            resolve();
+                        
+                        })
+                    }else{
+                        params = {
+                            itemIdsStr: t.choosenProject[t.choosenProjectIndex].id,
+                            timesStr:  t.choosenProject[t.choosenProjectIndex].defaultDuration,
+                            dateTime: t.dateTime
+                        };
+                        cashierService.selectTechnician(params).then((res)=>{
+                            let selfChoosedIds = t.choosenProject[t.choosenProjectIndex].choosenTechnician.map((item)=>{
+                                return item.id;
+                            })
+                            if(res.length && res[0].employees.length){
+                                for(const v of res[0].employees){
+                                    if(t.chooseTechnicIdAll.indexOf(v.id)>-1 && selfChoosedIds.indexOf(v.id)<0){
+                                        v.hasChoosedByOther = true
+                                    }else{
+                                        if(selfChoosedIds.indexOf(v.id)>-1){
+                                            v.choosed = true;
+                                        }
+                                        v.hasChoosedByOther = false
+                                    }
+                                }
+                                t.technicianList = res[0].employees;
+                                
+                                resolve();
+                            }
+                        
+                        })
+                    }
+                    
                 })
                 return p;
             },
             doChooseProject(){
                 const t = this;
                 t.choosenProject = [];
-                t.choosenProjectIndex = 0;
+                t.choosenProjectIndex = '0';
                 for(const v of t.itemClassList){
                     if(v.itemList && v.itemList.length){
                         for(const v2 of v.itemList){
@@ -545,7 +656,7 @@
                     }
                     cashierService.customOrder(params, orderReqForms).then((res)=>{
                         resolve(res)
-                        t.$message.success('下单成功');
+                        // t.$message.success('下单成功');
                     })
                 })
                 return p;
@@ -564,7 +675,7 @@
                         }
                     }
                     t.appointList = res.records;
-
+                    t.currentOrder = t.appointList[t.currentOrderIndex];
                     setTimeout(() => {
                         for(const i in t.appointList){
                             t.$commonService.getTime('time' + i)
@@ -594,6 +705,7 @@
                         cashierService.customSeach(params).then((res)=>{
                             if(res && res.userInfo.id){
                                 t.appointList = res.orderInfo.records;
+                                t.currentOrder = t.appointList[t.currentOrderIndex];
                                 t.userForm = res.userInfo;
                                 t.tab1 = '信息';
                             }
@@ -612,22 +724,40 @@
                 this.cur_page = val;
                 this.getData();
             },
+            tab3Click(){
+                const t = this;
+                
+            },
             tab2Click(){
                 const t = this;
                 t.selectTechnician()
             },
             confirmDoFpfj(){
                 const t = this;
-                t.fpfjVisible = false;
-                cashierService.setRoom({
-                    orderItemId: t.currentOrder.id,
-                    roomId: t.roomId
-                }).then(()=>{
-
-                })
-                t.list = JSON.parse(JSON.stringify(t.list));
+                let goNext = true;
+                for(const v of t.currentOrder.orderItems){
+                    if(!v.roomId){
+                        t.$message.error("请选择"+v.itemName+"的房间");
+                        goNext = false;
+                        break;
+                    }
+                }
+                if(goNext){
+                    t.currentOrder.orderItems.forEach((v, i)=>{
+                        cashierService.setRoom({
+                            orderItemId: v.id,
+                            roomId: v.roomId
+                        }).then((res)=>{
+                            if(i == t.currentOrder.orderItems.length-1){
+                                t.$message.success("设置成功");
+                                t.fpfjVisible = false;
+                            }
+                        })
+                    })
+                }
+                
             },
-            // 跟换技师确认
+            // 选择技师确认
             confirmChange(){
                 const t = this;
                 
@@ -645,42 +775,50 @@
                         return;
                     }
                     t.customOrder().then((res)=>{
-                        
-                        cashierService.orderDetail({outTradeNo: res.outTradeNo}).then((res)=>{
-                            t.changeVisible = false;
-                            t.directBook = false;
-                            setTimeout(() => {
-                                t.successVisible = true;
-                                // t.$commonService.getTime('payCountTime')
-                            }, 300);
-                        })
-                        
+                        t.getOrderDetail(res.outTradeNo)
                     });
                     
                 }
                 
             },
+            getOrderDetail(outTradeNo){
+                const t = this;
+                let _do = ()=>{
+                    cashierService.orderDetail({outTradeNo: outTradeNo}).then((res)=>{
+                        if(!res){
+                            Loading.service({
+                                text: 'loading...'
+                            });
+                            setTimeout(()=>{
+                                _do();
+                            }, 1000)
+                            return
+                        }
+                        t.D = res;
+                        t.changeVisible = false;
+                        t.directBook = false;
+                        setTimeout(() => {
+                            t.successVisible = true;
+                            // t.$commonService.getTime('payCountTime')
+                        }, 300);
+                    })
+                }
+                _do()
+                
+            },
             // 分配房间
-            doFpfj(i, v){
+            doFpfj(v, i){
                 const t = this;
                 t.fpfjVisible = true;
                 t.currentOrder = v;
                 t.currentOrderIndex = i;
+                t.currentOrderItemIndex = '0';
             },
-            // 更换技师
-            doChangeJishi(){
-                const t = this;
-                t.changeVisible = true;
-            },
-            // 更换房间
-            doChangeRoom(){
-                const t = this;
-                t.fpfjVisible = true;
-            },
+           
             // 项目时长调整下一步
             timeLengthChangeNext(){
                 const t = this;
-                t.choosenProjectIndex = 0;
+                t.choosenProjectIndex = '0';
                 t.selectTechnician().then(()=>{
                     t.timeChangeLengthVisible = false;
                     setTimeout(() => {

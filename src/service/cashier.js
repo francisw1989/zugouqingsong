@@ -1,6 +1,19 @@
 import {$axios} from './axios.js';
 let cashierService = {
-
+    finishOrder(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'PATCH',
+                url: '/api/v1/custom/finishOrder/' + params.orderId,
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/custom/user
     // 添加会员
     addCustom(params){
@@ -44,16 +57,19 @@ let cashierService = {
                 params: params
             }
             $axios(data).then((res)=>{
-                for(const v of res[0].employees){
-                    if(!v.level){v.level = 0};
-                    let levelArr = [];
-                    for(let i =0; i<v.level; i++){
-                        levelArr.push('')
+                if(res.length && res[0].employees.length){
+                    for(const v of res[0].employees){
+                        if(!v.level){v.level = 0};
+                        let levelArr = [];
+                        for(let i =0; i<v.level; i++){
+                            levelArr.push('')
+                        }
+                        v.choosed = false;
+                        v.levelArr = levelArr;
                     }
-                    v.choosed = false;
-                    v.levelArr = levelArr;
                 }
                 resolve(res)
+               
             })
         })
         return p;
@@ -112,9 +128,10 @@ let cashierService = {
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/custom/employee/' + params.orderItemId,
-                loading: true
+                loading: true,
+                params: params
             }
-            $axios(data, params).then((res)=>{
+            $axios(data).then((res)=>{
                 resolve(res)
             })
         })
@@ -191,7 +208,7 @@ let cashierService = {
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'PATCH',
-                url: '/api/v1/custom/room/' + params.orderItemId,
+                url: '/api/v1/custom/room/',
                 loading: true,
                 params: params
             }
