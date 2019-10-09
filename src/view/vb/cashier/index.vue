@@ -694,10 +694,8 @@
            
             customSeach(seachform){
                 const t = this;
-                
-                this.$refs[seachform].validate((valid) => {
-                    if (valid) {
-                        let params = {};
+                let _do = ()=>{
+                    let params = {};
                         // t.editVisible = false;
                         for(let key in SeachForm){
                             params[key] = t.seachForm[key]
@@ -710,11 +708,20 @@
                                 t.tab1 = '信息';
                             }
                         })
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+                }
+                if(this.$refs[seachform]){
+                    this.$refs[seachform].validate((valid) => {
+                        if (valid) {
+                            _do()
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                }else{
+                    _do()
+                }
+                
                 
             },
             payTypeChange(){
