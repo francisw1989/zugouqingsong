@@ -341,6 +341,11 @@
             <el-button type="primary" @click="successVisible = false">完成支付</el-button>
         </span>
     </el-dialog>
+    <el-dialog title="订单确认" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="orderConfirmVisible" width="500px">
+        <p>预约门店：</p>
+        <p></p>
+    </el-dialog>
+
 </div>
 </template>
 <script>
@@ -444,7 +449,8 @@
                 userInfo: {},
                 chooseTechnicIdAll: [],
                 replaceJishiVisible: false,
-                currentTechnic: {}
+                currentTechnic: {},
+                orderConfirmVisible: false
             }
         },
         components: {
