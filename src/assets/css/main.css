@@ -487,3 +487,5 @@ a {
 .roomBox .tag{ margin: 5px;}
 
 .xmWap .el-input-number--mini{ width: 100px!important;}
+
+.title1{ line-height: 20px; border-left: 2px solid #459E8C; padding-left: 10px; color: #333}

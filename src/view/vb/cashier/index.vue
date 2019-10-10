@@ -69,10 +69,11 @@
                                 <el-form-item label="储值账户" style="" class="">
                                     {{userForm.virtualAccount/100}}
                                     <el-button type="primary" class="left10" @click="rechargeVisible=true">充值</el-button>
-                                    <div class="colye">余额不足</div>
+                                    <!-- <div class="colye">余额不足</div> -->
                                 </el-form-item>
                             </el-form>
-                            <div class="col999 top10">*此用户为红名单用户</div>
+                            <div class="col999 top10" v-if="userForm.inRedlist">*此用户为红名单用户</div>
+                            <div class="col999 top10"  v-if="userForm.inBlacklist">*此用户为黑名单用户</div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
                         <div class="area" >
                             <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待服务({{appointList.length}})</div>
                             <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
-                            <div style="height: 80%; overflow: auto" class="clearfix">
+                            <div style="height: 90%; overflow: auto" class="clearfix">
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
@@ -147,7 +148,7 @@
                             </div>
                             <div class="xzFoot clearfix">
                                 <div class="left top5">
-                                    <el-badge :value="chooseTechnicIdAll.length" class="item">
+                                    <el-badge :value="selNumall" class="item">
                                         <span class="pad10RL">选择项目</span>
                                     </el-badge>
                                 </div>
@@ -355,14 +356,14 @@
             <p v-if="!showPayButton" class="bor_btm_so col999 center" style="padding-bottom: 10px; margin-bottom: 10px;">
                 支付剩余时间<span id="payTime"></span>
             </p>
-            <p><span class="col000">预约门店：</span>{{D.storeName}}</p>
-            <p><span class="col000">开始时间：</span>{{D.orderStartTime}}</p>
-            <p class='col000 top10'>服务项目</p>
-            <table class="m-table2 left5 top10">
+            <p><span class="title1">预约门店：</span>{{D.storeName}}</p>
+            <p class="top15"><span class="title1">开始时间：</span>{{D.orderStartTime}}</p>
+            <p class='title1 top15'>服务项目</p>
+            <table class="m-table2 left10 top15">
                 <template  v-for="(v, i) in D.orderItems">
                     <tr :key="i">
                         <td style="width: 80px; border-color: #fff">
-                            <span class="col333">{{v.itemName}}</span>
+                            <span class="">{{v.itemName}}</span>
                         </td>
                         <td>
                             <span class="">￥{{v.orderPrice/100}}元</span>
@@ -382,8 +383,8 @@
                     </tr>
                 </template>
             </table>
-            <p class='col000 top10'>支付方式</p>
-            <div class="left10 top10 clearfix">
+            <p class='title1 top15'>支付方式</p>
+            <div class="left10 top15 clearfix">
                 <div class="clearfix top5">
                     <el-checkbox v-model="czzhCheck" :disabled='czzhDisable'></el-checkbox>
                     <span class="left20">储值账户</span>
@@ -564,7 +565,8 @@
                 vipRechargeInfoList: [],
                 vipRechargeInfoListIndex: 0,
                 price: '',
-                showEwm: false
+                showEwm: false,
+                selNumall: 0
             }
         },
         components: {
@@ -623,7 +625,7 @@
                 const t = this;
                 let payType = [];
                 // 支付方式（1储蓄账户 3微信支付 4.现金 5微信转账 6.支付宝转账）多个用逗号隔开 组合支付方式 只能是1+* 不能 3,4组合 3-6只能选一个
-                if(!t.czzhCheck && !t.otherCheck && !t.otherPayType){
+                if(!t.czzhCheck && !t.otherCheck){
                     t.$message.error('请选择至少一种支付方式');
                     return;
                 }
@@ -1017,6 +1019,7 @@
                         if(res && res.status ==2){
                             // 支付成功
                             let payTypeList = ['', '虚拟账户', '现金账户', '微信支付', '现金', '微信转账', '支付宝转账'];
+                            let payObjList = [];
                             res.payType.split('-').forEach((v, i)=>{
                                 if (v) {
                                     payObjList.push({
@@ -1029,14 +1032,18 @@
                             res.payObjList = payObjList;
 
                             t.D = res;
-                            t.showPayButton = true;
-                            t.successVisible = true;
-                            // 重新获取首页订单
-                            if(t.tab1=='检索'){
-                                t.getAppointList();
-                            }else{
-                                t.customSeach('seachForm')
-                            }
+                            t.orderConfirmVisible = false;
+                            setTimeout(() => {
+                                t.showPayButton = true;
+                                t.successVisible = true;
+                                // 重新获取首页订单
+                                if(t.tab1=='检索'){
+                                    t.getAppointList();
+                                }else{
+                                    t.customSeach('seachForm')
+                                }
+                            }, 300);
+                            
                         }else{
                             setTimeout(()=>{
                                 _do();
@@ -1049,17 +1056,18 @@
             },
             getOrderDetail(outTradeNo){
                 const t = this;
+                let oLoading = Loading.service({
+                    text: 'loading...'
+                });
                 let _do = ()=>{
                     cashierService.orderDetail({outTradeNo: outTradeNo, loading: false}).then((res)=>{
                         if(!res){
-                            Loading.service({
-                                text: 'loading...'
-                            });
                             setTimeout(()=>{
                                 _do();
                             }, 1000)
                             return
                         }
+                        oLoading && oLoading.close();
                         t.D = res;
                         if(t.D.user.totalAccount < t.D.totalPrice){
                             t.otherCheck = true;
@@ -1076,7 +1084,6 @@
                     })
                 }
                 _do()
-                
             },
             // 分配房间
             doFpfj(v, i){
@@ -1123,6 +1130,9 @@
                 console.log(v.num);
                 t.choosenProject = [];
                 t.itemClassList[t.choosedItemIndex].itemList = t.itemList;
+                t.selNumall = eval(t.itemList.map((item)=>{
+                    return item.num
+                }).join('+'))
             },
             getItemClassList(){
                 const t = this;
@@ -1180,12 +1190,12 @@
             t.getRoomList();
             t.vipRechargeInfo();
 
-            setTimeout(()=>{
-                this.$notify({
-                    message: '您有新的订单',
-                    duration: 0
-                });
-            }, 3000)
+            // setTimeout(()=>{
+            //     this.$notify({
+            //         message: '您有新的订单',
+            //         duration: 0
+            //     });
+            // }, 3000)
             document.body.style.zoom = '1'
             // cashierService.list().then((res)=>{
             //     t.list = res.records;
