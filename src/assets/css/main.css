@@ -478,6 +478,9 @@ a {
 .m-table4{ width: 100%; border-spacing: 0; border-collapse: collapse;}
 .m-table4 td{  padding: 10px 0; border-bottom: 1px solid #ddd;}
 
+.m-table5{ width: 100%; border-spacing: 0; border-collapse: collapse;}
+.m-table5 td{  padding: 2px 5px!important; border: none!important}
+
 .el-table__expand-icon{ display: inline-block}
 .roomBox{ margin: 0 15px 15px 0}
 .roomBox .icon{ cursor: pointer;}

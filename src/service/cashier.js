@@ -37,7 +37,7 @@ let cashierService = {
             let data = {
                 method: 'get',
                 url: '/api/v1/custom/orderDetail',
-                loading: true,
+                loading: params.loading,
                 params: params
             }
             $axios(data).then((res)=>{
@@ -193,7 +193,8 @@ let cashierService = {
             let data = {
                 method: 'post',
                 url: '/api/v1/custom/orderPayTwoBarCodes',
-                loading: true
+                loading: true,
+                params: params
             }
             $axios(data, params).then((res)=>{
                 resolve(res)
@@ -218,6 +219,22 @@ let cashierService = {
         })
         return p;
     },
+    // /api/v1/custom/vipRechargeInfo
+    // 会员充值活动信息
+    vipRechargeInfo(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/custom/vipRechargeInfo',
+                loading: true,
+                params: params
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/custom/vipRecharge
     // 客服台会员充值
     vipRecharge(params){
@@ -225,9 +242,10 @@ let cashierService = {
             let data = {
                 method: 'post',
                 url: '/api/v1/custom/vipRecharge/',
-                loading: true
+                loading: true,
+                params: params
             }
-            $axios(data, params).then((res)=>{
+            $axios(data).then((res)=>{
                 resolve(res)
             })
         })
