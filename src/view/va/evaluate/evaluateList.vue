@@ -29,14 +29,14 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="orderTechnician.orderStartTime" label="服务时间" width="150"></el-table-column>
+                <el-table-column prop="actualOrderTime" label="服务时间" width="150"></el-table-column>
                 <el-table-column prop="user.userName" label="客户名称" width="120"></el-table-column>
-                <el-table-column prop="user.score" label="评分"></el-table-column>
-                <el-table-column prop="orderTechnician.employeeName" label="服务技师"></el-table-column>
-                <el-table-column prop="user.tags" label="评价标签"></el-table-column>
+                <el-table-column prop="evaluateScore" label="评分"></el-table-column>
+                <el-table-column prop="employeeName" label="服务技师"></el-table-column>
+                <el-table-column prop="evaluateLabel" label="评价标签"></el-table-column>
                 <el-table-column prop="content" label="评价内容"></el-table-column>
-                <el-table-column prop="orderTechnician.itemName" label="项目名称"></el-table-column>
-                <el-table-column prop="orderTechnician.actualEmployeePrice" label="实际消费"></el-table-column>
+                <el-table-column prop="itemName" label="项目名称"></el-table-column>
+                <el-table-column prop="actualOrderPrice" label="实际消费"></el-table-column>
                 <!-- <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
@@ -202,10 +202,10 @@
                     pageNumber: t.pageNumber
                 }
                 evaluateService.list(params).then((res)=>{
-                    t.list = res.records;
-                    for(const v of t.list){
-                        v.orderTechnician.actualEmployeePrice = orderTechnician.actualEmployeePrice/1000
-                    }
+					t.list = res.records;
+                    // for(const v of t.list){
+                    //     v.orderTechnician.actualEmployeePrice = orderTechnician.actualEmployeePrice/1000
+                    // }
                     t.total = res.total
                 });
             }

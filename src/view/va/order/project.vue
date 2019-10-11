@@ -283,7 +283,7 @@
                 t.form.imgs = t.form.imgListShow.map((v)=>{
                     return v.url
                 }).join(',');
-                t.$refs[form].validate((valid) => {
+                t.$refs[form].validate((valid) => {   //表单验证 validate
                     if (valid) {
                         let params = {};
                         t.editVisible = false;
