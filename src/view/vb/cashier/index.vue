@@ -68,11 +68,12 @@
                                 </el-form-item>
                                 <el-form-item label="储值账户" style="" class="">
                                     {{userForm.virtualAccount/100}}
-                                    <el-button type="primary" class="left10">充值</el-button>
-                                    <div class="colye">余额不足</div>
+                                    <el-button type="primary" class="left10" @click="rechargeVisible=true">充值</el-button>
+                                    <!-- <div class="colye">余额不足</div> -->
                                 </el-form-item>
                             </el-form>
-                            <div class="col999 top10">*此用户为红名单用户</div>
+                            <div class="col999 top10" v-if="userForm.inRedlist">*此用户为红名单用户</div>
+                            <div class="col999 top10"  v-if="userForm.inBlacklist">*此用户为黑名单用户</div>
                         </div>
                     </div>
                 </div>
@@ -83,7 +84,7 @@
                         <div class="area" >
                             <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待服务({{appointList.length}})</div>
                             <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
-                            <div style="height: 80%; overflow: auto" class="clearfix">
+                            <div style="height: 90%; overflow: auto" class="clearfix">
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
@@ -147,7 +148,7 @@
                             </div>
                             <div class="xzFoot clearfix">
                                 <div class="left top5">
-                                    <el-badge :value="chooseTechnicIdAll.length" class="item">
+                                    <el-badge :value="selNumall" class="item">
                                         <span class="pad10RL">选择项目</span>
                                     </el-badge>
                                 </div>
@@ -300,47 +301,146 @@
     </el-dialog>
     
     <!--成功-->
-    <el-dialog title="预约成功" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="successVisible" width="360px">
-        <el-card shadow="hover" >
-            <div class="clearfix">
-                <span class="right">{{D.orderStartTime}}</span>
-                <span class="col999">时间</span>
+    <el-dialog title="支付成功" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="successVisible" width="500px">
+        <div v-if="D.orderItems && D.orderItems.length">
+            <div class="pad10TB bor_btm_so">
+                订单详情：
             </div>
-            <div class="clearfix">
-                <span class="right">颈椎放松</span>
-                <span class="col999">预约项目</span>
+            <div class="left20 top10">
+                <p>订单编号： {{D.outTradeNo}}</p>
+                <p class="top5">预约门店：{{D.storeName}}</p>
+                <p class="top5">开始时间：{{D.orderStartTime}}</p>
             </div>
-            <div class="clearfix">
-                <span class="right">张三</span>
-                <span class="col999">预约技师</span>
+            <div class="pad10TB bor_btm_so">
+                服务项目：
             </div>
-            <div class="clearfix">
-                <span class="right">$15/分钟</span>
-                <span class="col999">单价</span>
+            <div class="left20 top10">
+                <table class="m-table2">
+                    <template  v-for="(v, i) in D.orderItems">
+                        <tr :key="i">
+                            <td style="width: 80px; border-color: #fff">
+                                <span class="col333">{{v.itemName}}</span>
+                            </td>
+                            <td>
+                                <span class="">￥{{v.orderPrice/100}}元</span>
+                                <span class="left20">{{v.orderTime}}分钟</span>
+                            </td>
+                        </tr>
+                    </template>
+                </table>
             </div>
-            <div class="clearfix">
-                <span class="colred right">¥200</span>
-                <span class="col999">总价</span>
+            <div class="pad10TB bor_btm_so">
+                支付明细：
             </div>
-
-        </el-card>
-        <div class="center top15">
-            <el-radio-group v-model="payType"  @change='payTypeChange'>
-                <el-radio-button :label="i"  v-for="(v, i) in payTypeList" :key="i" >{{v}}</el-radio-button>
-            </el-radio-group>
-        </div>
-        <div class="center top15">
-            <img src="../../../assets/img/1.png"  width="130" />
-        </div>
-        <div class="top15 center">
-            <i class="el-icon-loading"></i>
-            <span class="col999 left10">等待支付</span>
-            <span class="colred left10" time='2019/09/08' id="payCountTime"></span>
+            <div class="left20 top10">
+                <p v-for="(v, i) in D.payObjList" :key="i">
+                    {{v.payTypeName}}
+                    <span class="left20" v-if="v.payType==1 || v.payType==2">扣款</span>
+                    <span class="left20" v-if="v.payType!=1 && v.payType!=2">支付</span>
+                    ￥{{payAmount}}元
+                </p>
+            </div>
+            <div class="top10">
+                <el-checkbox v-model="duanxinCheck">接收预约短信提醒</el-checkbox>
+            </div>
+            <div class="top10">
+                距离{{D.memberInterests[D.currentMemLevel.currentLevel + 1].memberLevelName}}会员还需消费{{(D.memberInterests[D.currentMemLevel.currentLevel + 1].amountCondition-D.currentMemLevel.money)/100}}元
+            </div>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="successVisible = false">完成支付</el-button>
+            <el-button type="primary" @click="successVisible = false">完成</el-button>
         </span>
     </el-dialog>
+    <el-dialog title="订单确认" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="orderConfirmVisible" width="500px">
+        <div v-if="D.orderItems && D.orderItems.length">
+            <p v-if="!showPayButton" class="bor_btm_so col999 center" style="padding-bottom: 10px; margin-bottom: 10px;">
+                支付剩余时间<span id="payTime"></span>
+            </p>
+            <p><span class="title1">预约门店：</span>{{D.storeName}}</p>
+            <p class="top15"><span class="title1">开始时间：</span>{{D.orderStartTime}}</p>
+            <p class='title1 top15'>服务项目</p>
+            <table class="m-table2 left10 top15">
+                <template  v-for="(v, i) in D.orderItems">
+                    <tr :key="i">
+                        <td style="width: 80px; border-color: #fff">
+                            <span class="">{{v.itemName}}</span>
+                        </td>
+                        <td>
+                            <span class="">￥{{v.orderPrice/100}}元</span>
+                            <span class="left20">{{v.orderTime}}分钟</span>
+                        </td>
+                    </tr>
+                    <tr >
+                        <td></td>
+                        <td>
+                            <table class="m-table5">
+                                <tr v-for="(v2, i2) in v.orderTechnicians" :key="i2">
+                                    <td style="width: 60px">{{v2.employeeName}}</td>
+                                    <td>￥{{v2.pricePerMinute/100}}/分钟</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </template>
+            </table>
+            <p class='title1 top15'>支付方式</p>
+            <div class="left10 top15 clearfix">
+                <div class="clearfix top5">
+                    <el-checkbox v-model="czzhCheck" :disabled='czzhDisable'></el-checkbox>
+                    <span class="left20">储值账户</span>
+                    <span class="left40">当前余额：<span class="colred">{{D.user.totalAccount / 100}}</span></span>
+                    <span class="colblue right pointer" @click="rechargeVisible=true">充值 ></span>
+                </div>
+                <div class="top5">
+                    <el-checkbox v-model="otherCheck" :disabled='otherDisable'></el-checkbox>
+                    <el-select class="left20" v-model="otherPayType" placeholder="请选择支付方式" >
+                        <el-option v-for="(v) in otherPay" :key="v.id" :label="v.name" :value="v.id"></el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div class="top10 align-right">总金额：<span class="colred">{{D.totalPrice/100}}</span></div>
+        </div>
+        <div class="top10 center" v-if="!showPayButton">
+            <canvas id="QRCode"></canvas>
+            <p class="col999">支付中...</p>
+        </div>
+        <div v-if="showPayButton" class="align-right top10">
+            <el-button type="primary" @click="orderPayTwoBarCodes">确认付款</el-button>
+        </div>
+    </el-dialog>
+    <el-dialog title="充值" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="rechargeVisible" width="500px">
+        <div>充值金额：<el-input v-model="price" placeholder=""></el-input></div>
+        <div class="col999">当前账户余额￥{{userForm.totalAccount/100 || 0}}，充值后剩余￥{{userForm.totalAccount/100||0 + price}}</div>
+        <div class="top10">
+            快速选择：
+            <div class="top10">
+                    <el-radio-group v-model="vipRechargeInfoListIndex" size="small">
+                        <el-radio v-for="(v, i) in vipRechargeInfoList" :key="i" :label="i" border>{{v.activityCondition/100}}</el-radio>
+                    </el-radio-group>
+            </div>
+        </div>
+        <div class="top10">
+            <div>充值说明：</div>
+            <p class="top5"  v-for="(v, i) in vipRechargeInfoList" :key="i">
+                {{i+1}} . 充值{{v.activityCondition/100}} 赠送 {{v.amount/100}}
+            </p>
+        </div>
+        <div class="top10">
+            <div class="clearfix">
+                支付方式：
+                <el-button type="primary" @click="vipRecharge">扫码支付</el-button>
+            </div>
+        </div>
+        <div class="top10 center" v-if="showEwm">
+            <canvas class="" id="QRCode"></canvas>
+            <p class="col999">支付中...</p>
+        </div>
+        
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="rechargeVisible = false">完成</el-button>
+        </span>
+    </el-dialog>
+
 </div>
 </template>
 <script>
@@ -371,9 +471,22 @@
     import {cashierService} from '../../../service/cashier';
     import {orderService} from '../../../service/order';
     import {roomService} from '../../../service/room';
+    import QRCode from "qrcode";
     export default {
         data() {
             return {
+                showPayButton: true,
+                czzhCheck: false,
+                czzhDisable: false,
+                otherCheck: false,
+                otherDisable: false,
+                otherPayType: '3',
+                otherPay: [
+                    {name: '微信支付', id: '3'},
+                    {name: '现金', id: '4'},
+                    {name: '微信转账', id: '5'},
+                    {name: '支付宝转账', id: '6'}
+                ],
                 changeJishiVisible: false,
                 currentOrderItemIndex: '0',
                 D:{},
@@ -444,7 +557,16 @@
                 userInfo: {},
                 chooseTechnicIdAll: [],
                 replaceJishiVisible: false,
-                currentTechnic: {}
+                currentTechnic: {},
+                orderConfirmVisible: false,
+                QRCodeMsg: '',
+                duanxinCheck: true,
+                rechargeVisible: false,
+                vipRechargeInfoList: [],
+                vipRechargeInfoListIndex: 0,
+                price: '',
+                showEwm: false,
+                selNumall: 0
             }
         },
         components: {
@@ -459,9 +581,85 @@
                 if(val=='检索'){
                     t.getAppointList()
                 }
+            },
+            QRCodeMsg(val){
+                var msg = document.getElementById("QRCode");
+                // 将获取到的数据（val）画到msg（canvas）上
+                QRCode.toCanvas(msg, val, function(error) {
+                    console.log(error);
+                });
+            },
+            vipRechargeInfoListIndex(){
+                const t = this;
+                t.price = t.vipRechargeInfoList[t.vipRechargeInfoListIndex].activityCondition/100;
             }
         },
         methods:{
+            // 获取充值信息
+            vipRechargeInfo(){
+                const t = this;
+                cashierService.vipRechargeInfo({}).then((res)=>{
+                    t.vipRechargeInfoList = res.filter((item)=>{
+                        return item.grantType == 0
+                    });
+                    t.price = t.vipRechargeInfoList[0].activityCondition/100;
+                })
+            },
+            // 充值
+            vipRecharge(){
+                const t = this;
+                let params = {
+                    userId: t.userForm.id,
+                    price: t.price
+                };
+                cashierService.vipRecharge(params).then((res)=>{
+                    t.showEwm = true;
+                    setTimeout(() => {
+                        t.QRCodeMsg = res;
+                    }, 100);
+                    // t.$message.success('充值成功');
+                })
+            },
+            // 支付
+            orderPayTwoBarCodes(){
+                const t = this;
+                let payType = [];
+                // 支付方式（1储蓄账户 3微信支付 4.现金 5微信转账 6.支付宝转账）多个用逗号隔开 组合支付方式 只能是1+* 不能 3,4组合 3-6只能选一个
+                if(!t.czzhCheck && !t.otherCheck){
+                    t.$message.error('请选择至少一种支付方式');
+                    return;
+                }
+                if(t.czzhCheck){
+                    payType.push('1')
+                }
+                if(t.otherCheck && t.otherPayType){
+                    payType.push(t.otherPayType)
+                }
+
+                let params = {
+                    orderId: t.D.id,
+                    payType: payType.join(',')
+                }
+                cashierService.orderPayTwoBarCodes(params).then((res)=>{
+                    
+                    if(res.data){
+                        t.showPayButton = false;
+                        setTimeout(() => {
+                            t.QRCodeMsg = res.data;
+                            let GT = new Date().getTime() + 5*60*1000;
+                            t.$commonService.getTime('payTime', GT,()=>{
+                                setTimeout(() => {
+                                    // 支付失败  重新下单
+                                    t.showPayButton = true;
+                                    t.orderConfirmVisible = false;
+                                }, 3000);
+                            })
+                        }, 100);
+                        t.getOrderPayStatus();
+                    }
+                    
+                })
+            },
             // 打开可替换技师弹框
             openReplaceJishiModal(v, i){
                 const t = this;
@@ -668,19 +866,30 @@
                     pageNumber: 1
                     // userId: window.userId
                 }).then((res)=>{
-                    for(const v of res.records){
-                        v.orderStartTimeObj = v.orderStartTime.replace(/-/g,"/");
-                        for(const v2 of v.orderItems){
-                            v2.orderTechniciansNames = v2.orderTechnicians.map((v3)=>{return v3.employeeName}).join(',')
-                        }
+                    if(res.records.length){
+                        for(const v of res.records){
+                            v.orderStartTimeObj = v.orderStartTime.replace(/-/g,"/");
+                            for(const v2 of v.orderItems){
+                                v2.orderTechniciansNames = v2.orderTechnicians.map((v3)=>{return v3.employeeName}).join(',')
+                            }
+                        }                    
+                        t.appointList = res.records;
+                        t.userForm = t.appointList[0].user;
+                        // 模拟处理拿到订单数据
+                        // t.D = t.appointList[0];
+                        // if(t.D.user.totalAccount < t.D.totalPrice){
+                        //     t.otherCheck = true;
+                        //     t.otherDisable = true;
+                        // }
+
+
+                        t.currentOrder = t.appointList[t.currentOrderIndex];
+                        setTimeout(() => {
+                            for(const i in t.appointList){
+                                t.$commonService.getTime('time' + i)
+                            }
+                        }, 100);
                     }
-                    t.appointList = res.records;
-                    t.currentOrder = t.appointList[t.currentOrderIndex];
-                    setTimeout(() => {
-                        for(const i in t.appointList){
-                            t.$commonService.getTime('time' + i)
-                        }
-                    }, 100);
                 });
             },
             confirmArrived(i, v){
@@ -696,18 +905,33 @@
                 const t = this;
                 let _do = ()=>{
                     let params = {};
-                        // t.editVisible = false;
-                        for(let key in SeachForm){
-                            params[key] = t.seachForm[key]
-                        }
-                        cashierService.customSeach(params).then((res)=>{
-                            if(res && res.userInfo.id){
+                    // t.editVisible = false;
+                    for(let key in SeachForm){
+                        params[key] = t.seachForm[key]
+                    }
+                    cashierService.customSeach(params).then((res)=>{
+                        if(res && res.userInfo.id){
+                            if(res.orderInfo.records.length){
+                                for(const v of res.orderInfo.records){
+                                    v.orderStartTimeObj = v.orderStartTime.replace(/-/g,"/");
+                                    for(const v2 of v.orderItems){
+                                        v2.orderTechniciansNames = v2.orderTechnicians.map((v3)=>{return v3.employeeName}).join(',')
+                                    }
+                                }                    
                                 t.appointList = res.orderInfo.records;
                                 t.currentOrder = t.appointList[t.currentOrderIndex];
-                                t.userForm = res.userInfo;
-                                t.tab1 = '信息';
+                                setTimeout(() => {
+                                    for(const i in t.appointList){
+                                        t.$commonService.getTime('time' + i)
+                                    }
+                                }, 100);
+                            }else{
+                                t.appointList = []
                             }
-                        })
+                            t.userForm = res.userInfo;
+                            t.tab1 = '信息';
+                        }
+                    })
                 }
                 if(this.$refs[seachform]){
                     this.$refs[seachform].validate((valid) => {
@@ -788,30 +1012,78 @@
                 }
                 
             },
-            getOrderDetail(outTradeNo){
+            getOrderPayStatus(){
                 const t = this;
                 let _do = ()=>{
-                    cashierService.orderDetail({outTradeNo: outTradeNo}).then((res)=>{
+                    cashierService.orderDetail({outTradeNo: t.D.outTradeNo,loading: false}).then((res)=>{
+                        if(res && res.status ==2){
+                            // 支付成功
+                            let payTypeList = ['', '虚拟账户', '现金账户', '微信支付', '现金', '微信转账', '支付宝转账'];
+                            let payObjList = [];
+                            res.payType.split('-').forEach((v, i)=>{
+                                if (v) {
+                                    payObjList.push({
+                                        payType: v,
+                                        payTypeName: payTypeList[v],
+                                        payAmount: res.payAmount.split('-')[i]
+                                    })
+                                }
+                            })
+                            res.payObjList = payObjList;
+
+                            t.D = res;
+                            t.orderConfirmVisible = false;
+                            setTimeout(() => {
+                                t.showPayButton = true;
+                                t.successVisible = true;
+                                // 重新获取首页订单
+                                if(t.tab1=='检索'){
+                                    t.getAppointList();
+                                }else{
+                                    t.customSeach('seachForm')
+                                }
+                            }, 300);
+                            
+                        }else{
+                            setTimeout(()=>{
+                                _do();
+                            }, 5000)
+                        }
+
+                    })
+                }
+                _do()
+            },
+            getOrderDetail(outTradeNo){
+                const t = this;
+                let oLoading = Loading.service({
+                    text: 'loading...'
+                });
+                let _do = ()=>{
+                    cashierService.orderDetail({outTradeNo: outTradeNo, loading: false}).then((res)=>{
                         if(!res){
-                            Loading.service({
-                                text: 'loading...'
-                            });
                             setTimeout(()=>{
                                 _do();
                             }, 1000)
                             return
                         }
+                        oLoading && oLoading.close();
                         t.D = res;
+                        if(t.D.user.totalAccount < t.D.totalPrice){
+                            t.otherCheck = true;
+                            t.otherDisable = true;
+                        }
                         t.changeVisible = false;
                         t.directBook = false;
+                        
                         setTimeout(() => {
-                            t.successVisible = true;
+                            // t.successVisible = true;
+                            t.orderConfirmVisible = true;
                             // t.$commonService.getTime('payCountTime')
                         }, 300);
                     })
                 }
                 _do()
-                
             },
             // 分配房间
             doFpfj(v, i){
@@ -858,6 +1130,9 @@
                 console.log(v.num);
                 t.choosenProject = [];
                 t.itemClassList[t.choosedItemIndex].itemList = t.itemList;
+                t.selNumall = eval(t.itemList.map((item)=>{
+                    return item.num
+                }).join('+'))
             },
             getItemClassList(){
                 const t = this;
@@ -913,13 +1188,14 @@
             t.getAppointList();
             t.getItemClassList();
             t.getRoomList();
+            t.vipRechargeInfo();
 
-            setTimeout(()=>{
-                this.$notify({
-                    message: '您有新的订单',
-                    duration: 0
-                });
-            }, 3000)
+            // setTimeout(()=>{
+            //     this.$notify({
+            //         message: '您有新的订单',
+            //         duration: 0
+            //     });
+            // }, 3000)
             document.body.style.zoom = '1'
             // cashierService.list().then((res)=>{
             //     t.list = res.records;

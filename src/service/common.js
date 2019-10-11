@@ -1,6 +1,6 @@
 import {$axios} from './axios.js';
 let commonService = {
-
+    
     allMenu(){
         let menus = [];
         if(localStorage.sysRoute == 'va'){
@@ -493,11 +493,11 @@ let commonService = {
         return p;
        
     },
-    getTime(id){
+    getTime(id, GT,callback){
         let timer = null;//这里设置time为null，用于下面来清除计时器
         let obj = document.getElementById(id)//获取到放置时间数据的span的id
         timer = setInterval(function(){//设置定时器，来更新时间
-            let a = new Date((obj.getAttribute("time"))).getTime();
+            let a = GT || new Date((obj.getAttribute("time"))).getTime();
             //上面这一步可能比较复杂，我们首先来看obj.getAttribute("data-time")这一句。这个是用来获取指定标签的data-time属性，即我们要使用的到期时间，然后来看new Date().getTime(),这一句是用来获取我们所设置到期时间的时间戳，用于下面的计算，这个获取的是固定的数值
             let b = new Date().getTime();//这是获取当前时间，是一个不固定的数值
             let d = 0,s=0,h=0,m=0;//定义变量
@@ -534,7 +534,10 @@ let commonService = {
             obj.innerHTML = str;
             if(a <= b){//当我们的时间到期的时候，清除计时器，然后把当前标签的内容设置为0；
                 clearInterval(timer);
-                obj.innerHTML = '已到店'
+                obj.innerHTML = GT?'支付失败，请重新下单':'已到店';
+                if(callback){
+                    callback()
+                }
             }
         },1000)
     },
