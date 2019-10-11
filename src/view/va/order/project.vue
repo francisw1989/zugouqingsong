@@ -72,7 +72,7 @@
                     <el-form-item label="推荐时长" prop="defaultDuration" style="width: 50%" class="left">
                         <el-input v-model="form.defaultDuration" placeholder=""></el-input>
                     </el-form-item>
-                    <el-form-item label="价格(元)" prop="defaultPrice" style="width: 50%"  class="left">
+                    <el-form-item label="默认价格(元)" prop="defaultPrice" style="width: 50%"  class="left">
                         <el-input v-model="form.defaultPrice" placeholder="0"></el-input>
                     </el-form-item>
                 </div>
@@ -284,7 +284,7 @@
                     return v.url
                 }).join(',');
                 t.$refs[form].validate((valid) => {   //表单验证 validate
-                    if (valid) {
+					if (valid) {
                         let params = {};
                         t.editVisible = false;
                         for(let key in Form){

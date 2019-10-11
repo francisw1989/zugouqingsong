@@ -57,7 +57,7 @@
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="店长" style="width: 50%" class="left">
+                    <el-form-item label="店长" prop="shopowner" style="width: 50%" class="left">
                         <el-input v-model="form.shopowner" placeholder="店长姓名"></el-input>
                     </el-form-item>
                     <el-form-item label="租金" prop="rent" style="width: 50%"  class="left">
@@ -65,7 +65,7 @@
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="店长手机" style="width: 50%" class="left">
+                    <el-form-item label="店长手机" prop="shopownerPhoneNum" style="width: 50%" class="left">
                         <el-input v-model="form.shopownerPhoneNum" placeholder="联系电话"></el-input>
                     </el-form-item>
                     <el-form-item label="物业" style="width: 50%"  class="left">

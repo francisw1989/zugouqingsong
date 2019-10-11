@@ -33,6 +33,9 @@
                 <el-form-item label="是否流动" >
                     <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                 </el-form-item>
+				<el-form-item label="是否离职" >
+				    <el-switch v-model="form.status" class=""></el-switch>
+				</el-form-item>
                 <el-form-item label="所属门店" v-if="sysRoute=='va'">
                     <el-select v-model="form.storesId" filterable clearable>
                         <el-option v-for="v in shopList" :key="v.id" :value="v.id"  :label="v.name"></el-option>
@@ -332,7 +335,7 @@
         itemClassIds: '',
         isTechnician: true,
         storesIds:'', // 可服务门店
-        
+        status:false   //是否离职（0否  1是）
     };
     const LcForm = {
         id: '',
@@ -549,6 +552,7 @@
                 this.editVisible = false;
                 
                 t.form.isMobilePosition = t.form.isMobilePosition?'1':'0';
+				 t.form.status = t.form.status?'1':'0';
                 t.form.isTechnician = t.form.isTechnician?'1':'0';
                 if(t.form.itemClassList.length){
                     t.form.itemClassIds =  t.form.itemClassList.map(v=>{
@@ -616,6 +620,7 @@
             const t = this;
             console.log(t.row)
             t.row.isMobilePosition = t.row.isMobilePosition == 0 ?false: true;
+			 t.row.status = t.row.status == 0 ?false: true;
             t.row.isTechnician = t.row.isTechnician == 0 ?false: true;
             
             if(!t.row.storesList || !t.row.storesList.length){

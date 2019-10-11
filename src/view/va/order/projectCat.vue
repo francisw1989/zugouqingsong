@@ -41,6 +41,9 @@
                 <el-form-item label="分类排序" prop="sort" style="" class="">
                     <el-input v-model="form.sort" placeholder=""></el-input>
                 </el-form-item>
+				<el-form-item label="技师称呼" prop="itemEmployeeName" style="" class="">
+				    <el-input v-model="form.itemEmployeeName" placeholder=""></el-input>
+				</el-form-item>
                  <el-form-item label="分类图片" prop="icon">
                     <el-upload
                     action="" 
@@ -75,7 +78,8 @@
         id: '',
         itemClassName: '',
         sort: '',
-        icon: ''
+        icon: '',
+		itemEmployeeName:''
     }
     export default {
         data() {

@@ -138,6 +138,7 @@ let staffService = {
     },
     //获取员工详情
     getEmployeesDetailsList(params){
+		debugger
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'get',
@@ -457,6 +458,7 @@ let staffService = {
     },
     //班次修改
     shiftsSettingEdit(params){
+		debugger
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'PATCH',

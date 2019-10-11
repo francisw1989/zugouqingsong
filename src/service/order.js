@@ -60,10 +60,10 @@ let orderService = {
     //服务项目新增
     itemAdd(params){
         let p = new Promise((resolve, reject)=>{
-            params.defaultPrice = params.defaultPrice * 100;
-            params.threePrice = params.threePrice * 100;
-            params.fivePrice = params.fivePrice * 100;
-            params.tenPrice = params.tenPrice * 100;
+            params.defaultPrice = parseInt(parseFloat(params.defaultPrice) * 100);
+            params.threePrice = parseInt(parseFloat(params.threePrice) * 100);
+            params.fivePrice = parseInt(parseFloat(params.fivePrice) * 100);
+            params.tenPrice = parseInt(parseFloat(params.tenPrice) * 100);
             let data = {
                 method: 'post',
                 url: '/api/v1/item/' + params.id,
@@ -78,11 +78,12 @@ let orderService = {
     },
     //服务项目修改
     itemEdit(params){
+		debugger
         let p = new Promise((resolve, reject)=>{
-            params.defaultPrice = params.defaultPrice * 100;
-            params.threePrice = params.threePrice * 100;
-            params.fivePrice = params.fivePrice * 100;
-            params.tenPrice = params.tenPrice * 100;
+            params.defaultPrice = parseInt(parseFloat(params.defaultPrice) * 100);
+            params.threePrice = parseInt(parseFloat(params.threePrice) * 100);
+            params.fivePrice = parseInt(parseFloat(params.fivePrice) * 100);
+            params.tenPrice = parseInt(parseFloat(params.tenPrice) * 100);
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/item/' + params.id,

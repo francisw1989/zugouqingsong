@@ -93,6 +93,13 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+						//判断上班时间是否小于下班时间
+						if(params.startTime>params.endTime){
+							console.log('上班时间不能大于下班时间!!');
+							return false;
+						}
+						params.endTime=='24:00'?params.endTime = '23:59':params.endTime;
+						
                         staffService.shiftsSettingEdit(params).then((res)=>{
                                 t.shiftsSettingList()
                         })

@@ -133,6 +133,9 @@
                     <el-form-item label="是否技师" style="width: 50%"  class="left">
                         <el-switch v-model="form.isTechnician" class=""></el-switch>
                     </el-form-item>
+					<el-form-item label="是否离职" style="width: 50%"  class="left">
+					    <el-switch v-model="form.status" class=""></el-switch>
+					</el-form-item>
                 </div>
                 <div class="clearfix">
                     <el-form-item label="岗位" style="width: 50%"  class="left">
@@ -191,7 +194,8 @@
         initiationTime: '',
         salary: '',
         info: '',
-        isTechnician: true
+        isTechnician: true,
+		status:false
     }
     export default {
         data() {
@@ -317,6 +321,7 @@
                             params[key] = t.form[key]
                         }
                         params.isMobilePosition = params.isMobilePosition?'1':'0';
+						params.status = params.status?'1':'0';
                         params.isTechnician = params.isTechnician?'1':'0';
                         staffService.employeesAdd(params).then((res)=>{
                             t.getEmployeesList();
