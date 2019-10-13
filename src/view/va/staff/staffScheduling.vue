@@ -39,7 +39,7 @@
             </table>
             <div v-if="loadDay">
                 <table class="m-table" style="min-width: 1200px" v-for="(shopItem, shopIndex) in shopList" :key="shopIndex"  v-if="shopItem.show">
-                    <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeScheduleList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i class="el-icon-caret-bottom left5"></i> </span></td></tr>
+                    <tr class="tr" ><td  :colspan="shopList[0].peopleList[0].employeeScheduleList.length+2"><span class="pointer" @click="showAll(shopIndex)">{{shopItem.name}} <i :class="shopItem.showAll?'el-icon-caret-top':''" class="el-icon-caret-bottom left5"></i> </span></td></tr>
                     <template  v-if='shopItem.showAll' >
                         <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
                             <td style="width: 80px">{{peopleItem.employeeName}}</td>
