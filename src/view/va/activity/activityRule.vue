@@ -265,20 +265,30 @@
                             return (v.amount || v.activityCondition)
                         })
                         // 优惠券 金额处理
-                        if(params.couponList.length){
+                        if(!t.form.isCoupon){
+                            delete params.couponList
+                        }
+                        if(params.couponList && params.couponList.length){
                             for(const v of  params.couponList){
                                 v.activityCondition = v.activityCondition*100;
                             }
                         }
+                        
                         // 满送 金额处理
-                        if(params.monenyList.length){
+                        if(!t.form.isMoneny){
+                            delete params.monenyList
+                        }
+                        if(params.monenyList && params.monenyList.length){
                             for(const v of  params.monenyList){
                                 v.amount = v.amount*100;
                                 v.activityCondition = v.activityCondition*100;
                             }
                         }
                         // 积分处理
-                        if(params.scoreList.length){
+                        if(!t.form.isScore){
+                            delete params.scoreList
+                        }
+                        if(params.scoreList && params.scoreList.length){
                             for(const v of  params.scoreList){
                                 v.activityCondition = v.activityCondition*100;
                             }
