@@ -70,7 +70,7 @@
             search() {
                 //this.is_search = true;
                 const t = this;
-                t.getCouponManagerList();
+                t.getuserActivityRecord();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
