@@ -9,15 +9,15 @@
                     <el-row class="infoWap">
                         <el-col :span="8">
                             <p>收入</p>
-                            <p>6321.00</p>
+                            <p>{{D.todayIncome}}</p>
                         </el-col>
                         <el-col :span="8">
                             <p>今日支出</p>
-                            <p>6321.00</p>
+                            <p>{{D.todaySpending/100}}</p>
                         </el-col>
                         <el-col :span="8">
                             <p>今日退款</p>
-                            <p>6321.00</p>
+                            <p>{{D.todayRefund/100}}</p>
                         </el-col>
                     </el-row>
                 </el-card>
@@ -29,16 +29,16 @@
                     </div>
                     <el-row class="infoWap">
                         <el-col :span="8">
-                            <p>收入</p>
-                            <p>6321.00</p>
+                            <p>服务人次</p>
+                            <p>{{D.todayServiceNum}}</p>
                         </el-col>
                         <el-col :span="8">
-                            <p>今日支出</p>
-                            <p>6321.00</p>
+                            <p>新增会员</p>
+                            <p>{{D.todayNewMenmber}}</p>
                         </el-col>
                         <el-col :span="8">
-                            <p>今日退款</p>
-                            <p>6321.00</p>
+                            <p>客单价</p>
+                            <p>{{D.todayPassengerUnitPrice}}</p>
                         </el-col>
                     </el-row>
                 </el-card>
@@ -50,12 +50,12 @@
                     </div>
                     <el-row class="infoWap">
                         <el-col :span="12">
-                            <p>收入</p>
-                            <p>6321.00</p>
+                            <p>总平效</p>
+                            <p>{{D.todayEffectiveness}}</p>
                         </el-col>
                         <el-col :span="12">
-                            <p>今日支出</p>
-                            <p>6321.00</p>
+                            <p>总人效</p>
+                            <p>{{D.todayHumaneffect}}</p>
                         </el-col>
                     </el-row>
                 </el-card>
@@ -72,13 +72,13 @@
                 <el-card shadow="hover" class="">
                     <div slot="header" class="clearfix">
                         <span>各门店收入情况</span>
-                        <el-select class="left10" v-model="selShopId_income" placeholder="请选择" filterable @change='onChange_income'>
-                            <el-option v-for="(item, index) in shopList" :key="index" :value="item.shopId"  :label="item.shopName"></el-option>
+                        <el-select class="left10"  v-if="sysRoute=='va'" v-model="selShopId_income" placeholder="请选择" filterable>
+                            <el-option v-for="(item, index) in storeList" :key="index" :value="item.id"  :label="item.name"></el-option>
                         </el-select>
-                        <el-radio-group v-model="radio_income" class="right" @change='income_radio_change'>
-                            <el-radio-button label="今日"></el-radio-button>
-                            <el-radio-button label="本周"></el-radio-button>
-                            <el-radio-button label="近一周"></el-radio-button>
+                        <el-radio-group v-model="radio_income" class="right">
+                            <el-radio-button label="0">周</el-radio-button>
+                            <el-radio-button label="1">月</el-radio-button>
+                            <el-radio-button label="2">年</el-radio-button>
                         </el-radio-group>
                     </div>
                     <div>
@@ -92,13 +92,13 @@
                 <el-card shadow="hover" class="">
                     <div slot="header" class="clearfix">
                         <span>服务次数 好评数 预约数</span>
-                        <el-select class="left10" v-model="selShopId_nums" placeholder="请选择" filterable @change='onChange_nums'>
-                            <el-option v-for="(item, index) in shopList" :key="index" :value="item.shopId"  :label="item.shopName"></el-option>
+                        <el-select class="left10" v-if="sysRoute=='va'" v-model="selShopId_nums" placeholder="请选择" filterable>
+                            <el-option v-for="(item, index) in storeList" :key="index" :value="item.id"  :label="item.name"></el-option>
                         </el-select>
-                        <el-radio-group v-model="radio_nums" class="right" @change='nums_radio_change'>
-                            <el-radio-button label="今日"></el-radio-button>
-                            <el-radio-button label="本周"></el-radio-button>
-                            <el-radio-button label="近一周"></el-radio-button>
+                        <el-radio-group v-model="radio_nums" class="right">
+                            <el-radio-button label="0">周</el-radio-button>
+                            <el-radio-button label="1">月</el-radio-button>
+                            <el-radio-button label="2">年</el-radio-button>
                         </el-radio-group>
                     </div>
                     <div>
@@ -114,10 +114,11 @@
             <el-col :span='8'>
                 <el-card shadow="hover" class="">
                      <div slot="header" class="clearfix">
-                        <span>本月各门店收入排行榜</span>
+                        <span  v-if="sysRoute=='va'">本月各门店收入排行榜</span>
+                        <span v-if="sysRoute!='va'">本月商品销售排行</span>
                     </div>
                     <div>
-                        <template>
+                        <template v-if="sysRoute=='va'">
                             <el-table
                             height="250"
                             :data="mdsrList"
@@ -142,11 +143,36 @@
                             </el-table-column>
                             </el-table>
                         </template>
+                        <template v-if="sysRoute!='va'">
+                            <el-table
+                            height="250"
+                            :data="spList"
+                            style="width: 100%">
+                            <el-table-column
+                                type="index"
+                                label="排名"
+                                width="180">
+                                <template slot-scope="scope">
+                                    <span class="colfff" style="padding: 0 5px; background-color: #f25e43">{{ scope.$index +1 }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="a"
+                                label="商品名"
+                                width="180">
+                            </el-table-column>
+                            <el-table-column
+                                prop="b"
+                                align='right'
+                                label="数量">
+                            </el-table-column>
+                            </el-table>
+                        </template>
                     </div>
                 </el-card>
             </el-col>
             <el-col :span='8'>
-                <el-card shadow="hover" class="">
+                <el-card shadow="hover" class="" >
                      <div slot="header" class="clearfix">
                         <span>本月技师服务次数排行</span>
                     </div>
@@ -176,6 +202,7 @@
                             </el-table-column>
                             </el-table>
                         </template>
+                        
                     </div>
                 </el-card>
             </el-col>
@@ -220,29 +247,51 @@
     var img = require('../../../assets/img/mark.png');
     var echarts = require('echarts');
     import bus from '../../../bus';
-    import {dashboardService} from '../../../service/dashboard.js'
+    import {dashboardService} from '../../../service/dashboard.js';
+    import {storeService} from '../../../service/store';
     export default {
         components: {
             
         },
         data() {
             return {
-                shopList: [],
+                storeList: [],
                 incomeA: [],
                 incomeB: [],
                 numsA: [],
                 numsB: [],
                 numsC: [],
                 numsD: [],
-                radio_income: '今日',
-                radio_nums: '今日',
-                selShopId_income: '-10000',
-                selShopId_nums: '-10000',
+                radio_income: '0',
+                radio_nums: '0',
+                selShopId_income: '',
+                selShopId_nums: '',
                 mdsrList: [],
+                spList: [],
                 jsfwList: [],
                 jssrList: [],
-                sysRoute: window.sysRoute || ''
+                sysRoute: window.sysRoute || '',
+                D: {}
             }
+        },
+        watch:{
+            selShopId_income(){
+                const t = this;
+                t.platformHomePageIncome();
+            },
+            radio_income(){
+                const t = this;
+                t.platformHomePageIncome();
+            },
+            selShopId_nums(){
+                const t = this;
+                t.platformHomePageCounts();
+            },
+            radio_nums(){
+                const t = this;
+                t.platformHomePageCounts();
+            }
+
         },
         methods:{
             // 创建图标对象
@@ -285,36 +334,17 @@
                 let map = new BMap.Map("map");// 创建地图实例  
                 t.map = map;
                 // 创建中心点坐标
-                t.map.centerAndZoom('南京', 13);
-                // t.map.enableScrollWheelZoom(true);  
+                t.map.centerAndZoom(new BMap.Point(t.storeList[0].y,t.storeList[0].x), 13);
+                t.map.enableScrollWheelZoom(true);  
                 
-                t.shopList.forEach((v, i)=>{
+                t.storeList.forEach((v, i)=>{
                     if(v.shopId!='-10000'){
                         let detail = `
                             <p class="top5">当前顾客: ${v.num1}<br/>预约顾客: ${v.num3}<br/>当班员工: ${v.num2}</p>
-                            <p class="top5"><span  class="colblue pointer"onclick="gotoDetail(${v.shopId})" >查看完整信息</span></p>`;
-                        t.addMarker(new BMap.Point(v.position.split(',')[0],v.position.split(',')[1]), v.shopName, detail)
+                            <p class="top5"><span style="display: none"  class="colblue pointer"onclick="gotoDetail(${v.id})" >查看完整信息</span></p>`;
+                        t.addMarker(new BMap.Point(v.y,v.x), v.name, detail)
                     }
                 })
-            },
-            onChange_income(e){
-                const t = this;
-                t.getIncomeData();
-            },
-            income_radio_change(e){
-                const t = this;
-                t.getIncomeData();
-            },
-            getIncomeData(){
-                const t = this;
-                let params = {
-                    
-                }
-                dashboardService.getIncomeData(params).then((res)=>{
-                    t.incomeA = res.a;
-                    t.incomeB = res.b;
-                    t.initIncomeChart();
-                });
             },
             initIncomeChart(){
                 const t = this;
@@ -343,27 +373,6 @@
                     }]
                 });
             },
-            onChange_nums(e){
-                const t = this;
-                t.getNumsData();
-            },
-            nums_radio_change(e){
-                const t = this;
-                t.getNumsData();
-            },
-            getNumsData(){
-                const t = this;
-                let params = {
-                    
-                }
-                dashboardService.getNumsData(params).then((res)=>{
-                    t.numsA = res.a;
-                    t.numsB = res.b;
-                    t.numsC = res.c;
-                    t.numsD = res.d;
-                    t.initNumsChart();
-                });
-            },
             initNumsChart(){
                 const t = this;
                 t.numsChart.setOption({
@@ -372,7 +381,7 @@
                         trigger: 'axis'
                     },
                     xAxis: {
-                        data: t.incomeA
+                        data: t.numsA
                     },
                     yAxis: {
                         type: 'value'
@@ -404,30 +413,110 @@
                     ]
                 });
             },
-            
+            platformHomePageCounts(){
+                const t = this;
+                // 统计好评数
+                // type （0 周 1月 2年）
+                let params = {
+                    storeId: t.selShopId_nums,
+                    type: t.radio_nums
+                }
+                dashboardService.platformHomePageCounts(params).then((res)=>{
+                    t.numsA = res[0];
+                    t.numsB = res[1];
+                    t.numsC= res[2];
+                    t.numsD = res[3];
+                    t.initNumsChart();
+                    
+                })
+            },
+            platformHomePageIncome(){
+                const t = this;
+                // 统计好评数
+                // type （0 周 1月 2年）
+                let params = {
+                    storeId: t.selShopId_income,
+                    type: t.radio_income
+                }
+                dashboardService.platformHomePageIncome(params).then((res)=>{
+                    t.incomeA = res[0];
+                    t.incomeB = [];
+                    console.log(res[1])
+                    for(const v of res[1]){
+                        t.incomeB.push(Number(v)/100)
+                    }
+                    console.log(t.incomeB)
+                    t.initIncomeChart();
+                })
+            },
+            getStoreList(){
+                // 门店列表
+                const t = this;
+                storeService.list({
+                    pageSize: 100,
+                    pageNumber: 1,
+                }).then((res)=>{
+                    t.storeList = res.records;
+                    t.selShopId_income = t.storeList[0].id;
+                    t.selShopId_nums = t.storeList[0].id;
+                    t.initMap();
+                    // t.platformHomePageCounts();
+                    // t.platformHomePageIncome();
+                })
+            },
+            platformHomePageAll(){
+                const t = this;
+                dashboardService.platformHomePageAll({storeId: 0}).then((res)=>{
+                    if(res.incomeRankByStore){
+                        t.mdsrList = res.incomeRankByStore[0].map((item, index)=>{
+                            return {
+                                a: item,
+                                b: res.incomeRankByStore[1][index]
+                            }
+                        })
+                    }
+                    if(res.goodsRankByStore){
+                        t.spList = res.goodsRankByStore[0].map((item, index)=>{
+                            return {
+                                a: item,
+                                b: res.goodsRankByStore[1][index]
+                            }
+                        })
+                    }
+                    t.jsfwList = res.serviceNumRankByStore[0].map((item, index)=>{
+                        return {
+                            a: item,
+                            b: res.serviceNumRankByStore[1][index]
+                        }
+                    })
+                    t.jssrList = res.incomeRankByTechnician[0].map((item, index)=>{
+                        return {
+                            a: item,
+                            b: res.incomeRankByTechnician[1][index]/100
+                        }
+                    })
+                })
+            }
         },
         mounted(){
             const t = this;
             t.incomeChart = echarts.init(document.getElementById('incomeChart'));
             t.numsChart = echarts.init(document.getElementById('numsChart'));
+            if(t.sysRoute == 'va'){
+                t.getStoreList();
+            }else{
+                t.selShopId_income = window.storeId;
+                t.selShopId_nums = window.storeId;
+            }
+            dashboardService.platformHomePage({storeId: 0}).then((res)=>{
+                t.D = res;
+            })
+            t.platformHomePageAll();
+            
+
             window.gotoDetail = (res)=>{
                 t.gotoDetail(res)
             };
-            t.$commonService.getShopList().then((res)=>{
-                t.shopList = res
-                t.initMap();
-            })
-            t.getIncomeData();
-            t.getNumsData();
-            dashboardService.getMdsrList().then((res)=>{
-                t.mdsrList = res;
-            })
-            dashboardService.getJsfwList().then((res)=>{
-                t.jsfwList = res;
-            })
-            dashboardService.getJssrList().then((res)=>{
-                t.jssrList = res;
-            })
         }
     }
 </script>

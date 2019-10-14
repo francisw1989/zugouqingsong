@@ -1,4 +1,69 @@
+import {$axios} from './axios.js';
 let dashboardService = {
+    // /api/v1/platformHomePage/
+    // 平台数据统计
+    platformHomePage(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformHomePage/',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/platformHomePage/all
+    // 首页展示
+    platformHomePageAll(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformHomePage/all',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/platformHomePage/counts
+    // 统计好评数
+    platformHomePageCounts(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformHomePage/counts',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/platformHomePage/income
+    // 统计各门店收入情况
+    platformHomePageIncome(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/platformHomePage/income',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 门店收入
     getIncomeData(params){
         let p = new Promise((resolve, reject)=>{

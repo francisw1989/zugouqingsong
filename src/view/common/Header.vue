@@ -48,7 +48,7 @@
             return {
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
+                name: 'francis',
                 message: 2,
                 title: ''
             }
@@ -57,8 +57,8 @@
             username(){
                 let userInfo = JSON.parse(localStorage.userInfo);
                 let username = '';
-                if(userInfo && userInfo.account){
-                    return userInfo.account;
+                if(userInfo){
+                    return userInfo.account || userInfo.employeeName;
                 }else{
                     return this.name
                 }
