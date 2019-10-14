@@ -109,7 +109,7 @@
                                                             <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
                                                             <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'跟换房间':'分配房间'}}</el-button>
                                                             <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(v, i)">更换技师</el-button>
-                                                            <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="finishOrder(v, i)">结束服务</el-button>
+                                                            <!-- <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="finishOrder(v, i)">结束服务</el-button> -->
                                                         </div>
                                                     </td>
                                                 </tr>
