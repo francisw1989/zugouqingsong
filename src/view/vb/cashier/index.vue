@@ -410,14 +410,15 @@
     </el-dialog>
     <el-dialog title="充值" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="rechargeVisible" width="500px">
         <div>充值金额：<el-input v-model="price" placeholder=""></el-input></div>
-        <div class="col999">当前账户余额￥{{userForm.totalAccount/100 || 0}}，充值后剩余￥{{userForm.totalAccount/100||0 + price}}</div>
+        <div class="col999">当前账户余额￥{{userForm.totalAccount/100 || 0}}，充值后剩余￥{{userForm.totalAccount/100 + Number(price)}}</div>
         <div class="top10">
             快速选择：
-            <div class="top10">
+            <div class="top10" v-if="vipRechargeInfoList.length">
                     <el-radio-group v-model="vipRechargeInfoListIndex" size="small">
                         <el-radio v-for="(v, i) in vipRechargeInfoList" :key="i" :label="i" border>{{v.activityCondition/100}}</el-radio>
                     </el-radio-group>
             </div>
+            <div class="top10 center col999" v-if="!vipRechargeInfoList.length">暂无选项</div>
         </div>
         <div class="top10">
             <div>充值说明：</div>
@@ -576,6 +577,10 @@
             
         },
         watch:{
+            price(){
+                const t = this;
+                console.log(t.price)
+            },
             tab1(val){
                 const t = this;
                 if(val=='检索'){
@@ -602,20 +607,27 @@
                     t.vipRechargeInfoList = res.filter((item)=>{
                         return item.grantType == 0
                     });
-                    t.price = t.vipRechargeInfoList[0].activityCondition/100;
+                    if(t.vipRechargeInfoList.length){
+                        t.price = t.vipRechargeInfoList[0].activityCondition/100;
+                    }
+                    
                 })
             },
             // 充值
             vipRecharge(){
                 const t = this;
+                if(!t.price){
+                    t.$message.error('请输入||选择充值金额');
+                    return;
+                }
                 let params = {
                     userId: t.userForm.id,
-                    price: t.price
+                    price: t.price * 100
                 };
                 cashierService.vipRecharge(params).then((res)=>{
                     t.showEwm = true;
                     setTimeout(() => {
-                        t.QRCodeMsg = res;
+                        t.QRCodeMsg = res.data;
                     }, 100);
                     // t.$message.success('充值成功');
                 })
