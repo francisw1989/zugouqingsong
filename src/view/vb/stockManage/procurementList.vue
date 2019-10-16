@@ -91,7 +91,7 @@
 </template>
 <script>
     import bus from '../../../bus';
-    import {stockService} from '../../../service/stock';
+    import {stockService} from '../../../service/stockByStore';
     export default {
         data() {
             return {
@@ -184,16 +184,22 @@
                 
                 this.editVisible = true;
             },
-            
+            getList(){
+                const t = this;
+                stockService.getStoreArticleStockList().then((res)=>{
+                    t.list = res;
+                });
+            }
         },
         mounted(){
-            const t = this;
-            // 员工列表
-            stockService.getProcurementList().then((res)=>{
+            /* const t = this;
+            // 门店物料入库查询
+            stockService.getStoreArticleStockList().then((res)=>{
                 t.list = res;
             });
-            t.goodsCat = t.$GD.goodsCat;
-
+            t.goodsCat = t.$GD.goodsCat; */
+			const t = this;
+			t.getList()       
         }
     }
 </script>
