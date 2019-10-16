@@ -88,7 +88,10 @@
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
-                                        <span class="right colblue">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
+                                        <span class="right colblue" v-if="v.status==2">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
+                                        <span class="right colblue" v-if="v.status==3">已到店,待服务</span>
+                                        <span class="right colblue" v-if="v.status==4">服务中</span>
+                                        <span class="right colblue" v-if="v.status==5">服务完成</span>
                                     </div>
                                     <div class="" style="padding: 0 15px">
                                         <div class="bor_btm_so pad10TB clearfix">
@@ -108,7 +111,7 @@
                                                         <!-- // 1.待支付 2.已支付待到店 3.已到店待服务 4.服务中 5.服务完成 6.系统取消 7.用户取消 -->
                                                         <div v-if="oIndex==v.orderItems.length-1">
                                                             <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
-                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'跟换房间':'分配房间'}}</el-button>
+                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'更换房间':'分配房间'}}</el-button>
                                                             <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(v, i)">更换技师</el-button>
                                                             <!-- <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="finishOrder(v, i)">结束服务</el-button> -->
                                                         </div>
@@ -572,7 +575,7 @@
                 payStatusList:{
                     SUCCESS:'支付成功!',
                     REFUND: '转入退款',
-                    NOTPAY: '未支付!',
+                    NOTPAY: '等待支付...',
                     CLOSED: '已关闭',
                     REVOKED: '已撤销（刷卡支付）',
                     USERPAYING: '支付中...',
