@@ -64,10 +64,10 @@
                                     {{userForm.score}}
                                 </el-form-item>
                                 <el-form-item label="虚拟账户" style="" class="">
-                                    {{userForm.savingsAccount/100}}
+                                    {{userForm.virtualAccount/100}}
                                 </el-form-item>
                                 <el-form-item label="储值账户" style="" class="">
-                                    {{userForm.virtualAccount/100}}
+                                    {{userForm.savingsAccount/100}}
                                     <el-button type="primary" class="left10" @click="rechargeVisible=true">充值</el-button>
                                     <!-- <div class="colye">余额不足</div> -->
                                 </el-form-item>
@@ -411,7 +411,7 @@
     </el-dialog>
     <el-dialog title="充值" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="rechargeVisible" width="500px">
         <div>充值金额：<el-input v-model="price" placeholder=""></el-input></div>
-        <div class="col999">当前账户余额￥{{userForm.totalAccount/100 || 0}}，充值后剩余￥{{userForm.totalAccount/100 + Number(price)}}</div>
+        <div class="col999">当前账户余额￥{{userForm.totalAccount/100 || 0}}</div>
         <div class="top10">
             快速选择：
             <div class="top10" v-if="vipRechargeInfoList.length">

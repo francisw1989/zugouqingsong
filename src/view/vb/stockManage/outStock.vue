@@ -92,7 +92,7 @@
 </template>
 <script>
     import bus from '../../../bus';
-    import {stockService} from '../../../service/stock';
+    import {stockService} from '../../../service/stockByStore';
     export default {
         data() {
             return {
@@ -180,7 +180,7 @@
             },
             getList(){
                 const t = this;
-                stockService.getOutStockList().then((res)=>{
+                stockService.getStoreOutRecordList().then((res)=>{
                     t.list = res;
                 });
             }

@@ -10,6 +10,10 @@ let stockBySotreService = {
                 loading: true,
             }
             $axios(data).then((res)=>{
+				for(const v of res.records){
+					v.costPrice = v.costPrice/100;
+					v.salesPrice = v.salesPrice/100
+				}
                 resolve(res)
             })
         })
@@ -25,6 +29,10 @@ let stockBySotreService = {
                 loading: true,
             }
             $axios(data).then((res)=>{
+				for(const v of res.records){
+					v.costPrice = v.costPrice/100;
+					v.totalPrice = v.totalPrice/100
+				}
                 resolve(res)
             })
         })
@@ -54,6 +62,10 @@ let stockBySotreService = {
                 loading: true,
             }
             $axios(data).then((res)=>{
+				for(const v of res.records){
+					v.costPrice = v.costPrice/100;
+					v.totalPrice = v.totalPrice/100
+				}
                 resolve(res)
             })
         })
