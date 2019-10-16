@@ -175,7 +175,7 @@
                                 <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
                             </el-select>
                         </el-form-item>
-                        <div v-if="postGradeBean.priceCoefficient">
+                        <div v-if="postGradeBean && postGradeBean.priceCoefficient">
                             <el-form-item label="收费系数" >
                                 <span>{{postGradeBean.priceCoefficient}} </span>
                             </el-form-item>
@@ -218,30 +218,14 @@
                             <p>22次</p>
                         </el-col>
                     </el-row>
-                    <el-table 
-                        :data="employeeAttendanceList"
-                        style="width: 100%">
-                        <el-table-column
-                            prop="scheduleDate"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        <el-table-column
-                            prop="checkInTime"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        -
-                         <el-table-column
-                            prop="checkOutTime"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        <el-table-column
-                            prop="statusName"
-                            label="">
-                        </el-table-column>
-                    </el-table>
+                    <table class="m-table2">
+                        <tr v-for="(v, i) in employeeAttendanceList" :key="i">
+                            <td>{{v.scheduleDate}}</td>
+                            <td>{{v.checkInTime}}</td>
+                            <td>{{v.checkOutTime}}</td>
+                            <td>{{v.statusName}}</td>
+                        </tr>
+                    </table>
                 </div>
                 <div v-if="tabName=='评价'">
                     <p class="font20 col000">评价记录</p>
@@ -370,12 +354,24 @@
                 tabs: ['服务', '排班', '岗位', '考勤', '评价', '培训', '晋升', '师徒'],
                 tabsType:[],
                 tabName: '服务',
-                year: '2019',
-                mouth: '8',
+                year: new Date().getFullYear(),
+                mouth: new Date().getMonth() + 1,
                 res: '',
                 postGradeList: [],
                 postGradeBean:{},// 岗位职级bean
                 sysRoute: window.sysRoute || ''
+            }
+        },
+        watch: {
+            year(){
+                const t = this;
+                t.getEmployeeAttendanceList();
+                t.getEmployeeAttendanceCount();
+            },
+            mouth(){
+                const t = this;
+                t.getEmployeeAttendanceList();
+                t.getEmployeeAttendanceCount();
             }
         },
         computed:{
@@ -396,13 +392,13 @@
                     t.jslcVisible = false;
                     if(t.lcForm.courseType == 2){
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 2}).then((res)=>{
-                            t.employeeCourseRecord2 = [];
                             t.employeeCourseRecord2 = res;
+                            t.$forceUpdate();
                         });
                     }else{
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 1}).then((res)=>{
-                            t.employeeCourseRecord1 = [];
                             t.employeeCourseRecord1 = res;
+                            t.$forceUpdate();
                         });
                     }
                     
@@ -415,14 +411,16 @@
                 t.postGradeList = t.gwList.filter((v)=>{
                     return v.id == id
                 })[0].postGradeList;
-                t.postGradeChange(t.postGradeList[0].id);
+                if(t.postGradeList.length){
+                    t.postGradeChange(t.postGradeList[0].id);
+                }   
+                
             },
             postGradeChange(id){
                 const t = this;
                 t.postGradeBean = t.postGradeList.filter((v)=>{
                     return v.id == id
                 })[0]
-                console.log(t.postGradeBean)
             },
             prevMouth(){
                 const t = this;
@@ -498,7 +496,6 @@
             },
             tabClick(tab, event){
                 const t = this;
-                console.log(t.tabName)
                 if(t.tabName == '师徒'){
                     setTimeout(() => {
                         t.initTreeChart()
@@ -607,21 +604,47 @@
                     this.$message.success('删除成功');
                     if(courseType=='1'){
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 1}).then((res)=>{
-                            t.employeeCourseRecord1 == [];
-                            t.employeeCourseRecord1 = JSON.parse(JSON.stringify(res));
+                            t.employeeCourseRecord1 = res
+                            t.$forceUpdate();
                         });
                     }else{
                         staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 2}).then((res)=>{
-                            t.employeeCourseRecord2 == []
-                            t.employeeCourseRecord2 = JSON.parse(JSON.stringify(res));
+                            t.employeeCourseRecord2 = res;
+                            t.$forceUpdate();
                         });
                     }
                 })
+            },
+            getEmployeeAttendanceList(){
+                const t = this;
+                let mouth = t.mouth<10?'0'+t.mouth : t.mouth;
+                let monthDate = t.year + '-' + mouth;
+                staffService.getEmployeeAttendanceList({employeeId: t.row.id,monthDate: monthDate}).then((res)=>{
+
+                    for(const v of res){
+                        if(v.status == null){
+                            v.statusName = ''
+                        }else{
+                            v.statusName = t.statusName[v.status];
+                        }
+                    }
+                    
+                    t.employeeAttendanceList = res;
+                    t.$forceUpdate();
+                });
+            },
+            //员工考勤情况
+            getEmployeeAttendanceCount(){
+                const t = this;
+                let mouth = t.mouth<10?'0'+t.mouth : t.mouth;
+                let monthDate = t.year + '-' + mouth;
+                staffService.getEmployeeAttendanceCount({employeeId: t.row.id,monthDate: monthDate}).then((res)=>{
+                    t.employeeAttendance = res;
+                });
             }
         },
         mounted(){
             const t = this;
-            console.log(t.row)
             t.row.isMobilePosition = t.row.isMobilePosition == 0 ?false: true;
 			 t.row.status = t.row.status == 0 ?false: true;
             t.row.isTechnician = t.row.isTechnician == 0 ?false: true;
@@ -634,7 +657,6 @@
                 t.row.itemClassList = [{}]
             }
             t.form = t.row;
-            console.log(t.form)
             for(const key in t.row){
                 t.edit[key] = false;
             }
@@ -645,23 +667,9 @@
                 t.employeeScheduleList = res;
             });
             //员工考勤列表
-            staffService.getEmployeeAttendanceList({employeeId: t.row.id,monthDate: '2019-8'}).then((res)=>{
-                console.log('getEmployeeAttendanceList'+res);
-                for(const v of res){
-                    if(res.status == null){
-                        res.statusName = ''
-                    }else{
-                        res.statusName = t.statusName[res.status];
-                    }
-                }
-                
-                t.employeeAttendanceList = res;
-            });
+            t.getEmployeeAttendanceList();
             //员工考勤情况
-            staffService.getEmployeeAttendanceCount({employeeId: t.row.id,monthDate: '2019-8'}).then((res)=>{
-                console.log('getEmployeeAttendanceCount'+res);
-                t.employeeAttendance = res;
-            });
+            t.getEmployeeAttendanceCount();
             //员工被评价记录列表
             staffService.getEmployeeEvaluateRecord({id: t.row.id,pageSize: 20,pageNumber: 1}).then((res)=>{
                 t.employeeEvaluateRecord = res.records;
@@ -669,14 +677,17 @@
             //员工培训历程
             staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 1}).then((res)=>{
                 t.employeeCourseRecord1 = res;
+                t.$forceUpdate();
             });
             //员工晋升历程
             staffService.getEmployeeCourseRecord({id: t.row.id,courseType: 2}).then((res)=>{
                 t.employeeCourseRecord2 = res;
+                t.$forceUpdate();
             });
             //员工师徒关系
             staffService.getEmployeEmentorShip({id: t.row.id,}).then((res)=>{
-                t.data = res;
+                t.shiTuList = res;
+                console.log(res)
             });
             // t.$commonService.getTagsTypeList().then((res)=>{
             //     t.form.tags.forEach(v => {
