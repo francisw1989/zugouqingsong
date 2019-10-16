@@ -121,8 +121,11 @@
                             width="">
                         </el-table-column>
                         <el-table-column
-                            prop="totalPrice"
+                            prop="incomePrice"
                             label="费用">
+                            <template slot-scope="scope">
+                                {{(scope.row.incomePrice/100).toFixed(2)}}
+                            </template>
                         </el-table-column>
                     </el-table>
                     <p class="center top10"><span class="pointer colblue">查看完整记录</span></p>
@@ -155,7 +158,7 @@
                         </el-table-column>
                         <el-table-column
                             prop="shiftsName"
-                            label="100">
+                            label="">
                         </el-table-column>
                     </el-table>
                 </div>
@@ -167,7 +170,7 @@
                                 <el-option v-for="(v) in gwList" :key="v.id" :label="v.postName" :value="v.id"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item label="级别">
+                        <el-form-item label="级别" v-if="postGradeList.length">
                             <el-select class="" v-model="form.grade" placeholder=""  @change='postGradeChange'>
                                 <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
                             </el-select>

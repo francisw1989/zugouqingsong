@@ -27,8 +27,16 @@
                         {{levelList[scope.row.memberLevel]}}
                     </template>
                 </el-table-column>
-                <el-table-column prop="virtualAccount" label="虚拟账户"></el-table-column>
-                <el-table-column prop="savingsAccount" label="储值账户"></el-table-column>
+                <el-table-column prop="virtualAccount" label="虚拟账户">
+                    <template slot-scope="scope">
+                        {{(scope.row.virtualAccount/100).toFixed(2)}}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="savingsAccount" label="储值账户">
+                    <template slot-scope="scope">
+                        {{(scope.row.savingsAccount/100).toFixed(2)}}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="inBlacklist" label="黑名单"></el-table-column>
                 <el-table-column prop="inRedlist" label="红名单"></el-table-column>
                 <el-table-column prop="userTags" label="标签"></el-table-column>
@@ -97,7 +105,7 @@
             },
             search() {
                 //this.is_search = true;
-                 const t = this;
+                const t = this;
                 t.getCustomerList();
             },
             //客户详情

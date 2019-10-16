@@ -340,7 +340,7 @@
                 t.storeList.forEach((v, i)=>{
                     if(v.shopId!='-10000'){
                         let detail = `
-                            <p class="top5">当前顾客: ${v.num1}<br/>预约顾客: ${v.num3}<br/>当班员工: ${v.num2}</p>
+                            <p class="top5">当前顾客: ${v.presentCustoms}<br/>预约顾客: ${v.orderCustoms}<br/>当班员工: ${v.onDutyEmployess}</p>
                             <p class="top5"><span style="display: none"  class="colblue pointer"onclick="gotoDetail(${v.id})" >查看完整信息</span></p>`;
                         t.addMarker(new BMap.Point(v.y,v.x), v.name, detail)
                     }
