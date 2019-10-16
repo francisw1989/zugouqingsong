@@ -16,33 +16,40 @@
                 <el-button type="primary" class="right" @click="handle1">新增</el-button>
                 <el-input v-model="select_word" placeholder="订单编号、商品名称、接收员、配送员" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-
             </div>
 
 
             
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
-                <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="a" label="商品编号" sortable width="150"></el-table-column>
-                <el-table-column prop="b" label="商品名称" width="120"></el-table-column>
-                <el-table-column prop="c" label="成本价格（元）"></el-table-column>
-                <el-table-column v-if="type==0" prop="c" label="销售价格（元）"></el-table-column>
-                <el-table-column v-if="type==0"  prop="c" label="购买人"></el-table-column>
-                <el-table-column v-if="type==1"  prop="c" label="定取人"></el-table-column>
-                <el-table-column prop="c" label="商品订单号"></el-table-column>
-                <el-table-column prop="c" label="服务时间"></el-table-column>
-                <el-table-column prop="c" label="数量"></el-table-column>
-                <el-table-column prop="c" label="单位"></el-table-column>
+                <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
+               <!-- <el-table-column prop="a" label="商品编号" sortable width="150"></el-table-column> -->
+                <el-table-column prop="articleName" label="商品名称" width="120"></el-table-column>
+				<el-table-column prop="articleTypeName" label="分类"></el-table-column>
+                <el-table-column prop="costPrice" label="成本价格（元）"></el-table-column>
+                <el-table-column prop="salesPrice" label="销售价格（元）"></el-table-column>
+				<el-table-column prop="totalPrice" label="销售价格（元）"></el-table-column>
+                <el-table-column prop="signature_name" label="购买人"></el-table-column>
+                <el-table-column prop="createTime" label="出库时间"></el-table-column>
+                <el-table-column prop="count" label="数量"></el-table-column>
+                <el-table-column prop="unit" label="单位"></el-table-column>
+				<el-table-column prop="statusName" label="状态"></el-table-column>
+				<el-table-column label="操作" width="150" align="center">
+				    <template slot-scope="scope">
+				       <!-- <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>-->
+				        <el-button size="mini" v-show="scope.row.status==2"  
+							@click="handleOutStock(scope.$index, scope.row)">出库</el-button>
+				    </template>
+				</el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"  :page-size='pageSize' :total="total">
                 </el-pagination>
             </div>
         </div>
 
         <!-- 新增 -->
-        <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="350px">
+       <!-- <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="350px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
                 <el-form-item label="商品类别" prop="a">
                     <el-select v-model="form.a" placeholder="请选择类型" filterable>
@@ -84,28 +91,52 @@
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
-        </el-dialog>
-
-
+        </el-dialog> -->
+		
+		<!-- 出库弹窗 -->
+		<el-dialog title="填写出库人" :visible.sync="viewIsVisible" width="300px">
+			出库人姓名：<el-input v-model="employessName" label="出库人姓名" />
+		    <span slot="footer" class="dialog-footer">
+		        <el-button @click="viewIsVisible = false">取 消</el-button>
+		        <el-button type="primary" @click="saveOutEdit()">保存</el-button>
+		    </span>
+		</el-dialog>	
+		
 
     </div>
 </template>
 <script>
     import bus from '../../../bus';
-    import {stockService} from '../../../service/stockByStore';
+    import {stockBySotreService} from '../../../service/stockByStore';
+	const Form= {
+	    id: '',
+	    articleId: '',
+	    articleName: '',
+	    articleType: '',
+	    costPrice: '',
+	    salesPrice: '',
+	    storeId: '',
+	    outTime: '',
+	    count: '',
+	    totalPrice: '',
+	    distributorName: '',
+	    distributorPhone: '',
+	    unit: ''
+	}
     export default {
         data() {
             return {
                 list: [],
                 cur_page: 1,
-                multipleSelection: [],
-                select_cate: '',
                 select_word: '',
                 is_search: false,
-
+					
                 idx: -1,
+				row:{},
                 id: -1,
                 editVisible: false,
+				viewIsVisible: false,
+				employessName:'',
                 form: {
                     a: '',
                     b: '',
@@ -116,43 +147,34 @@
                         { required: true, message: '请选择类型', trigger: 'change' },
                     ]
                 },
-                imageUrl: '',
-                goodsCat:[],
-                showMore: false,
-                shopList: [],
-                checked1: false,
-                checked2: false,
-                startDataCK:'',
-                endDataCK:'',
-                startDataJS:'',
-                endDataJS:'',
-                isPintuan: false,
-                isQuan: false,
-                typeList:['物料', '商品'],
+                typeList:['全部','商品', '物料'],
                 type: '0',
+				total: 0,
+				pageSize: 10,
+				pageNumber: 1
             }
         },
         components:{
-            
+            stockBySotreService
         },
         methods:{
             typeChange(e){
                 const t = this;
-                console.log(e)
                 t.type = e;
+				t.getList();
             },
-
-            
 
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.list();
+                this.getList();
             },
             search() {
+				const t=this;
                 this.is_search = true;
+				t.getList();
             },
             
-            // 员工详情
+            // 
             handle1(index, row) {
                 if(row){
                     this.idx = index;
@@ -175,20 +197,51 @@
                 
                 this.editVisible = true;
             },
-            handle2(index, row){
-                
+            handleOutStock(index, row){
+                const t = this;
+				this.idx = index;
+				this.row = row;
+				this.viewIsVisible = true;
             },
+			saveOutEdit(){
+				const t = this;
+				if(t.employessName==''){
+					t.$message.error('请填写姓名');
+					return; 
+				}
+				t.viewIsVisible = false;
+				let params = {
+					id: t.row.id,
+					employeeName : t.employessName
+				}
+				stockBySotreService.storeOutRecordArticle(params).then((res)=>{
+					t.getList();
+					t.$message.success("出库成功");
+				})
+			},
             getList(){
                 const t = this;
-                stockService.getStoreOutRecordList().then((res)=>{
-                    t.list = res;
+				t.list = [];
+				let params = {
+				    pageSize: t.pageSize,
+				    pageNumber: t.pageNumber,
+				    articleType: t.type==0?null:t.type,
+				    storeId:window.Store.id,
+					chose:t.select_word	
+				}
+                stockBySotreService.getStoreOutRecordList(params).then((res)=>{
+					for(const v of res.records){
+						 v.articleTypeName = v.articleType == 1 ? '商品' : '物料';
+						 v.statusName = v.status == 1 ? '已出库' : '已下单';
+					}
+                    t.list = res.records;
+					t.total = res.total;
                 });
             }
         },
         mounted(){
             const t = this;
-            t.getList()            
-            
+            t.getList();     
         }
     }
 </script>

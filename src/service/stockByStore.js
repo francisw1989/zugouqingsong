@@ -64,6 +64,7 @@ let stockBySotreService = {
             $axios(data).then((res)=>{
 				for(const v of res.records){
 					v.costPrice = v.costPrice/100;
+					v.salesPrice = v.salesPrice/100;
 					v.totalPrice = v.totalPrice/100
 				}
                 resolve(res)
@@ -92,6 +93,22 @@ let stockBySotreService = {
            let data = {
                method: 'DELETE',
                url: '/api/v1/storeOutRecord/' + params.id,
+               params: params,
+               loading: true
+           }
+           $axios(data).then((res)=>{
+               resolve(res)
+           })
+       })
+       return p;
+   },
+   
+   //商品订单出库
+    storeOutRecordArticle(params){
+       let p = new Promise((resolve, reject)=>{
+           let data = {
+               method: 'PATCH',
+               url: '/api/v1/storeOutRecord/article/' + params.id,
                params: params,
                loading: true
            }
