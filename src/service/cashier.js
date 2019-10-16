@@ -1,5 +1,38 @@
 import {$axios} from './axios.js';
 let cashierService = {
+
+    // /api/v1/custom/payStatus
+    // 根据商户订单获取微信支付结果
+    payStatus(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/custom/payStatus',
+                params: params,
+                loading: false,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+     // /api/v1/custom/isSms
+    // 客服台是否接受短信提醒
+    isSms(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/custom/isSms',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     finishOrder(params){
         let p = new Promise((resolve, reject)=>{
             let data = {

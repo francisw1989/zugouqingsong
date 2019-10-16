@@ -105,6 +105,7 @@
                                                     <td style="width: 200px">技师：{{oItem.orderTechniciansNames}}</td>
                                                     <td class="col999">{{oItem.orderStartTime}}</td>
                                                     <td class="align-right">
+                                                        <!-- // 1.待支付 2.已支付待到店 3.已到店待服务 4.服务中 5.服务完成 6.系统取消 7.用户取消 -->
                                                         <div v-if="oIndex==v.orderItems.length-1">
                                                             <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
                                                             <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'跟换房间':'分配房间'}}</el-button>
@@ -434,10 +435,10 @@
         </div>
         <div class="top10 center" v-if="showEwm">
             <canvas class="" id="QRCode"></canvas>
-            <p class="col999">支付中...</p>
+            <p class="col999">{{payStatusList[payStatusKey]}}</p>
         </div>
         
-        <span slot="footer" class="dialog-footer">
+        <span slot="footer" class="dialog-footer" v-if="showEwm">
             <el-button type="primary" @click="rechargeVisible = false">完成</el-button>
         </span>
     </el-dialog>
@@ -567,7 +568,17 @@
                 vipRechargeInfoListIndex: 0,
                 price: '',
                 showEwm: false,
-                selNumall: 0
+                selNumall: 0,
+                payStatusList:{
+                    SUCCESS:'支付成功!',
+                    REFUND: '转入退款',
+                    NOTPAY: '未支付!',
+                    CLOSED: '已关闭',
+                    REVOKED: '已撤销（刷卡支付）',
+                    USERPAYING: '支付中...',
+                    PAYERROR: '支付失败'
+                },
+                payStatusKey: 'NOTPAY'
             }
         },
         components: {
@@ -577,6 +588,11 @@
             
         },
         watch:{
+            payStatusKey(res){
+                if(res == 'SUCCESS' || res == 'PAYERROR' || res=='CLOSED'|| res=='PAYERROR'){
+                    clearInterval(statussetInte)
+                }
+            },
             price(){
                 const t = this;
                 console.log(t.price)
@@ -597,9 +613,30 @@
             vipRechargeInfoListIndex(){
                 const t = this;
                 t.price = t.vipRechargeInfoList[t.vipRechargeInfoListIndex].activityCondition/100;
+            },
+            duanxinCheck(){
+                const t = this;
+                let params = {
+                    orderId: t.D.id,
+                    isSms: t.duanxinCheck?'1':'0'
+                };
+                cashierService.isSms(params).then((res)=>{
+
+                })
             }
         },
         methods:{
+            // 获取充值订单状态
+            getPayStatus(outTradeNo){
+                const t = this;
+                window.statussetInte = setInterval(()=>{
+                    cashierService.payStatus({
+                        outTradeNo: outTradeNo
+                    }).then((res)=>{
+                        t.payStatusKey = res;
+                    })
+                }, 3000)
+            },
             // 获取充值信息
             vipRechargeInfo(){
                 const t = this;
@@ -628,6 +665,7 @@
                     t.showEwm = true;
                     setTimeout(() => {
                         t.QRCodeMsg = res.data;
+                        t.getPayStatus(res.outTradeNo);
                     }, 100);
                     // t.$message.success('充值成功');
                 })
@@ -801,6 +839,10 @@
                             let selfChoosedIds = t.choosenProject[t.choosenProjectIndex].choosenTechnician.map((item)=>{
                                 return item.id;
                             })
+                            if(res.length && !res[0].employees.length){
+                                t.$message.error('暂无技师！');
+                                return
+                            }
                             if(res.length && res[0].employees.length){
                                 for(const v of res[0].employees){
                                     if(t.chooseTechnicIdAll.indexOf(v.id)>-1 && selfChoosedIds.indexOf(v.id)<0){
@@ -1032,12 +1074,17 @@
                             // 支付成功
                             let payTypeList = ['', '虚拟账户', '现金账户', '微信支付', '现金', '微信转账', '支付宝转账'];
                             let payObjList = [];
+                            let payAmountList = res.payAmount.split('-').map((v, i)=>{
+                                if(v){
+                                    return v
+                                }
+                            })
                             res.payType.split('-').forEach((v, i)=>{
                                 if (v) {
                                     payObjList.push({
                                         payType: v,
                                         payTypeName: payTypeList[v],
-                                        payAmount: res.payAmount.split('-')[i]
+                                        payAmount: payAmountList[i]
                                     })
                                 }
                             })
