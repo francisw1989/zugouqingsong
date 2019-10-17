@@ -132,35 +132,16 @@
                 </div>
                 <div v-if="tabName=='排班'">
                     <p class="font20 col000">一月排班情况</p>
-                    <el-table 
-                        :data="employeeScheduleList"
-                        style="width: 100%">
-                        <el-table-column
-                            prop="scheduleDate"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        <el-table-column
-                            prop="week"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        <el-table-column
-                            prop="startTime"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        -
-                         <el-table-column
-                            prop="endTime"
-                            label=""
-                            width="100">
-                        </el-table-column>
-                        <el-table-column
-                            prop="shiftsName"
-                            label="">
-                        </el-table-column>
-                    </el-table>
+                    <table class="m-table2 top20">
+                        <tr v-for="(v, i) in employeeScheduleList" :key="i">
+                            <td>{{v.scheduleDate}}</td>
+                            <td>{{v.week}}</td>
+                            <td>{{v.startTime}}</td>
+                            <td>{{v.endTime}}</td>
+                            <td>{{v.shiftsName}}</td>
+                        </tr>
+                    </table>
+                    <div v-if="!employeeScheduleList.length" class="top20 col999 center">暂无记录</div>
                 </div>
                 <div v-if="tabName=='岗位'">
                     <p class="font20 col000">岗位信息</p>
@@ -199,23 +180,23 @@
                     <el-row class="table1 top10 center" style="border: none">
                         <el-col :span="4" :offset="2">
                             <p>正常</p>
-                            <p>22次</p>
+                            <p>{{employeeAttendance[0]}}次</p>
                         </el-col>
                         <el-col :span="4">
                             <p>异常</p>
-                            <p>22次</p>
+                            <p>{{employeeAttendance[1]}}次</p>
                         </el-col>
                         <el-col :span="4">
                             <p>迟到</p>
-                            <p>22次</p>
+                            <p>{{employeeAttendance[2]}}次</p>
                         </el-col>
                         <el-col :span="4">
                             <p>早退</p>
-                            <p>22次</p>
+                            <p>{{employeeAttendance[3]}}次</p>
                         </el-col>
                         <el-col :span="4">
                             <p>请假</p>
-                            <p>22次</p>
+                            <p>{{employeeAttendance[4]}}次</p>
                         </el-col>
                     </el-row>
                     <table class="m-table2">
@@ -235,11 +216,12 @@
                         </el-col>
                         <el-col :span="21">
                             <p class="clearfix">{{v.user.userNickname}} <span class="right col999">{{v.createTime}}</span></p>
-                            <p class=""><el-rate style="display: inline-block" class="top5" disabled show-score ></el-rate><span class="verMid">{{v.evaluateScore}}分</span></p>
-                           <!--:score-template="v.evaluateScore" -->
-                            <p class="">{{v.content}}</p>
+                            <p class=""><el-rate style="display: inline-block" v-model="v.evaluateScore" class="top5" disabled show-score ></el-rate><span class="verMid">分</span></p>
+                           
+                            <p class="">{{v.content || ''}}</p>
                         </el-col>
                     </el-row>
+                    <div v-if="!employeeEvaluateRecord.length" class="top20 col999 center">暂无记录</div>
                 </div>
                 <div v-if="tabName=='培训'">
                     <p class="font20 col000 clearfix btm20">培训历程  <el-button type='primary' size="mini" class="right"  @click="addJslc('1')">新增</el-button> </p>
@@ -253,6 +235,7 @@
                             <p class="col999">{{v.courseContent}}</p>
                         </el-col>
                     </el-row>
+                    <div v-if="!employeeCourseRecord1.length" class="top20 col999 center">暂无记录</div>
                 </div>
                 <div v-if="tabName=='晋升'">
                     <p class="font20 col000 clearfix btm20">晋升历程  <el-button type='primary' size="mini" class="right" @click="addJslc('2')">新增</el-button> </p>
@@ -266,10 +249,20 @@
                             <p class="col999">{{v.courseContent}}</p>
                         </el-col>
                     </el-row>
+                    <div v-if="!employeeCourseRecord2.length" class="top20 col999 center">暂无记录</div>
                 </div>
                 <div v-if="tabName=='师徒'">
-                    <p class="font20 col000 clearfix">师徒关系 <el-button type='primary' size="mini" class="right">新增师徒关系</el-button></p>
-                    <div id="treeChart" style="height: 400px;"></div>
+                    <p class="font20 col000 clearfix">师徒关系</p>
+                    <!-- <div id="treeChart" style="height: 400px;"></div> -->
+                    <el-tree class="top20" :data="stData" node-key="id" default-expand-all :expand-on-click-node="false">
+                        <div class="custom-tree-node " slot-scope="{ node, data }">
+                            <span>{{ node.label }}</span>
+                            <span>
+                                <el-button type="text" size="mini" @click="() => append(data)">新增</el-button>
+                                <el-button type="text" size="mini" @click="() => remove(node, data)">删除</el-button>
+                            </span>
+                        </div>
+                    </el-tree>
                 </div>
             </div>
         </el-col>
@@ -291,6 +284,20 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="jslcVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveLc('lcForm')">保存</el-button>
+            </span>
+        </el-dialog>
+        <el-dialog title="选择徒弟" :visible.sync="xztdVisible" :modal='false' width="250px">
+            <el-select v-model="chooseStaffIndex"  placeholder="请选择" clearable filterable style="width: 100%">
+                <el-option
+                v-for="(item, i) in staffList"
+                :key="i"
+                :label="item.employeeName"
+                :value="i">
+                </el-option>
+            </el-select>
+             <span slot="footer" class="dialog-footer">
+                <el-button @click="jslcVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveShitu">保存</el-button>
             </span>
         </el-dialog>
 </div>
@@ -335,6 +342,8 @@
         name: 'staffDetail',
         data() {
             return {
+                xztdVisible: false,
+                chooseStaffIndex: 0,
                 jslcVisible: false,
                 statusName: ['请假', '正常', '未打卡', '休假', '迟到', '早退', '迟到早退'],
                 form: {},
@@ -359,7 +368,9 @@
                 res: '',
                 postGradeList: [],
                 postGradeBean:{},// 岗位职级bean
-                sysRoute: window.sysRoute || ''
+                sysRoute: window.sysRoute || '',
+                staffList: [],
+                currentEmp: {}
             }
         },
         watch: {
@@ -440,68 +451,76 @@
                 }
                 t.mouth ++;
             },
-            initTreeChart(){
+            initTree(){
                 const t = this;
-                let stData = {
-                    name: '张三',
-                    children: [
-                        {name: '李四', children:[
-                            {name: '刘七'},{name: '刘七'},{name: '刘七'},
-                        ]},
-                        {name: '王五'},
-                        {name: '王五'},
-                        {name: '王五'},
-                        {name: '王五'},
-                    ]
-                }
-                t.treeChart = echarts.init(document.getElementById('treeChart'));
-                t.treeChart.setOption({
-                    color: ['#3398DB', '#f25e43', '#459E8C'],
-                    tooltip: {
-                        trigger: 'item',
-                        triggerOn: 'mousemove'
-                    },
-                    series: [
-                        {
-                            type: 'tree',
-                            data: [stData],
-                            top: '1%',
-                            left: '10%',
-                            bottom: '1%',
-                            right: '20%',
-                            symbolSize: 12,
-                            label: {
-                                normal: {
-                                    position: 'left',
-                                    verticalAlign: 'middle',
-                                    align: 'right',
-                                    fontSize: 14
-                                }
-                            },
-                            leaves: {
-                                label: {
-                                    normal: {
-                                        position: 'right',
-                                        verticalAlign: 'middle',
-                                        align: 'left'
-                                    }
-                                }
-                            },
-                            expandAndCollapse: true,
-                            animationDuration: 550,
-                            animationDurationUpdate: 750
+                let stData = {};
+                let myChildren  = [];
+                let _do = (res)=>{
+                    if(res.length){
+                        for(const v of res){
+                            v.label = v.employeeName;
+                            v.children = v.employees;
+                            if(v.employees && v.employees.length){
+                                _do(v.employees)
+                            }
                         }
-                    ]
-                });
+                    }
+                }
+                _do(t.shiTuList.employees)
+                stData = [
+                    {
+                        label: t.shiTuList .mentor.employeeName,
+                        id: t.shiTuList .mentor.id,
+                        children: [
+                            {label: t.row.employeeName, id: t.row.id, children:t.shiTuList.employees}
+                        ]
+                    }
+                ]
+                t.stData = stData;
+                t.$forceUpdate();
+            },
+            append(data) {
+                const t = this;
+                t.xztdVisible = true;
+                console.log(data);
+                t.currentEmp = data;
+            },
+            saveShitu(){
+                const t = this;
+                let params = {
+                    employeeId: t.staffList[t.chooseStaffIndex].id,
+                    employeeName: t.staffList[t.chooseStaffIndex].employeeName,
+                    mentorId: t.currentEmp.id,
+                    mentorName: t.currentEmp.employeeName || t.currentEmp.label
+                };
+                staffService.mentorship(params).then((res)=>{
+                    t.$message.success('新增成功');
+                    t.xztdVisible = false;
+                    t.getEmployeEmentorShip();
+                })
+            },
+            remove(node, data) {
+                // const parent = node.parent;
+                // const children = parent.data.children || parent.data;
+                // const index = children.findIndex(d => d.id === data.id);
+                // children.splice(index, 1);
+                const t = this;
+                console.log(node, data)
+                t.$confirm('确认删除？').then(() => {
+                    let params = {
+                        employeeId: data.id,
+                        mentorId:  node.parent.data.id
+                    }
+                    staffService.deleteMentorship(params).then((res)=>{
+                        t.$message.success('删除成功！');
+                        t.getEmployeEmentorShip();
+                    })
+                }).catch(_ => {});
+
             },
             tabClick(tab, event){
                 const t = this;
-                if(t.tabName == '师徒'){
-                    setTimeout(() => {
-                        t.initTreeChart()
-                    }, 100);
-                    
-                }
+
             },
             mdAdd(){
                 const t = this;
@@ -641,14 +660,26 @@
                 staffService.getEmployeeAttendanceCount({employeeId: t.row.id,monthDate: monthDate}).then((res)=>{
                     t.employeeAttendance = res;
                 });
+            },
+            getEmployeEmentorShip(){
+                const t = this;
+                staffService.getEmployeEmentorShip({id: t.row.id,}).then((res)=>{
+                    t.shiTuList = res;
+                    t.initTree();
+                });
             }
         },
         mounted(){
             const t = this;
             t.row.isMobilePosition = t.row.isMobilePosition == 0 ?false: true;
-			 t.row.status = t.row.status == 0 ?false: true;
+			t.row.status = t.row.status == 0 ?false: true;
             t.row.isTechnician = t.row.isTechnician == 0 ?false: true;
-            
+            staffService.getEmployeesList({
+                pageSize: 100,
+                pageNumber: 1
+            }).then((res)=>{
+                t.staffList = res.records;
+            })
             if(!t.row.storesList || !t.row.storesList.length){
                 t.row.storesList = [{}]
             }
@@ -672,6 +703,7 @@
             t.getEmployeeAttendanceCount();
             //员工被评价记录列表
             staffService.getEmployeeEvaluateRecord({id: t.row.id,pageSize: 20,pageNumber: 1}).then((res)=>{
+                console.log(res)
                 t.employeeEvaluateRecord = res.records;
             });
             //员工培训历程
@@ -685,10 +717,8 @@
                 t.$forceUpdate();
             });
             //员工师徒关系
-            staffService.getEmployeEmentorShip({id: t.row.id,}).then((res)=>{
-                t.shiTuList = res;
-                console.log(res)
-            });
+            t.getEmployeEmentorShip();
+            
             // t.$commonService.getTagsTypeList().then((res)=>{
             //     t.form.tags.forEach(v => {
             //         let i = Math.floor(Math.random() * (10 - 0)) + 0;
@@ -722,5 +752,12 @@
     }
 </script>
 <style scoped>
-    
+      .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
 </style>

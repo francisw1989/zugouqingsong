@@ -1,5 +1,21 @@
 import {$axios} from './axios.js';
 let roomService = {
+    // /api/v1/room/{id}
+    // 根据房间id查询信息
+    roomMessage(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/room/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // 删除房间
     delete(params){
         let p = new Promise((resolve, reject)=>{

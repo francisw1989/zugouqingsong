@@ -58,7 +58,7 @@
         </el-dialog>
 
         <!-- 查看 -->
-        <el-dialog title="房间详情" :visible.sync="viewVisible" width="900px">
+        <el-dialog title="房间详情" :visible.sync="viewVisible" width="500px">
             <Detail :id='id' v-if='viewVisible'></Detail>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>

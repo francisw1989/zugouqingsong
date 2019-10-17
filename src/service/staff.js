@@ -1,5 +1,37 @@
 import {$axios} from './axios.js';
 let staffService = {
+    // /api/v1/mentorship/
+    // 删除师徒关系
+    deleteMentorship(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'DELETE',
+                url: '/api/v1/mentorship/',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // /api/v1/mentorship/
+    // 新增师徒关系
+    mentorship(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/mentorship/',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/employees/resetPassword
     // 重置员工密码（暂时重置为123456）
     resetPassword(params){
