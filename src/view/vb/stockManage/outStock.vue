@@ -29,16 +29,16 @@
                 <el-table-column prop="costPrice" label="成本价格（元）"></el-table-column>
                 <el-table-column prop="salesPrice" label="销售价格（元）"></el-table-column>
 				<el-table-column prop="totalPrice" label="销售价格（元）"></el-table-column>
-                <el-table-column prop="signature_name" label="购买人"></el-table-column>
+                <el-table-column prop="signatureName" label="购买人"></el-table-column>
                 <el-table-column prop="createTime" label="出库时间"></el-table-column>
                 <el-table-column prop="count" label="数量"></el-table-column>
                 <el-table-column prop="unit" label="单位"></el-table-column>
 				<el-table-column prop="statusName" label="状态"></el-table-column>
 				<el-table-column label="操作" width="150" align="center">
 				    <template slot-scope="scope">
-				       <!-- <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>-->
-				        <el-button size="mini" v-show="scope.row.status==2"  
+				        <el-button size="mini" v-show="scope.row.status==2" type='danger' 
 							@click="handleOutStock(scope.$index, scope.row)">出库</el-button>
+						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
 				    </template>
 				</el-table-column>
             </el-table>
@@ -49,49 +49,27 @@
         </div>
 
         <!-- 新增 -->
-       <!-- <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="350px">
+        <el-dialog :title="idx==-1?'新增':'查看'" :visible.sync="editVisible" width="350px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="商品类别" prop="a">
-                    <el-select v-model="form.a" placeholder="请选择类型" filterable>
-                        <el-option v-for="item in goodsCat" :key="item" :label="item" :value="item"></el-option>
+                <el-form-item label="物料选择" prop="articleId">
+                    <el-select v-model="form.articleId" placeholder="请选择物料" filterable>
+                        <el-option v-for="(v,i) in goodsList" :key="v.id" :label="v.articleName" :value="v.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="商品名称" prop="a">
-                    <el-input v-model="form.a"></el-input>
-                </el-form-item>
-                
-                <el-form-item label="成本价" prop="a">
-                    2元
-                </el-form-item>
-                <el-form-item label="销售价" prop="a">
-                    2元
-                </el-form-item>
-                <el-form-item label="单位" prop="a">
-                    瓶
-                </el-form-item>
-                <el-form-item label="接收门店" prop="a">
-                    <el-select class="" v-model="form.a" placeholder="请选择" filterable >
-                        <el-option v-for="(item, index) in shopList" :key="index" :value="item.shopId"  :label="item.shopName"></el-option>
+                <el-form-item label="接收员工" prop="employeeId">
+                    <el-select class="" v-model="form.employeeId" placeholder="请选择" filterable >
+                        <el-option v-for="(v,i) in employeeList" :key="v.id" :value="v.id"  :label="v.employeeName"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="出库时间" prop="a">
-                    <el-date-picker class=""  v-model="form.a" type="date" placeholder="选择日期"></el-date-picker>
-                </el-form-item>
-                <el-form-item label="数量" prop="a">
-                    <el-input v-model="form.a"></el-input>
-                </el-form-item>
-                <el-form-item label="配送员" prop="a">
-                    <el-input v-model="form.a"></el-input>
-                </el-form-item>
-                <el-form-item label="配送员电话" prop="a">
-                    <el-input v-model="form.a"></el-input>
+                <el-form-item label="数量" prop="count">
+                    <el-input v-model="form.count"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
             </span>
-        </el-dialog> -->
+        </el-dialog> 
 		
 		<!-- 出库弹窗 -->
 		<el-dialog title="填写出库人" :visible.sync="viewIsVisible" width="300px">
@@ -102,26 +80,27 @@
 		    </span>
 		</el-dialog>	
 		
+		<!-- 删除提示框 -->
+		<el-dialog title="提示" :visible.sync="delVisible" width="300px" left>
+		    <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+		    <span slot="footer" class="dialog-footer">
+		        <el-button @click="delVisible = false">取 消</el-button>
+		        <el-button type="primary" @click="deleteRow()">确 定</el-button>
+		    </span>
+		</el-dialog>
 
     </div>
 </template>
 <script>
     import bus from '../../../bus';
     import {stockBySotreService} from '../../../service/stockByStore';
+	import {staffService} from '../../../service/staff';
+	import {stockService} from '../../../service/stock';
 	const Form= {
-	    id: '',
 	    articleId: '',
-	    articleName: '',
-	    articleType: '',
-	    costPrice: '',
-	    salesPrice: '',
-	    storeId: '',
-	    outTime: '',
+	    storeId: window.Store.id,
 	    count: '',
-	    totalPrice: '',
-	    distributorName: '',
-	    distributorPhone: '',
-	    unit: ''
+	    employeeId: ''
 	}
     export default {
         data() {
@@ -130,21 +109,22 @@
                 cur_page: 1,
                 select_word: '',
                 is_search: false,
-					
+				goodsList:[],
+				employeeList:[],
                 idx: -1,
 				row:{},
                 id: -1,
                 editVisible: false,
 				viewIsVisible: false,
+				delVisible:false,
 				employessName:'',
-                form: {
-                    a: '',
-                    b: '',
-                    c: ''
-                },
+                form:JSON.parse(JSON.stringify(Form)),
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                   articleId: [
+                       { required: true, message: '请选择', trigger: 'change' },
+                   ], 
+				   employeeId: [
+                        { required: true, message: '请选择', trigger: 'change' },
                     ]
                 },
                 typeList:['全部','商品', '物料'],
@@ -155,7 +135,6 @@
             }
         },
         components:{
-            stockBySotreService
         },
         methods:{
             typeChange(e){
@@ -174,29 +153,44 @@
 				t.getList();
             },
             
-            // 
             handle1(index, row) {
-                if(row){
-                    this.idx = index;
-                    this.id = row.id;
-                    this.form = {
-                        a: row.a,
-                        b: row.b,
-                        c: row.c,
-                    }
-                }else{
-                    this.idx = '-1';
-                    this.id = '';
-                    this.imageUrl = '';
-                    this.form = {
-                        a: '',
-                        b: '',
-                        c: '',
-                    }
-                }
-                
+				const t = this;
+				if(row){
+				    // 编辑
+				    t.idx = index;
+				    t.row = row;
+				    t.form = t.row;
+				}else{
+				     // 新增
+				    t.idx = '-1';
+				    t.id = '';
+				    t.form = JSON.parse(JSON.stringify(Form));
+				}
                 this.editVisible = true;
             },
+			saveEdit(form){
+				const t = this;
+				this.$refs[form].validate((valid) => {
+				    if (valid) {
+				        let params = {
+						}
+				        this.editVisible = false;
+				        for(let key in Form){
+				            params[key] = t.form[key]
+				        }
+				        if(t.idx == '-1'){
+				            stockBySotreService.storeOutRecordAdd(params).then((res)=>{
+				                t.getList();
+								t.$message.success("出库成功");
+				            })
+				        }else{
+				        }
+				    } else {
+				        console.log('error submit!!');
+				        return false;
+				    }
+				});
+			},
             handleOutStock(index, row){
                 const t = this;
 				this.idx = index;
@@ -237,11 +231,56 @@
                     t.list = res.records;
 					t.total = res.total;
                 });
-            }
+            },
+			getGoodList(){
+			    const t = this;
+			    t.goodsList = [];
+			    let params = {
+			        pageSize: 100,
+			        pageNumber: 1,
+					articleType:2
+			    }
+			    stockService.getArticleManagerList(params).then((res)=>{
+			        t.goodsList = res.records;
+			    })
+			},
+			getEmployeeList(){
+				 const t = this;
+				 t.list = [];
+				 let params = {
+					 pageSize: 100,
+					 pageNumber: 1,
+					 storesId:window.Store.id
+				 }
+				staffService.getEmployeesList(params).then((res)=>{
+					t.employeeList = res.records;
+				})
+			},
+			handleDelete(index, row) {
+			    const t = this;
+			    this.idx = index;
+			    this.id = row.id;
+			    this.row = row;
+			    t.delVisible = true;
+			},
+			// 确定删除
+			deleteRow(){
+			    const t = this;
+			    let parmas = {
+			        id: this.id
+			    }
+			    stockBySotreService.storeOutRecordDelete(parmas).then((res)=>{
+			        t.$message.success('删除成功');
+			        t.delVisible = false;
+			        t.getList();
+			    })
+			}
         },
         mounted(){
             const t = this;
-            t.getList();     
+            t.getList(); 
+			t.getGoodList();
+			t.getEmployeeList();
         }
     }
 </script>

@@ -35,7 +35,7 @@
                 <el-table-column prop="statusName" label="状态"></el-table-column>
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">撤销</el-button>
+                        <el-button size="mini" v-if="scope.row.status==1" @click="handle1(scope.$index, scope.row)" type="danger">签收</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -44,7 +44,14 @@
                 </el-pagination>
             </div>
         </div>
-
+		<!-- 签收弹窗 -->
+		<el-dialog title="填写签收人" :visible.sync="viewIsVisible" width="300px">
+			签收人姓名：<el-input v-model="employessName" label="签收人姓名" />
+		    <span slot="footer" class="dialog-footer">
+		        <el-button @click="viewIsVisible = false">取 消</el-button>
+		        <el-button type="primary" @click="saveOutEdit()">保存</el-button>
+		    </span>
+		</el-dialog>	
     </div>
 </template>
 <script>
@@ -55,7 +62,12 @@
             return {
                 list: [],
                 cur_page: 1,
+				viewIsVisible: false,
                 select_word: '',
+				employessName:'',
+				idx: -1,
+				id:-1,
+				row:{},
                 is_search: false,
                 typeList:['所有采购记录', '配送中', '已采购'],
                 type: '0',
@@ -65,7 +77,6 @@
             }
         },
         components:{
-            stockBySotreService
         },
         methods:{
             typeChange(e){
@@ -81,7 +92,29 @@
                 this.is_search = true;
 				t.getList();
             },
-            
+            handle1(index,row){
+				const t = this;
+				t.idx = index;
+				t.row = row;
+				t.viewIsVisible = true
+			},
+			saveOutEdit(){
+				const t = this;
+				if(t.employessName==''){
+					t.$message.error('请填写姓名');
+					return; 
+				}
+				t.viewIsVisible = false;
+				let params={
+					id:t.row.id,
+					status:2,
+					signatureName: t.employessName
+				}
+				stockBySotreService.storeInRecordEdit(params).then((res)=>{
+					t.getList();
+					t.$message.success('签收成功');
+				})
+			},
             getList(){
                 const t = this;
 				t.list = [];
