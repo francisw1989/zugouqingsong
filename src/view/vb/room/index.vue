@@ -21,15 +21,15 @@
                             <i class="el-icon-view  left10 icon" @click="view(i, v)"></i>
 
                         </div>
-                        <span><span class="col000 font16">{{v.name}}</span><span class="left10 col999">{{v.useNum||0}}/{{v.peopleNum}}</span> </span>
+                        <span><span class="col000 font16">{{v.name}}</span><span class="left10 col999">{{v.count||0}}/{{v.peopleNum}}</span> </span>
                     </div>
                     <div class="col999">{{v.labels}}</div>
                     <div style="height: 100px; overflow: auto">
                         <div class="top10">
-                            <el-tag class="tag" v-for="(item, i) in v.itemAccount" :key="i">
-                                {{item.item_class_name}}
+                            <el-tag class="tag" v-if="v.orderItemList[0].itemClassName != undefined" v-for="(item, i) in v.orderItemList" :key="i" >
+                                {{item.itemClassName}}
                                 <i class="el-icon-lx-friend"></i>
-                                ({{item.total}})
+                                ({{item.recordsSize}})
                             </el-tag>
                             
                         </div>
