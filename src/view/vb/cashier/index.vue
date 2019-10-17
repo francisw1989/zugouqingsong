@@ -592,8 +592,18 @@
         },
         watch:{
             payStatusKey(res){
+                const t = this;
                 if(res == 'SUCCESS' || res == 'PAYERROR' || res=='CLOSED'|| res=='PAYERROR'){
                     clearInterval(statussetInte)
+                    if(res=='SUCCESS'){
+                        t.$message.success('支付成功');
+                        t.rechargeVisible = false;
+                        if(t.userForm.telephoneNum){
+                            t.customSeach('seachForm')
+                        }
+                    }
+                    
+                    
                 }
             },
             price(){
@@ -943,7 +953,10 @@
                         t.currentOrder = t.appointList[t.currentOrderIndex];
                         setTimeout(() => {
                             for(const i in t.appointList){
-                                t.$commonService.getTime('time' + i)
+                                if(t.appointList[i].status == '2'){
+                                    t.$commonService.getTime('time' + i)
+                                }
+                                
                             }
                         }, 100);
                     }
@@ -979,7 +992,10 @@
                                 t.currentOrder = t.appointList[t.currentOrderIndex];
                                 setTimeout(() => {
                                     for(const i in t.appointList){
-                                        t.$commonService.getTime('time' + i)
+                                        if(t.appointList[i].status == '2'){
+                                            t.$commonService.getTime('time' + i)
+                                        }
+                                        
                                     }
                                 }, 100);
                             }else{

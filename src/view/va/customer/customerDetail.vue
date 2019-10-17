@@ -5,16 +5,17 @@
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
                         <img :src="form.photo" alt="" class="tx1 left">
-                        <div class="ghWap font12">工号:{{form.memberNum}}</div>
+                        <!-- <div class="ghWap font12"></div> -->
                     </div>
                 </el-col>
                 <el-col :span="17">
-                    <p class="font16b top10 ">{{form.userNickname}}  <span class="left20 font12 col999">{{form.sexName}} {{form.age}}岁</span> </p>
-                    <p class="top5">
+                    <p class="font16b top5 ">{{form.userNickname}}  <span class="left20 font12 col999">{{form.sexName}} {{form.age}}岁</span> </p>
+                    <p class="">
                         <el-tag type="success" size="small">¥{{form.balance}}</el-tag>
                         <el-tag type="info" size="small" class="left5">VIP-{{form.memberLevel}}</el-tag>
                         <el-tag type="danger" size="small" class="left5">{{form.score}}</el-tag>
                     </p>
+                    <p>{{form.memberNum}}</p>
                 </el-col>
             </el-row>
             <el-form ref="form" :model="form"  :rules="rules"   label-width="80px" class="staffForm top20">
