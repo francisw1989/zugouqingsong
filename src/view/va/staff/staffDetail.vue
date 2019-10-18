@@ -296,7 +296,7 @@
                 </el-option>
             </el-select>
              <span slot="footer" class="dialog-footer">
-                <el-button @click="jslcVisible = false">取 消</el-button>
+                <el-button @click="xztdVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveShitu">保存</el-button>
             </span>
         </el-dialog>
@@ -467,15 +467,22 @@
                     }
                 }
                 _do(t.shiTuList.employees)
-                stData = [
-                    {
-                        label: t.shiTuList .mentor.employeeName,
-                        id: t.shiTuList .mentor.id,
-                        children: [
-                            {label: t.row.employeeName, id: t.row.id, children:t.shiTuList.employees}
+                if( t.shiTuList .mentor){
+                    stData = [
+                            {
+                                label: t.shiTuList .mentor.employeeName,
+                                id: t.shiTuList .mentor.id,
+                                children: [
+                                    {label: t.row.employeeName, id: t.row.id, children:t.shiTuList.employees}
+                                ]
+                            }
                         ]
-                    }
-                ]
+                }else{
+                    stData = [
+                        {label: t.row.employeeName, id: t.row.id, children:t.shiTuList.employees}
+                    ]
+                }
+                
                 t.stData = stData;
                 t.$forceUpdate();
             },
@@ -694,7 +701,9 @@
             
             t.getServiceRecordList();
             //员工排班列表
-            staffService.getEmployeeScheduleList({employeeId: t.row.id,monthDate: '2019-8'}).then((res)=>{
+            let mouth = t.mouth<10?'0'+t.mouth : t.mouth;
+            let monthDate = t.year + '-' + mouth;
+            staffService.getEmployeeScheduleList({employeeId: t.row.id,monthDate: monthDate}).then((res)=>{
                 t.employeeScheduleList = res;
             });
             //员工考勤列表
