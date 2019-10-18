@@ -53,7 +53,7 @@
                 <el-table-column prop="orderStartTime" label="预约服务时间"></el-table-column>
                 <el-table-column prop="payForOwn" label="是否本人支付">
                     <template slot-scope="scope">
-                        <span>{{scope.row.payForOwn?'是':'否'}}</span>
+                        <span>{{scope.row.payForOwn==0?'是':'否'}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="orderTimes" label="预约时长">

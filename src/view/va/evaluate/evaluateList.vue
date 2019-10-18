@@ -150,7 +150,7 @@
                 },
                 tags: ['环境好','技术好','服务好'],
                 total: 0,
-                pageSize: 3,
+                pageSize: 10,
                 pageNumber: 1,
                 orderId: '',
                 startTime: '',
@@ -199,7 +199,8 @@
                     endTime: t.endTime,
                     itemClassId: t.itemClassId,
                     pageSize: t.pageSize,
-                    pageNumber: t.pageNumber
+                    pageNumber: t.pageNumber,
+					storeId:window.Store.id
                 }
                 evaluateService.list(params).then((res)=>{
 					t.list = res.records;
