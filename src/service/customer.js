@@ -1,5 +1,22 @@
 import {$axios} from './axios.js';
 let customerService = {
+
+    // /api/v1/user/{id}
+    // 根据主键修改会员基本信息
+    save(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/user/' + params.id,
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     getCustomerList(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
@@ -29,7 +46,7 @@ let customerService = {
         })
         return p;
     },
-    //获取用户行为数据
+    // 根据用户id获取服务记录
     getCustomerOrderRecord(params){
         let p = new Promise((resolve, reject)=>{
             let data = {

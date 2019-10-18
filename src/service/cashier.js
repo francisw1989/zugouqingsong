@@ -1,6 +1,21 @@
 import {$axios} from './axios.js';
 let cashierService = {
-
+    //  /api/v1/newsRemind/
+    // 查询新的提醒消息
+    newsRemind(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: ' /api/v1/newsRemind/',
+                params: params,
+                loading: false,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/custom/payStatus
     // 根据商户订单获取微信支付结果
     payStatus(params){
