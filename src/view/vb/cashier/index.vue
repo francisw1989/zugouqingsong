@@ -347,7 +347,7 @@
             <div class="top10">
                 <el-checkbox v-model="duanxinCheck">接收预约短信提醒</el-checkbox>
             </div>
-            <div class="top10">
+            <div class="top10" v-if="D.memberInterests[D.currentMemLevel.currentLevel + 1]">
                 距离{{D.memberInterests[D.currentMemLevel.currentLevel + 1].memberLevelName}}会员还需消费{{(D.memberInterests[D.currentMemLevel.currentLevel + 1].amountCondition-D.currentMemLevel.money)/100}}元
             </div>
         </div>
