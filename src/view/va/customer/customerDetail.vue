@@ -26,18 +26,16 @@
                     {{form.createTime}}
                 </el-form-item>
                 <el-form-item label="出生日期" >
-                    <span v-if="!edit.birthday">{{form.birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
-                    <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
+                    <span v-if="!edit.birthday">{{birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
+                    <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
                 <el-form-item label="黑名单" >
-                    <el-switch v-model="form.inBlacklist" class=""></el-switch>
-                    <span v-if="form.inBlacklist">
-                        <span class="col999 left5">{{form.updateTime}} 修改</span>
-                        <p class="top5">{{form.userTags?form.userTags.tags:''}}</p>
-                    </span>
+                    <el-switch v-model="inBlacklist" class=""></el-switch>
+                    <span v-if="inBlacklist" class="col999 left5">{{form.updateTime}} 修改</span>
+                    <p class="top5" v-if="inBlacklist && form.userTags">{{form.userTags?form.userTags.tags:''}}</p>
                 </el-form-item>
                 <el-form-item label="红名单" >
-                    <el-switch v-model="form.inRedlist" class=""></el-switch>
+                    <el-switch v-model="inRedlist" class=""></el-switch>
                 </el-form-item>
                 
             </el-form>
@@ -182,7 +180,11 @@
                 statusList: ['','待支付','已支付待到店','已到店待服务','服务中','服务完成','系统取消','用户取消'],
                 payTypeList:['','虚拟账户','现金账户','微信支付','现金','微信转账','支付宝转账'],
                 customerDate: {},
-                rechargeRecord: []
+                rechargeRecord: [],
+                birthday: '',
+                inBlacklist:'',
+                inRedlist: '',
+                finishInit: false
             }
         },
         computed:{
@@ -205,12 +207,15 @@
         props: ['row'],
         methods:{
             save(){
-                let params = {};
-                for(let key in Form){
-                    params[key] = t.form[key]
+                const t = this;
+                if(!t.finishInit){
+                    return
                 }
-                params.inBlacklist = params.inBlacklist?'1':'0';
-                params.inRedlist = params.inRedlist?'1':'0';
+                let params = {};
+                params.birthday = t.birthday;
+                params.inBlacklist = t.inBlacklist?'1':'0';
+                params.inRedlist = t.inRedlist?'1':'0';
+                params.id = t.row.id;
                 customerService.save(params).then((res)=>{
                     this.$message.success('修改成功');
                 })
@@ -264,6 +269,12 @@
             t.row.sexName=t.sexList[t.row.sex];
             t.row.balance=(t.row.virtualAccount+t.row.savingsAccount)/100;
             t.form = t.row;
+            t.inBlacklist = t.form.inBlacklist;
+            t.inRedlist = t.form.inRedlist;
+            t.birthday = t.form.birthday;
+            setTimeout(() => {
+                t.finishInit = true;
+            }, 1000);
             //用户行为数据
             customerService.getCustomerDate({id: t.row.id}).then((res)=>{
                 t.customerDate = res;

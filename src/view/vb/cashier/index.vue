@@ -160,10 +160,13 @@
                             </div>
                         </div>
                     </el-col>
+                    
                 </el-row>
             </el-col>
         </el-row>
     </div>
+
+    
     <el-dialog title="选择替换技师" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="replaceJishiVisible" width="500px">
         <template v-for="(v, i) in technicianList">
             <div class="clearfix bor_btm_so pad10TB"  :key="i"   v-if="!v.hasChoosedByOther">
@@ -445,7 +448,10 @@
             <el-button type="primary" @click="rechargeVisible = false">完成</el-button>
         </span>
     </el-dialog>
-
+    <audio ref="message" id="message">
+        <source :src="'http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=' +currentMessage" type="audio/mpeg">
+        <embed height="0" width="0" :src="'http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=' + currentMessage">
+    </audio>
 </div>
 </template>
 <script>
@@ -581,7 +587,13 @@
                     USERPAYING: '支付中...',
                     PAYERROR: '支付失败'
                 },
-                payStatusKey: 'NOTPAY'
+                payStatusKey: 'NOTPAY',
+                messageList:[
+                    {content: '用户日暮途远刚刚预约了2019-10-17 16:30:00的项目,技师：张九。请提醒技师提前做好准备工作。'},
+                    {content: '请注意：因支付超时，订单号为：F06AFE8CAA584F8C993BF6FEB4ABF26A的订单已被系统自动取消！'},
+                    {content: '订单号为：4D313CF1EB604C649F02EC7870A063DB的订单因超时未到已被系统自动取消!'},    
+                ],
+                currentMessage: ''
             }
         },
         components: {
@@ -591,6 +603,7 @@
             
         },
         watch:{
+
             payStatusKey(res){
                 const t = this;
                 if(res == 'SUCCESS' || res == 'PAYERROR' || res=='CLOSED'|| res=='PAYERROR'){
@@ -1255,11 +1268,39 @@
                 } else {
                     t.stores.openStartTime = min+':'+'30'
                 }
+            },
+            newsRemind(){
+                setInterval(()=>{
+                    // cashierService.newsRemind({}).then((res)=>{
+
+                    // })
+                }, 1000)
             }
 
         },
         mounted(){
             const t = this;
+            // for(const v of t.messageList){
+            //     if(v.content){
+                t.currentMessage = encodeURI(t.messageList[0].content); 
+                setTimeout(() => {
+                    let m = document.querySelector('#message')
+                   
+                    // setInterval(()=>{
+                    //     if (m.paused) { //判读是否播放  
+                    //         m.paused=false;
+                    //         m.play(); //没有就播放 
+                    //     }  
+                    // },1);
+                }, 2000);
+                    // setTimeout(() => {
+                        
+                    // }, 5000);
+            //     }
+            // }
+            
+
+
             t.userInfo = JSON.parse(localStorage.userInfo);
             t.cal();
             t.leveName = t.$GD.leveName;
