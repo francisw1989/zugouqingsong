@@ -3,7 +3,7 @@
     <div class="header relative">
         <i class="el-icon-back" @click="back"></i>
         <span class="font18">足够轻松  门店收银系统</span>
-        <span class="currTime">2019年 07月 23日    18:30</span>
+        <span class="currTime" >{{nowTimeData}}</span>
     </div>
     <div class="main">
         <el-row style="height: 100%">
@@ -490,6 +490,7 @@
     export default {
         data() {
             return {
+                nowTimeData: '',
                 welcomeTitle: '欢迎来到足够轻松门店收银系统',
                 welcomeVisible: true,
                 showPayButton: true,
@@ -657,6 +658,31 @@
             }
         },
         methods:{
+            check(i){
+                var num;
+                i<10?num="0"+i:num=i;
+                return num;
+            },
+            NowTime(){
+                //获取年月日
+                const t = this;
+                var time=new Date();
+                var year=time.getFullYear();
+                var month=time.getMonth();
+                var day=time.getDate();
+                
+                //获取时分秒
+                var h=time.getHours();
+                var m=time.getMinutes();
+                var s=time.getSeconds();
+                
+                //检查是否小于10
+                h=t.check(h);
+                m=t.check(m);
+                s=t.check(s);
+                t.nowTimeData = year+"年"+month+"月"+day+"日  "+h+":"+m+":"+s;
+                
+            },
             welcomeClick(){
                 const t = this;
                 t.welcomeVisible = false;
@@ -1302,7 +1328,9 @@
         mounted(){
             const t = this;
             t.newsRemind();
-           
+            setInterval(()=>{
+                t.NowTime()
+            },1000);
 
             
 
