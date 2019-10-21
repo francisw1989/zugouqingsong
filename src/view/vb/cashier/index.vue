@@ -448,7 +448,7 @@
             <el-button type="primary" @click="rechargeVisible = false">完成</el-button>
         </span>
     </el-dialog>
-    <el-dialog title="欢迎" :visible.sync="welcomeVisible" width="350px" >
+    <el-dialog title="欢迎" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="welcomeVisible" width="350px" >
         <span class="font20">{{welcomeTitle}}</span>
         <span slot="footer" class="dialog-footer">
             <el-button type="primary" @click="welcomeClick">确 定</el-button>
