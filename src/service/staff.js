@@ -481,6 +481,7 @@ let staffService = {
                 method: 'get',
                 url: '/api/v1/shiftsSetting/list',
                 loading: true,
+                params:{},
             }
             $axios(data).then((res)=>{
                 resolve(res)
