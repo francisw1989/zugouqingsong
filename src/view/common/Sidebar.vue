@@ -23,7 +23,7 @@
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item  v-if="item.show" :index="item.index" :key="item.index">
+                    <el-menu-item  v-if="item.show" :index="item.index" :key="item.index" @click="menuClick(item)">
                         <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
                     </el-menu-item>
                 </template>
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-    import bus from '../../bus';
+    import Bus from '../../bus';
     import {commonService} from '../../service/common.js'
     export default {
         data() {
@@ -80,12 +80,19 @@
                     
                 }
                 t.items = allMenu;
+            },
+            menuClick(item){
+                const t = this;
+                
             }
+        },
+        mounted(){
+            
         },
         created(){
             const t = this;
             // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-            bus.$on('collapse', msg => {
+            Bus.$on('collapse', msg => {
                 this.collapse = msg;
             })
             
