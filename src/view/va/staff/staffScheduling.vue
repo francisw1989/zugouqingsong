@@ -20,13 +20,13 @@
                 <el-checkbox-group v-model="checkList" class="" style="display: inline" @change='checkBoxChange'>
                     <el-checkbox :label="v.id"  v-for="(v, i) in shopList" :key="i">{{v.name}}</el-checkbox>
                 </el-checkbox-group>
-                <div class="top20">
-                    班次： 
-                    <template  v-for="(v, i) in shiftsSettingList">
-                        <span  v-if="i!=shiftsSettingList.length-1" :key="i"  class="left10 right10" >{{v.shiftsName}} {{v.startTime}}-{{v.endTime}}</span>
-                    </template>
-                    
-                </div>
+            </div>
+            <div class="top20">
+                班次： 
+                <template  v-for="(v, i) in shiftsSettingList">
+                    <span  v-if="i!=shiftsSettingList.length-1" :key="i"  class="left10 right10" >{{v.shiftsName}} {{v.startTime}}-{{v.endTime}}</span>
+                </template>
+                
             </div>
             
             <table class="m-table top20" style="min-width: 1200px">
