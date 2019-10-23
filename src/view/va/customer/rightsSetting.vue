@@ -22,10 +22,10 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
+            <!-- <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
                 </el-pagination>
-            </div>
+            </div> -->
         </div>
 
         <!-- 新增 -->
@@ -103,8 +103,9 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+                        params.amountCondition = params.amountCondition * 100
                         customerService.memberInterestsEdit(params).then((res)=>{
-                                t.shiftsSettingList()
+                                t.getMemberInterestsList()
                         })
                     } else {
                         console.log('error submit!!');
@@ -122,6 +123,9 @@
                 }
                 customerService.getMemberInterestsList(params).then((res)=>{
                     t.list = res;
+                    for(const v of t.list){
+                        v.amountCondition = v.amountCondition/100
+                    }
                     t.total = res.total
                 })
             }
