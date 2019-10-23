@@ -1184,7 +1184,7 @@
             },
             getOrderDetail(outTradeNo){
                 const t = this;
-                let oLoading = Loading.service({
+                window.oLoading = Loading.service({
                     text: 'loading...'
                 });
                 let _do = ()=>{
@@ -1242,6 +1242,10 @@
             // 服务时间下一步
             serviceTimeNext(){
                 const t = this;
+                if(!t.dateTime){
+                    t.$message.error('请选择预约时间');
+                    return
+                }
                 t.serviceTimeVisible = false;
                 // directBook 直接下单  用来区分跟换技师弹框
                 setTimeout(() => {

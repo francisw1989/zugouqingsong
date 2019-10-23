@@ -36,22 +36,25 @@ let $axios = (data, otherData)=>{
             params: data.params,
             data: otherData
         }).then(res => {
+            loading && loading.close();
             if(res.code){
                 alert('系统错误')
             }else{
                 resolve(res.data)
-                loading && loading.close();
             }
             
         }).catch((res)=>{
+            loading && loading.close();
             // 1001 登录失效
             if(res.response.data.code == 1001){
                 localStorage.removeItem('token');
                 window.location.reload();
             }
-            alert(res.response.data.msg)
+            oLoading && oLoading.close();
             reject(res.response.data)
-            loading && loading.close();
+            alert(res.response.data.msg)
+            
+            
         });
     })
     return p
