@@ -9,7 +9,7 @@
                     <el-row class="infoWap">
                         <el-col :span="8">
                             <p>收入</p>
-                            <p>{{D.todayIncome}}</p>
+                            <p>{{D.todayIncome/100}}</p>
                         </el-col>
                         <el-col :span="8">
                             <p>今日支出</p>

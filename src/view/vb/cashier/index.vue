@@ -223,7 +223,7 @@
             <el-radio-group v-model="v.roomId" :key="i" v-if="i==currentOrderItemIndex">
                 <el-radio :label="v2.id" v-for="(v2) in roomList" :key="v2.id" style="margin: 10px 0 0 0">
                     <span>{{v2.name}}</span>
-                    <span class="left10">剩余：{{v2.useNum || 0}}位/{{v2.peopleNum}}位</span>
+                    <span class="left10">剩余：{{v2.count || 0}}位/{{v2.peopleNum}}位</span>
                     <span class="left10">{{v2.labels}}</span>
                 </el-radio>
             </el-radio-group>
