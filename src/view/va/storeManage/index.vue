@@ -26,7 +26,7 @@
                     <template slot-scope="scope">
                         <el-button  size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                         <el-button  size="mini" @click="handle2(scope.$index, scope.row)">编辑</el-button>
-                        <el-button  size="mini" @click="handle4(scope.$index, scope.row)">推荐</el-button>
+                        <el-button size="mini" @click="handle4(scope.$index, scope.row)">推荐至首页大图</el-button>
                         <!--<el-button  size="mini" type="danger" @click="handle3(scope.$index, scope.row)">关闭</el-button>-->
                     </template>
                 </el-table-column>
@@ -132,6 +132,7 @@
 <script>
     import bus from '../../../bus';
     import {storeService} from '../../../service/store';
+    import {bannerService} from '../../../service/banner';
     import StoreDetail from './detail';
     var img = require('../../../assets/img/mark.png');
     const Form = {
@@ -322,7 +323,18 @@
                 t.delVisible = true;
             },
             handle4(index, row){
-
+				const t = this;
+                let params = {
+                    path: row.imgs.split(",")[0],
+                    type: 1,
+                    resourceId: row.id,
+                    isPublish:0
+                }
+                console.log(params);
+                 bannerService.add(params).then((res)=>{
+                    this.$message.success('推荐成功');
+                    t.getItemList();
+                })
             },
              // 保存编辑                
             saveEdit(form) {
