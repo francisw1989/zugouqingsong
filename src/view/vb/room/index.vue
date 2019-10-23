@@ -26,10 +26,10 @@
                     <div class="col999">{{v.labels}}</div>
                     <div style="height: 100px; overflow: auto">
                         <div class="top10">
-                            <el-tag class="tag" v-if="v.orderItemList[0].itemClassName != undefined" v-for="(item, i) in v.orderItemList" :key="i" >
-                                {{item.itemClassName}}
+                            <el-tag class="tag" v-if="v.itemAccount[0].item_class_name != undefined" v-for="(item, i) in v.itemAccount" :key="i" >
+                                {{item.item_class_name}}
                                 <i class="el-icon-lx-friend"></i>
-                                ({{item.recordsSize}})
+                                ({{item.total}})
                             </el-tag>
                             
                         </div>
