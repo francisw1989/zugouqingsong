@@ -37,10 +37,11 @@
                 <el-table-column prop="statusName" label="状态"></el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button size="mini" @click="statusEdit(scope.$index, scope.row)">{{scope.row.status==1?'取消生效':'生效'}}</el-button>
-
+                        <el-button v-if="scope.row.isAssemble==0" size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+                        <el-button v-if="scope.row.isAssemble==0" size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button v-if="scope.row.isAssemble==0" size="mini" @click="statusEdit(scope.$index, scope.row)">{{scope.row.status==1?'取消生效':'生效'}}</el-button>
+						
+						<span v-if="scope.row.isAssemble==1">拼团券,不可操作</span>
                     </template>
                 </el-table-column>
             </el-table>
