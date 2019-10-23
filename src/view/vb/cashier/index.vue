@@ -344,7 +344,7 @@
                     {{v.payTypeName}}
                     <span class="left20" v-if="v.payType==1 || v.payType==2">扣款</span>
                     <span class="left20" v-if="v.payType!=1 && v.payType!=2">支付</span>
-                    ￥{{payAmount}}元
+                    ￥{{v.payAmount/100}}元
                 </p>
             </div>
             <div class="top10">
@@ -1143,11 +1143,7 @@
                             // 支付成功
                             let payTypeList = ['', '虚拟账户', '现金账户', '微信支付', '现金', '微信转账', '支付宝转账'];
                             let payObjList = [];
-                            let payAmountList = res.payAmount.split('-').map((v, i)=>{
-                                if(v){
-                                    return v
-                                }
-                            })
+                            let payAmountList = res.payAmount.split('-');
                             res.payType.split('-').forEach((v, i)=>{
                                 if (v) {
                                     payObjList.push({
