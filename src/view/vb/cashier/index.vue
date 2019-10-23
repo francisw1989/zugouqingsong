@@ -3,7 +3,13 @@
     <div class="header relative">
         <i class="el-icon-back" @click="back"></i>
         <span class="font18">足够轻松  门店收银系统</span>
-        <span class="currTime" >{{nowTimeData}}</span>
+        <span class="currTime pointer" @click="messageVisible=true">
+            {{nowTimeData}}
+            <el-badge v-if="newsRemindList.length"  :value="newsRemindList.length" class="item left10 right20" style="line-height: 30px!important">
+                <i class="el-icon-bell font20" style="line-height: 30px!important"></i>
+            </el-badge>
+        </span>
+        
     </div>
     <div class="main">
         <el-row style="height: 100%">
@@ -454,7 +460,14 @@
             <el-button type="primary" @click="welcomeClick">确 定</el-button>
         </span>
     </el-dialog>
-    
+    <el-dialog title="最新消息" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="messageVisible" width="400px" >
+        <div>
+            <p class="btm10" v-for="(v, i) in newsRemindList" :key="i">{{i+1}}.{{v.content}}</p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="messageVisible = false;newsRemindList=[]">关闭</el-button>
+        </span>
+    </el-dialog>
 </div>
 </template>
 <script>
@@ -490,6 +503,7 @@
     export default {
         data() {
             return {
+                messageVisible: false,
                 nowTimeData: '',
                 welcomeTitle: '欢迎来到足够轻松门店收银系统',
                 welcomeVisible: true,
@@ -599,7 +613,8 @@
                     {content: '用户日暮途远刚刚预约了2019-10-17 16:30:00的项目,技师：张九。请提醒技师提前做好准备工作。'},
                     {content: '请注意：因支付超时，订单号为：F06AFE8CAA584F8C993BF6FEB4ABF26A的订单已被系统自动取消！'},
                     {content: '订单号为：4D313CF1EB604C649F02EC7870A063DB的订单因超时未到已被系统自动取消!'},    
-                ]
+                ],
+                newsRemindList: []
             }
         },
         components: {
@@ -686,7 +701,7 @@
             welcomeClick(){
                 const t = this;
                 t.welcomeVisible = false;
-                Bus.$emit('currentMessage', t.welcomeTitle);
+                window.videoCanPlay = true;
             },
             // 获取充值订单状态
             getPayStatus(outTradeNo){
@@ -1307,18 +1322,29 @@
                 }
             },
             newsRemind(){
+                const t = this;
                 if(typeof(newsInter)!='undefined'){
                     clearInterval(newsInter)
                 }
+                // for(const v of t.messageList){
+                //     Bus.$emit('currentMessage', v.content);
+                //     // this.$notify({
+                //     //     message: v.content,
+                //     //     duration: 10*1000
+                //     // });
+                // }
+                
                 window.newsInter = setInterval(()=>{
                     cashierService.newsRemind({}).then((res)=>{
                         if(res && res.length){
-                            for(const v of res.length){
+                            t.newsRemindList = [...t.newsRemindList, ...res]
+                            
+                            for(const v of res){
                                 Bus.$emit('currentMessage', v.content);
-                                this.$notify({
-                                    message: v.content,
-                                    duration: 10*1000
-                                });
+                                // this.$notify({
+                                //     message: v.content,
+                                //     duration: 10*1000
+                                // });
                             }
                         }
                     })
@@ -1328,6 +1354,7 @@
         },
         mounted(){
             const t = this;
+            Bus.$emit('currentMessage', t.welcomeTitle);
             t.newsRemind();
             setInterval(()=>{
                 t.NowTime()

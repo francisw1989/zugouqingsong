@@ -50,7 +50,7 @@ let $axios = (data, otherData)=>{
                 localStorage.removeItem('token');
                 window.location.reload();
             }
-            oLoading && oLoading.close();
+            typeof(oLoading)!='undefined' && oLoading && oLoading.close();
             reject(res.response.data)
             alert(res.response.data.msg)
             

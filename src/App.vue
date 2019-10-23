@@ -45,7 +45,7 @@ export default {
             const t = this;
             let _do = ()=>{
                 window.meaasgeInter = setInterval(() => {
-                    if(t.eleList.length){
+                    if(t.eleList.length && window.videoCanPlay){
                         clearInterval(meaasgeInter)
                         t.eleList[0].play();
                         t.eleList[0].addEventListener('ended',()=>{
