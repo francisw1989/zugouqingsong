@@ -10,8 +10,16 @@
             <div class=" clearfix">
                 <el-input v-model="userName" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
-                <el-checkbox v-model="checked1" class="left40">只显示黑名单</el-checkbox>
-                <el-checkbox v-model="checked2">只显示红名单</el-checkbox>
+                <span class="left20">是否黑名单：</span>
+                <el-select class="left10" v-model="inBlacklist" placeholder="" clearable style="width: 70px">
+                    <el-option value="1"  label="是"></el-option>
+                    <el-option value="0"  label="否"></el-option>
+                </el-select>
+                <span class="left20">是否红名单：</span>
+                <el-select class="left10" v-model="inRedlist" placeholder="" clearable style="width: 70px">
+                    <el-option value="1"  label="是"></el-option>
+                    <el-option value="0"  label="否"></el-option>
+                </el-select>
             </div>
 
 
@@ -86,8 +94,8 @@
                 idx: -1,
                 id: -1,
                 viewVisible: false,
-                checked1: false,
-                checked2: false,
+                checked1: '',
+                checked2: '',
                 total: 0,
                 pageSize: 10,
                 pageNumber: 1
@@ -124,9 +132,10 @@
                     pageSize: t.pageSize,
                     pageNumber: t.pageNumber,
                     userName: t.userName,
-                    inBlacklist: t.checked1?'1':'0',
-                    inRedlist: t.checked2?'1':'0'
+                    inBlacklist: t.inBlacklist,
+                    inRedlist: t.inRedlist
                 }
+
                 customerService.getCustomerList(params).then((res)=>{
                     for(const v of res.records){
                         v.inBlacklist = v.inBlacklist == 1 ? '是' : '/';
@@ -140,10 +149,10 @@
         
         },
         watch:{
-             checked1(val){
+             inRedlist(val){
                 this.getCustomerList();
             },
-            checked2(){
+            inBlacklist(){
                 this.getCustomerList();
             }
         },

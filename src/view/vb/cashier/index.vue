@@ -887,6 +887,7 @@
                         cashierService.selectTechnician(params).then((res)=>{
                             if(res.length && res[0].employees.length){
                                 t.technicianList = res[0].employees;
+                                t.$forceUpdate();
                             }
                             resolve();
                         
