@@ -1335,7 +1335,10 @@
                 // }
                 
                 window.newsInter = setInterval(()=>{
-                    cashierService.newsRemind({}).then((res)=>{
+					let params = {
+						storeId: window.Store.id
+					}
+                    cashierService.newsRemind(params).then((res)=>{
                         if(res && res.length){
                             t.newsRemindList = [...t.newsRemindList, ...res]
                             
