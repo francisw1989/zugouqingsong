@@ -30,7 +30,7 @@
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="actualOrderTime" label="服务时间" width="150"></el-table-column>
-                <el-table-column prop="user.userName" label="客户名称" width="120"></el-table-column>
+                <el-table-column prop="userName" label="客户名称" width="120"></el-table-column>
                 <el-table-column prop="evaluateScore" label="评分"></el-table-column>
                 <el-table-column prop="employeeName" label="服务技师"></el-table-column>
                 <el-table-column prop="evaluateLabel" label="评价标签"></el-table-column>

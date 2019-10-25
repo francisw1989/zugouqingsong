@@ -156,6 +156,43 @@
                                     </div>
                                 </div>
                             </div>
+							<!-- 评价 -->
+							<div v-if="type==5">
+							    <div>
+							        <el-checkbox label="赠送储值金" v-model='form.isMoneny'></el-checkbox>
+							    </div>
+							    <div v-if="form.isMoneny">
+							        <p class="col999">赠送储值金规则</p>
+							        <div class="" >
+							            <span>评价送</span>
+							            <el-input v-model="form.monenyList[0].amount" class="left5" style="width: 80px" placeholder="元"></el-input>
+							        </div>
+							    </div>
+							    <div class="top10">
+							        <el-checkbox label="赠送优惠券" v-model='form.isCoupon'></el-checkbox>
+							    </div>
+							    <div v-if="form.isCoupon">
+							        <p class="col999">赠送优惠券规则</p>
+							        <div class="">
+							            <span>评价送</span>
+							            <el-select class="left10" v-model="form.couponList[0].couponIds" placeholder="请选择" style="width: 120px">
+							                <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
+							            </el-select>
+							            <el-input v-model="form.couponList[0].amount" class="left5" style="width: 80px"></el-input>
+							            <span class="left5">张</span>
+							        </div>
+							    </div>
+							    <div class="top10">
+							        <el-checkbox label="积分" v-model='form.isScore'></el-checkbox>
+							    </div>
+							    <div v-if="form.isScore">
+							        <p class="col999">赠送积分规则</p>
+							        <div class="" >
+							            <span>评价送</span>
+							            <el-input v-model="form.scoreList[0].amount" class="left5" style="width: 80px"></el-input>
+							        </div>
+							    </div>
+							</div>
                         </el-form-item>
                     </div>
                     <div v-if='type==4'>
@@ -237,8 +274,8 @@
                 id: -1,
 
                 type: 0,
-                //活动类型（0充值1注册2消费3邀请好友4拼团）
-                typeList: ['充值', '注册', '消费', '邀请好友', '拼团']
+                //活动类型（0充值1注册2消费3邀请好友4拼团5评价）
+                typeList: ['充值', '注册', '消费', '邀请好友', '拼团', '评价']
             }
         },
         components:{
