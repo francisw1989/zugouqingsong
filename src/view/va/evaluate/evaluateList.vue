@@ -30,7 +30,7 @@
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
                 <el-table-column prop="actualOrderTime" label="服务时间" width="150"></el-table-column>
-                <el-table-column prop="userName" label="客户名称" width="120"></el-table-column>
+                <el-table-column prop="user.userName" label="客户名称" width="120"></el-table-column>
                 <el-table-column prop="evaluateScore" label="评分"></el-table-column>
                 <el-table-column prop="employeeName" label="服务技师"></el-table-column>
                 <el-table-column prop="evaluateLabel" label="评价标签"></el-table-column>
@@ -49,12 +49,12 @@
             </div>
         </div>
         <!-- 详情 -->
-        <el-dialog title="回复用户评价" :visible.sync="viewVisible" width="400px">
-            <!-- <el-row>
+       <!-- <el-dialog title="回复用户评价"  :visible.sync="viewVisible" width="400px">
+             <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
                         <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
-                        <div class="ghWap font12">工号:3242342</div>
+                        <div class="ghWap font12">{{evaluateDetail.user.memberNum}}</div>
                     </div>
                 </el-col>
                 <el-col :span="17">
@@ -70,9 +70,9 @@
                 <p class="top10" >服务项目: 颈椎放松</p>
                 <p class="top10" >服务时间: 2019-09-09</p>
                 <p class="top10" >服务技师: 2019-09-09</p>
-            </div> -->
+            </div> 
             <div class="clearfix">
-                <!-- <p class="top15">您有多大可能性向您的朋友推荐足够轻松的服务？</p>
+                <p class="top15">您有多大可能性向您的朋友推荐足够轻松的服务？</p>
                 <div class="top10">
                     <el-checkbox v-model="form.tuijian">会</el-checkbox>
                 </div>
@@ -85,7 +85,7 @@
                 <p class="top15">建议</p>
                 <div class="top10">
                     <el-input type="textarea" v-model="form.a"></el-input>
-                </div> -->
+                </div>
                 <p class="top15">回复内容:</p>
                 <div class="top10">
                     <el-input type="textarea" v-model="replyContent"></el-input>
@@ -96,9 +96,11 @@
                 <el-button @click="viewVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit()">确 定</el-button>
             </span>
-        </el-dialog>
+        </el-dialog> -->
 
-
+		<el-dialog title="评价详情" :visible.sync="viewVisible" width="850px">
+		    <EvaluateDetail :row="row" v-if="viewVisible"></EvaluateDetail>
+		</el-dialog>
 
 
     </div>
@@ -107,6 +109,7 @@
     import bus from '../../../bus';
     import {evaluateService} from '../../../service/evaluate';
     import {orderService} from '../../../service/order';
+	import EvaluateDetail from './evaluateDetail';
     export default {
         data() {
             return {
@@ -117,16 +120,6 @@
                 select_cate: '',
                 select_word: '',
                 is_search: false,
-                form: {
-                    a: '',
-                    b: '',
-                    c: ''
-                },
-                rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
-                    ]
-                },
                 idx: -1,
                 id: -1,
                 startData: '',
@@ -139,16 +132,6 @@
                 xmflList: [],
                 neirong: '0',
                 viewVisible: false,
-                form:{
-                    a: '',
-                    tuijian: '',
-                    checkList: []
-                },
-                rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
-                    ]
-                },
                 tags: ['环境好','技术好','服务好'],
                 total: 0,
                 pageSize: 10,
@@ -161,6 +144,7 @@
             }
         },
         components:{
+			EvaluateDetail
         },
         methods:{
             radioChange(){
@@ -185,12 +169,12 @@
             },
             // 评价详情
             handle1(index, row) {
-				const t = this;
+				//const t = this;
                 this.idx = index;
                 this.row = row;
                 this.viewVisible = true;
             },
-            saveEdit(){
+           /* saveEdit(){
                 const t = this;
 				if(t.replyName==''){
 					t.$message.error('请填写回复内容');
@@ -207,7 +191,7 @@
 					t.getlist();
 					t.$message.success('回复成功');
 				});
-            },
+            }, */
             getlist(){
                 const t = this;
                 let params = {
@@ -227,7 +211,6 @@
                     t.total = res.total
                 });
             }
-
         },
         watch:{
             startTime(){
@@ -248,11 +231,8 @@
            t.getlist();
            orderService.getItemClassList().then((res)=>{
                t.itemClassList = res.records;
-               
            })
         //    t.xmflList = t.$GD.xmflList;
-
-
         }
     }
 </script>

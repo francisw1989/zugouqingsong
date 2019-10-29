@@ -98,6 +98,22 @@ let evaluateService = {
 	    })
 	    return p;
 	},
+	
+	// 根据id查询订单评价详情
+	getEvaluateDetail(params){
+	    let p = new Promise((resolve, reject)=>{
+	        let data = {
+	            method: 'PATCH',
+	            url: '/api/v1/orderEvaluate/' + params.id,
+	            params: params,
+	            loading: true,
+	        }
+	        $axios(data).then((res)=>{
+	            resolve(res)
+	        })
+	    })
+	    return p;
+	},
 }
 
 
