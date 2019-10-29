@@ -1,7 +1,7 @@
 <template>
 	<div class="table">
 	     <el-row>
-	        <el-col :span="4" >
+	        <el-col :span="7" >
 	            <div style="width: 80px" class="relative clearfix">
 	                <img :src="photo" alt="" class="tx1 left">
 	                <!-- <div class="ghWap font12">zz</div> -->

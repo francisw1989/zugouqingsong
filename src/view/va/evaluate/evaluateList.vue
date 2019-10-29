@@ -98,7 +98,7 @@
             </span>
         </el-dialog> -->
 
-		<el-dialog title="评价详情" :visible.sync="viewVisible" width="850px">
+		<el-dialog title="评价详情" :visible.sync="viewVisible" width="400px">
 		    <EvaluateDetail :row="row" v-if="viewVisible"></EvaluateDetail>
 		</el-dialog>
 
