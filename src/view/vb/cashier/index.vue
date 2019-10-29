@@ -399,7 +399,7 @@
             <p class='title1 top15'>支付方式</p>
             <div class="left10 top15 clearfix">
                 <div class="clearfix top5">
-                    <el-checkbox v-model="czzhCheck" :disabled='czzhDisable'></el-checkbox>
+                    <el-checkbox v-model="czzhCheck" :disabled="D.user.totalAccount==0?true:false"></el-checkbox>
                     <span class="left20">储值账户</span>
                     <span class="left40">当前余额：<span class="colred">{{D.user.totalAccount / 100}}</span></span>
                     <span class="colblue right pointer" @click="rechargeVisible=true">充值 ></span>
@@ -624,7 +624,32 @@
             
         },
         watch:{
+            czzhCheck(){
+                const t = this;
+                // 余额足够
+                if(D.user.totalAccount>=D.totalPrice){
+                    if(t.czzhCheck){
+                        t.otherCheck = false;
+                    }
+                }else{
+                    // 余额不足
+                    t.otherCheck = true;
+                }
 
+                
+            },
+            otherCheck(){
+                const t = this;
+                // 余额足够
+                if(D.user.totalAccount>=D.totalPrice){
+                    if(t.otherCheck){
+                        t.czzhCheck = false;
+                    }
+                }else{
+                    // 余额不足
+                    t.otherCheck = true;
+                }
+            },
             payStatusKey(res){
                 const t = this;
                 if(res == 'SUCCESS' || res == 'PAYERROR' || res=='CLOSED'|| res=='PAYERROR'){
