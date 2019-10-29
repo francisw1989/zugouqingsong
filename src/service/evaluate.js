@@ -82,6 +82,22 @@ let evaluateService = {
         })
         return p;
     },
+	
+	//回复订单评价
+	saveReply(params){
+	    let p = new Promise((resolve, reject)=>{
+	        let data = {
+	            method: 'POST',
+	            url: '/api/v1/orderEvaluate/replay/',
+	            params: params,
+	            loading: true,
+	        }
+	        $axios(data).then((res)=>{
+	            resolve(res)
+	        })
+	    })
+	    return p;
+	},
 }
 
 

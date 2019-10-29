@@ -8,7 +8,7 @@
         </div>
         <div class="container">
             <div class=" clearfix">
-                <el-input v-model="userName" placeholder="请输入员工姓名,手机号" class="handle-input"></el-input>
+                <el-input v-model="userName" placeholder="请输入会员姓名,手机号" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left20">是否黑名单：</span>
                 <el-select class="left10" v-model="inBlacklist" placeholder="" clearable style="width: 70px">
