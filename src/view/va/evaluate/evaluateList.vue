@@ -28,7 +28,7 @@
             </div>
             <el-table :data="list"  border class="table top20" ref="multipleTable">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
-                <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
+                <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column>
                 <el-table-column prop="actualOrderTime" label="服务时间" width="150"></el-table-column>
                 <el-table-column prop="userName" label="客户名称" width="120"></el-table-column>
                 <el-table-column prop="evaluateScore" label="评分"></el-table-column>
@@ -37,11 +37,11 @@
                 <el-table-column prop="content" label="评价内容"></el-table-column>
                 <el-table-column prop="itemName" label="项目名称"></el-table-column>
                 <el-table-column prop="actualOrderPrice" label="实际消费"></el-table-column>
-                <!-- <el-table-column label="操作" width="80" align="center">
+                 <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
+                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">回复</el-button>
                     </template>
-                </el-table-column> -->
+                </el-table-column> 
             </el-table>
             <div class="pagination">
                 <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"  :page-size='pageSize' :total="total">
@@ -49,8 +49,8 @@
             </div>
         </div>
         <!-- 详情 -->
-        <el-dialog title="回复详情" :visible.sync="viewVisible" width="400px">
-            <el-row>
+        <el-dialog title="回复用户评价" :visible.sync="viewVisible" width="400px">
+            <!-- <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
                         <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
@@ -70,9 +70,9 @@
                 <p class="top10" >服务项目: 颈椎放松</p>
                 <p class="top10" >服务时间: 2019-09-09</p>
                 <p class="top10" >服务技师: 2019-09-09</p>
-            </div>
+            </div> -->
             <div class="clearfix">
-                <p class="top15">您有多大可能性向您的朋友推荐足够轻松的服务？</p>
+                <!-- <p class="top15">您有多大可能性向您的朋友推荐足够轻松的服务？</p>
                 <div class="top10">
                     <el-checkbox v-model="form.tuijian">会</el-checkbox>
                 </div>
@@ -85,16 +85,16 @@
                 <p class="top15">建议</p>
                 <div class="top10">
                     <el-input type="textarea" v-model="form.a"></el-input>
-                </div>
-                <p class="top15">回复</p>
+                </div> -->
+                <p class="top15">回复内容:</p>
                 <div class="top10">
-                    <el-input type="textarea" v-model="form.a"></el-input>
+                    <el-input type="textarea" v-model="replyContent"></el-input>
                 </div>
                 
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="viewVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveEdit('form')">确 定</el-button>
+                <el-button type="primary" @click="saveEdit()">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -111,6 +111,7 @@
         data() {
             return {
                 list: [],
+				replyContent:'',
                 cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
@@ -130,7 +131,7 @@
                 id: -1,
                 startData: '',
                 endData: '',
-
+				row:{},
                 hdType: '',
                 hdTypeList: [],
                 showMore: false,
@@ -184,12 +185,28 @@
             },
             // 评价详情
             handle1(index, row) {
+				const t = this;
                 this.idx = index;
-                this.id = row.id;
+                this.row = row;
                 this.viewVisible = true;
             },
             saveEdit(){
-                
+                const t = this;
+				if(t.replyName==''){
+					t.$message.error('请填写回复内容');
+					return;
+				}
+				t.viewVisible = false;
+				let params = {
+					id: t.row.id,
+					replyContent : t.replyContent,
+					userId:window.userId,
+					storeId:window.storeId== undefined ? 0 : window.storeId
+				}
+				evaluateService.saveReply(params).then((res)=>{
+					t.getlist();
+					t.$message.success('回复成功');
+				});
             },
             getlist(){
                 const t = this;
