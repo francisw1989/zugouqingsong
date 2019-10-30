@@ -278,7 +278,7 @@
                         <span class="left20">默认{{v.defaultDurationShow}}分钟</span>
                         <span class="right">{{v.defaultDuration}}</span>
                     </div>
-                    <el-slider v-model="v.defaultDuration" :step="5" :show-tooltip=false :max='120'></el-slider>
+                    <el-slider v-model="v.defaultDuration" :step="5" :show-tooltip=false :min='v.mixDuration' :max='v.maxDuration'></el-slider>
                     <div>
                         <span class="colred font20">￥ {{(v.defaultDuration*v.unitPrice).toFixed(2)}}</span>
                         <span class="left20 col999">普通技师：￥{{v.unitPrice}}/分钟</span>
@@ -627,7 +627,7 @@
             czzhCheck(){
                 const t = this;
                 // 余额足够
-                if(D.user.totalAccount>=D.totalPrice){
+                if(t.D.user.totalAccount>=t.D.totalPrice){
                     if(t.czzhCheck){
                         t.otherCheck = false;
                     }
@@ -641,7 +641,7 @@
             otherCheck(){
                 const t = this;
                 // 余额足够
-                if(D.user.totalAccount>=D.totalPrice){
+                if(t.D.user.totalAccount>=t.D.totalPrice){
                     if(t.otherCheck){
                         t.czzhCheck = false;
                     }

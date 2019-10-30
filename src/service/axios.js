@@ -46,13 +46,15 @@ let $axios = (data, otherData)=>{
         }).catch((res)=>{
             loading && loading.close();
             // 1001 登录失效
-            if(res.response.data.code == 1001){
+            if(res.response.data.code == 1102){
                 localStorage.removeItem('token');
                 window.location.reload();
+            }else{
+                typeof(oLoading)!='undefined' && oLoading && oLoading.close();
+                reject(res.response.data)
+                alert(res.response.data.msg)
             }
-            typeof(oLoading)!='undefined' && oLoading && oLoading.close();
-            reject(res.response.data)
-            alert(res.response.data.msg)
+            
             
             
         });
