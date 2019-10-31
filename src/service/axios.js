@@ -9,34 +9,31 @@ axios.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-let $axios = (data, otherData)=>{
+let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText='loading...'}, otherData)=>{
     if(localStorage.sysRoute=='vb' && localStorage.userInfo){
         let userInfo = JSON.parse(localStorage.userInfo);
-        data.params.storeId = userInfo.storesId;
-        data.params.storesId = userInfo.storesId;
+        params.storeId = userInfo.storesId;
+        params.storesId = userInfo.storesId;
     }
     let p = new Promise((resolve, reject)=>{
-        let loading, loadingText = 'loading...';
-        if(data.loadingText){
-            loadingText = data.loadingText
-        }
-        if(data.loading){
-            loading = Loading.service({
+        let  _loading;
+        if(loading){
+            _loading = Loading.service({
                 text: loadingText
             });
         }
         axios({
-            method: data.method,
-            url: data.url,
+            method: method,
+            url: url,
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json;charset=UTF-8",
                 Authorization: localStorage.token
             },
-            params: data.params,
+            params: params,
             data: otherData
         }).then(res => {
-            loading && loading.close();
+            _loading && _loading.close();
             if(res.code){
                 alert('系统错误')
             }else{
@@ -44,7 +41,7 @@ let $axios = (data, otherData)=>{
             }
             
         }).catch((res)=>{
-            loading && loading.close();
+            _loading && _loading.close();
             // 1001 登录失效
             if(res.response.data.code == 1102){
                 localStorage.removeItem('token');
