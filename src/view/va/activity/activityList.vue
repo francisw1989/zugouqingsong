@@ -87,7 +87,7 @@
                 activityService.getuserActivityRecord(params).then((res)=>{
                     for(const v of res.records){
                         if(v.activityType == null){
-                            v.activityTypeName = null;
+                            v.activityTypeName = '';
                         }else{
                             v.activityTypeName = t.ffTypeList[v.activityType];
                         }
