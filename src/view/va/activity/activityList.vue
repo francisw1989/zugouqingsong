@@ -65,6 +65,7 @@
 
             handleCurrentChange(val) {
                 this.cur_page = val;
+                console.log(val);
                 this.getActivityConfigList();
             },
             search() {
@@ -74,6 +75,27 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+            },
+            getActivityConfigList(){
+            	const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: t.pageSize,
+                    pageNumber: this.cur_page,
+                    type: t.type,
+                    userName: t.userName
+                }
+                activityService.getuserActivityRecord(params).then((res)=>{
+                    for(const v of res.records){
+                        if(v.activityType == null){
+                            v.activityTypeName = '';
+                        }else{
+                            v.activityTypeName = t.ffTypeList[v.activityType];
+                        }
+                    }
+                    t.list = res.records;
+                    t.total = res.total
+                })
             },
             getuserActivityRecord(){
                 const t = this;
