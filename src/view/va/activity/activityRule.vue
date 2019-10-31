@@ -52,13 +52,13 @@
                                     <p class="col999">赠送优惠券规则</p>
                                     <div class=""  v-for="(v, i) in form.couponList" :key="v.couponId" >
                                         <span>{{type==0?'充值':'消费'}}满</span>
-                                        <el-input v-model="v.activityCondition" class="left5" style="width: 80px"></el-input>
+                                        <el-input v-model="v.activityCondition" class="left5" style="width: 80px" ></el-input>
                                         <span class="left20">送优惠券</span>
                                         <el-select class="left10" v-model="v.couponIds" placeholder="请选择" style="width: 120px">
                                             <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
                                         </el-select>
-                                        <el-input v-model="v.amount" placeholder="张" class="left5" style="width: 80px"></el-input>
-                                        <span class="left5">张</span>
+                                        <!--<el-input v-model="v.amount" placeholder="张" class="left5" style="width: 80px" :readonly="true" :value="1"></el-input>
+                                        <span class="left5">张</span>-->
                                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('couponIds', 'couponList')"></i>
                                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'couponIds', 'couponList')"></i>
                                         
@@ -102,8 +102,8 @@
                                         <el-select class="left10" v-model="form.couponList[0].couponIds" placeholder="请选择" style="width: 120px">
                                             <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
                                         </el-select>
-                                        <el-input v-model="form.couponList[0].amount" class="left5" style="width: 80px"></el-input>
-                                        <span class="left5">张</span>
+                                        <!--<el-input v-model="form.couponList[0].amount" class="left5" style="width: 80px"></el-input>
+                                        <span class="left5">张</span>-->
                                     </div>
                                 </div>
                                 <div class="top10">
@@ -138,8 +138,8 @@
                                         <el-select class="left10" v-model="v.couponIds" placeholder="请选择" style="width: 120px">
                                             <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
                                         </el-select>
-                                        <el-input v-model="v.amount" placeholder="张" class="left5" style="width: 80px"></el-input>
-                                        <span class="left5">张</span>
+                                        <!--<el-input v-model="v.amount" placeholder="张" class="left5" style="width: 80px" :readonly="true" :value="1"></el-input>
+                                        <span class="left5">张</span>-->
                                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('couponIds', 'couponList')"></i>
                                         <i class="el-icon-remove-outline left5 pointer" v-if='i>0' @click="mdRemove(i, 'couponIds', 'couponList')"></i>
                                     </div>
@@ -178,8 +178,8 @@
 							            <el-select class="left10" v-model="form.couponList[0].couponIds" placeholder="请选择" style="width: 120px">
 							                <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
 							            </el-select>
-							            <el-input v-model="form.couponList[0].amount" class="left5" style="width: 80px"></el-input>
-							            <span class="left5">张</span>
+							            <!--<el-input v-model="form.couponList[0].amount" class="left5" style="width: 80px"></el-input>
+							            <span class="left5">张</span>-->
 							        </div>
 							    </div>
 							    <div class="top10">
