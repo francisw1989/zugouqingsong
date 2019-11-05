@@ -31,7 +31,9 @@
                                         :auto-upload='false'>
                                         <el-button size="small" type="primary" @click="doImgUp(item)">点击上传</el-button>
                                     </el-upload>
-                                    <img v-if="item.settingValue" :src="item.settingValue" class=" top10" style="max-width: 100%">
+                                    <img v-if="item.settingValue" :src="item.settingValue" class=" top10" style="max-width: 100px;max-height: 100px;">
+                                    <br />
+                                    <el-input style="width: 200px" v-model="item.settingValue" class="" placeholder="" ></el-input>
                                 </div>
 
                                 <span class="left10">{{item.settingDescription}}</span>
@@ -117,7 +119,7 @@
                 let itemList = [];
                 let valida = true;
                 for(const v of data){
-                    if(v.isNullable == 1 && !v.settingValue){
+                    if(v.isNullable != 1 && !v.settingValue){
                         this.$message.error('请输入: ' + v.settingName);
                         valida = false;
                         break;
