@@ -49,7 +49,11 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
             }else{
                 typeof(oLoading)!='undefined' && oLoading && oLoading.close();
                 reject(res.response.data)
-                alert(res.response.data.msg)
+                if(res.response.data.msg){
+                    alert(res.response.data.msg)
+                }else{
+                    alert('系统错误')
+                }
             }
             
             

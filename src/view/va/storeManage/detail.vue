@@ -10,25 +10,25 @@
                 <p class="top10"><i class="el-icon-lx-tag"></i><span class="left5">{{row.tags}}</span></p>
             </el-col>
             <el-col :span="12">
-                <img src="../../../assets/img/login-bg.jpg" class="img" alt="">
+                <img :src="D.imgs" class="img" alt="">
             </el-col>
         </el-row>
-        <el-row class="table1 center top10">
+        <el-row class="table1 center top10" v-if="D.data">
             <el-col :span="6">
                 <p  class="colblue font16">今日收入</p>
-                <p>363.00</p>
+                <p>{{(D.data.todayIncome/100).toFixed(2)}}</p>
             </el-col>
             <el-col :span="6">
                 <p class="colye font16">今日支出</p>
-                <p>363.00</p>
+                <p>{{(D.data.todaySpending/100).toFixed(2)}}</p>
             </el-col>
             <el-col :span="6">
                 <p class="colred font16">服务人次</p>
-                <p>363.00</p>
+                <p>{{D.data.todayServiceNum}}</p>
             </el-col>
             <el-col :span="6">
                 <p class="colgreen font16">客单价</p>
-                <p class="">363.00</p>
+                <p>{{(D.data.todayPassengerUnitPrice/100).toFixed(2)}}</p>
             </el-col>
         </el-row>
         <el-row class=" "  style=" border-bottom: 1px solid #ddd; padding: 20px 0">
@@ -82,6 +82,7 @@
                 incomeB: [],
                 radio_income: '今日',
                 selShopId_income: '-10000',
+                D:{}
             }
         },
         computed:{
@@ -134,15 +135,18 @@
                     }]
                 });
             },
+            getData(){
+                const t = this;
+                storeService.getData({id: t.row.id}).then((res)=>{
+                    t.D = res;
+                })
+            }
         },
         mounted(){
             const t = this;
             console.log(t.row)
-            // t.incomeChart = echarts.init(document.getElementById('incomeChart'));
-            // t.$commonService.getShopList().then((res)=>{
-            //     t.shopList = res
-            // })
-            // t.getIncomeData();
+            t.getData();
+
         }
     }
 </script>

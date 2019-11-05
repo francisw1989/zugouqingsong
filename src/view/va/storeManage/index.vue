@@ -277,12 +277,6 @@
                 this.idx = index;
                 this.id = row.id;
                 this.row = row;
-                let parmas = {
-                    id: this.id
-                }
-                storeService.getData(parmas).then((res)=>{
-                    t.info = res;
-                })
             },
             
             handle2(index, row) {
