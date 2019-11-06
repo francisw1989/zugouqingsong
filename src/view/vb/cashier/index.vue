@@ -972,16 +972,16 @@
                                             return 1;
                                         }
                                     });
-                                    if(t.waitId){
+                                    if(t.choosenProject[t.choosenProjectIndex].waitId){
                                         // 点击等待过来
                                         for(const i in res[0].employees){
                                             let obj = res[0].employees[i];
-                                            if(t.waitId == obj.id){
+                                            if(t.choosenProject[t.choosenProjectIndex].waitId == obj.id){
                                                 t.doChooseTechnic(obj, i);
                                                 break
                                             }
                                         }
-                                        t.waitId = '';
+                                        t.choosenProject[t.choosenProjectIndex].waitId = '';
                                     }else{
                                         for(const i in res[0].employees){
                                             let obj = res[0].employees[i];
@@ -1007,7 +1007,7 @@
             waitClick(v, i){
                 const t = this;
                 t.dateTime = t.$commonService.formatDate(new Date(t.dateTime).getTime() + v.waitTime * 60 * 1000);
-                t.waitId = v.id;
+                t.choosenProject[t.choosenProjectIndex].waitId = v.id;
                 t.selectTechnician();
             },
             doChooseProject(){
