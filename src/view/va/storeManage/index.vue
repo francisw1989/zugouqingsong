@@ -121,7 +121,7 @@
         </el-dialog>
         <!-- 查看 -->
         <el-dialog title="门店详情" :visible.sync="viewVisible" width="40%">
-            <StoreDetail :row='row' :info='info'></StoreDetail>
+            <StoreDetail :row='row' v-if="viewVisible"></StoreDetail>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="handle2(idx, row)">编 辑</el-button>
                 <el-button type="primary" @click="viewVisible = false">关 闭</el-button>
