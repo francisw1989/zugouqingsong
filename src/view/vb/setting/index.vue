@@ -161,8 +161,8 @@
                         storeService.edit(params).then((res)=>{
                             // t.getList()
                             this.$message.success(`修改成功`);
+							t.getDetail();
                         })
-                        
 
                     } else {
                         console.log('error submit!!');
