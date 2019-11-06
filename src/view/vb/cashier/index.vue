@@ -732,6 +732,10 @@
             getPayStatus(outTradeNo){
                 const t = this;
                 window.statussetInte = setInterval(()=>{
+                	debugger;
+                	if(!t.rechargeVisible){
+                		clearInterval(window.statussetInte);
+                	}
                     cashierService.payStatus({
                         outTradeNo: outTradeNo
                     }).then((res)=>{
@@ -764,11 +768,16 @@
                     price: t.price * 100
                 };
                 cashierService.vipRecharge(params).then((res)=>{
-                    t.showEwm = true;
-                    setTimeout(() => {
-                        t.QRCodeMsg = res.data;
-                        t.getPayStatus(res.outTradeNo);
-                    }, 100);
+                	if(res.data==null){
+                    		t.$message.error('下单失败');
+                    		t.showEwm = false;
+                	}else{
+	                    t.showEwm = true;
+	                    setTimeout(() => {
+	                    	t.QRCodeMsg = res.data;
+	                        t.getPayStatus(res.outTradeNo);
+	                    }, 100);
+                    }
                     // t.$message.success('充值成功');
                 })
             },
@@ -808,6 +817,8 @@
                             })
                         }, 100);
                         t.getOrderPayStatus();
+                    }else{
+                    	t.$message.error('微信下单失败，可用其他方式支付');
                     }
                     
                 })
