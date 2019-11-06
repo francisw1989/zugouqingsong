@@ -6,7 +6,7 @@
                 <p class="top20"><i class="el-icon-phone"></i><span class="left5">{{row.phoneNum}}</span></p>
                 <p class="top10"><i class="el-icon-lx-people"></i><span class="left5">{{row.shopowner}}</span></p>
                 <p class="top10"><i class="el-icon-lx-mobile"></i><span class="left5">{{row.shopownerPhoneNum}}</span></p>
-                <p class="top10"><i class="el-icon-lx-home"></i><span class="left5">{{row.area}}平方</span></p>
+                <p class="top10"><i class="el-icon-lx-home"></i><span class="left5">{{row.area}}㎡</span></p>
                 <p class="top10"><i class="el-icon-lx-tag"></i><span class="left5">{{row.tags}}</span></p>
             </el-col>
             <el-col :span="12">
@@ -33,19 +33,20 @@
         </el-row>
         <el-row class=" "  style=" border-bottom: 1px solid #ddd; padding: 20px 0">
             <el-col :span="12" class="font12" style="padding-right: 20px">
-                <p  class=" font16 center col000 font14">本月收入（38271.50）</p>
-                <p class="clearfix top10">休闲服务<span class="right col999">1222.00</span></p>
-                <p class="clearfix">职场人事<span class="right col999">1222.00</span></p>
-                <p class="clearfix">女性专区<span class="right col999">1222.00</span></p>
-                <p class="clearfix">商品销售<span class="right col999">1222.00</span></p>
+                <p  class=" font16 center col000 font14">本月收入（{{(monthMerchandiseSales+totalPrice)/100}}）元</p>
+				<p class="clearfix top10">商品销售<span class="right col999">{{monthMerchandiseSales}}元</span></p>
+				<!-- 根据D.data.monthSpending的长度来创建相应的行数，行内数据按数组数据顺序展示 -->
+				 <p class="clearfix" v-if="monthSpending!=null" v-for="v in monthSpending">
+					{{v.item_class_name}}<span class="right col999">{{v.totalPrice/100}}元</span>
+				</p> 
             </el-col>
             <el-col :span="12" class="font12" style="padding-left: 20px">
-                <p class=" font16 center col000">本月支出（19748.33）</p>
-                <p class="clearfix top10 ">员工工资<span class="right col999">1222.00</span></p>
-                <p class="clearfix">物料成本<span class="right col999">1222.00</span></p>
-                <p class="clearfix">商品成本<span class="right col999">1222.00</span></p>
-                <p class="clearfix">租金/月<span class="right col999">1222.00</span></p>
-                <p class="clearfix">物业/月<span class="right col999">1222.00</span></p>
+                <p class=" font16 center col000">本月支出（{{(monthEmployeeExpenses+monthArticleExpenses+monthGoodsExpenses+monthRent+monthPropertyCosts)/100}}）元</p>
+                <p class="clearfix top10 ">员工工资<span class="right col999">{{monthEmployeeExpenses/100}}元</span></p>
+                <p class="clearfix">物料成本<span class="right col999">{{monthArticleExpenses/100}}元</span></p>
+                <p class="clearfix">商品成本<span class="right col999">{{monthGoodsExpenses/100}}元</span></p>
+                <p class="clearfix">租金/月<span class="right col999">{{monthRent/100}}元</span></p>
+                <p class="clearfix">物业/月<span class="right col999">{{monthPropertyCosts/100}}元</span></p>
             </el-col>
         </el-row>
         <!-- <div class="top20">
@@ -74,14 +75,21 @@
     var echarts = require('echarts');
     export default {
         name: 'StoreDetail',
-        props: ['row', 'info'],
+        props: ['row'],
         data() {
             return {
                 shopList: [],
                 incomeA: [],
                 incomeB: [],
-                radio_income: '今日',
-                selShopId_income: '-10000',
+				monthMerchandiseSales:'',
+				monthArticleExpenses:'',
+				monthEmployeeExpenses:'',
+				monthArticleExpenses:'',
+				monthGoodsExpenses:'',
+				monthRent:'',
+				monthPropertyCosts:'',
+				monthSpending:[],
+				totalPrice:'',
                 D:{}
             }
         },
@@ -138,7 +146,22 @@
             getData(){
                 const t = this;
                 storeService.getData({id: t.row.id}).then((res)=>{
+					console.log(res);
                     t.D = res;
+					t.monthMerchandiseSales = res.data.monthMerchandiseSales;
+					t.monthArticleExpenses = res.data.monthArticleExpenses;
+					t.monthGoodsExpenses = res.data.monthGoodsExpenses;
+					t.monthEmployeeExpenses = res.data.monthEmployeeExpenses;
+					t.monthPropertyCosts = res.data.monthPropertyCosts;
+					t.monthRent = res.data.monthRent;
+					t.monthSpending = res.data.monthSpending==null?null:res.data.monthSpending;
+					if(res.data.monthSpending!=null){
+						for(let i = 0;i<res.data.monthSpending.length;i++){
+							t.totalPrice += res.data.monthSpending[i].totalPrice;
+						}
+					}else{
+						t.totalPrice = 0 ;
+					}
                 })
             }
         },

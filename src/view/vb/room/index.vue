@@ -164,7 +164,7 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
-                        if(t.idx){
+                        if(t.idx!=-1){
                             roomService.editRoom(params).then((res)=>{
                                 this.$message.success('操作成功！');
                                 t.getRoomList();
