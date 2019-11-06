@@ -30,16 +30,16 @@
                         <div v-if="tab1=='检索'" class="clearfix">
                             <el-form ref="seachForm" :model="seachForm"  :rules="rules"   label-width="70px">
                                 <el-form-item label="会员号" style="" class="">
-                                    <el-input v-model="seachForm.memberNum" placeholder=""></el-input>
+                                    <el-input v-model="seachForm.memberNum" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                                 <el-form-item label="手机号" style="" class="">
-                                    <el-input v-model="seachForm.telephoneNum" placeholder=""></el-input>
+                                    <el-input v-model="seachForm.telephoneNum" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                                 <el-form-item label="姓名" style="" class="">
-                                    <el-input v-model="seachForm.userName" placeholder=""></el-input>
+                                    <el-input v-model="seachForm.userName" placeholder=""  @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                                 <el-form-item label="房间号" style="" class="">
-                                    <el-input v-model="seachForm.roomName" placeholder=""></el-input>
+                                    <el-input v-model="seachForm.roomName" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                             </el-form>
                             <div class="btns btns1 absolute" style="left: 0; bottom: 0" @click="customSeach('seachForm')">检索</div>
@@ -250,7 +250,8 @@
                     <span class="left10">¥{{v.pricePerMinute/100}}/分钟</span>
                     <span class="col999 right">评分:{{Number(v.score).toFixed(1)}}分</span>
                 </p>
-                <p class=""><span class="pointer right" :class="v.choosed?'col999':'colblue'" @click="doChooseTechnic(v, i)">{{v.choosed?'取消':'选择'}}</span></p>
+                <p class="" v-if="v.waitTime==0"><span class="pointer right" :class="v.choosed?'col999':'colblue'" @click="doChooseTechnic(v, i)">{{v.choosed?'取消':'选择'}}</span></p>
+                <p class="" v-if="v.waitTime>0"><span class="pointer right colblue" @click="waitClick(v, i)">等待</span></p>
             </div>
         </template>
         <span slot="footer" class="dialog-footer">
@@ -614,7 +615,8 @@
                     {content: '请注意：因支付超时，订单号为：F06AFE8CAA584F8C993BF6FEB4ABF26A的订单已被系统自动取消！'},
                     {content: '订单号为：4D313CF1EB604C649F02EC7870A063DB的订单因超时未到已被系统自动取消!'},    
                 ],
-                newsRemindList: []
+                newsRemindList: [],
+                waitId: ''
             }
         },
         components: {
@@ -918,6 +920,7 @@
                 let p = new Promise((resolve, reject)=>{
                     const t = this;
                     let params;
+                    // 替换技师
                     if(type=='change'){
                         params = {
                             itemIdsStr: t.currentOrder.orderItems[t.currentOrderItemIndex].itemId,
@@ -939,6 +942,7 @@
                             dateTime: t.dateTime
                         };
                         cashierService.selectTechnician(params).then((res)=>{
+                            // t.choosenProject[t.choosenProjectIndex].hasClick = true;
                             let selfChoosedIds = t.choosenProject[t.choosenProjectIndex].choosenTechnician.map((item)=>{
                                 return item.id;
                             })
@@ -957,6 +961,38 @@
                                         v.hasChoosedByOther = false
                                     }
                                 }
+                                if(!selfChoosedIds.length){
+                                    // 没有选过技师，默认选价格最高
+                                    res[0].employees.sort(function (a, b) {
+                                        if (a.pricePerMinute > b.pricePerMinute) {
+                                            return -1;
+                                        } else if (a.pricePerMinute == b.pricePerMinute) {
+                                            return 0;
+                                        } else {
+                                            return 1;
+                                        }
+                                    });
+                                    if(t.waitId){
+                                        // 点击等待过来
+                                        for(const i in res[0].employees){
+                                            let obj = res[0].employees[i];
+                                            if(t.waitId == obj.id){
+                                                t.doChooseTechnic(obj, i);
+                                                break
+                                            }
+                                        }
+                                        t.waitId = '';
+                                    }else{
+                                        for(const i in res[0].employees){
+                                            let obj = res[0].employees[i];
+                                            if(obj.waitTime==0){
+                                                t.doChooseTechnic(obj, i);
+                                                break
+                                            }
+                                        }
+                                    }
+                                    
+                                }
                                 t.technicianList = res[0].employees;
                                 
                                 resolve();
@@ -967,6 +1003,12 @@
                     
                 })
                 return p;
+            },
+            waitClick(v, i){
+                const t = this;
+                t.dateTime = t.$commonService.formatDate(new Date(t.dateTime).getTime() + v.waitTime * 60 * 1000);
+                t.waitId = v.id;
+                t.selectTechnician();
             },
             doChooseProject(){
                 const t = this;
@@ -1122,9 +1164,13 @@
                 const t = this;
                 
             },
-            tab2Click(){
+            tab2Click(e){
                 const t = this;
+                // if(!t.choosenProject[t.choosenProjectIndex].hasClick){
+                //     t.selectTechnician()
+                // }
                 t.selectTechnician()
+                
             },
             confirmDoFpfj(){
                 const t = this;
@@ -1376,7 +1422,7 @@
                             }
                         }
                     })
-                }, 5000)
+                }, 5000*100)
             },
             
         },
