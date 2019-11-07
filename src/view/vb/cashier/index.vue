@@ -35,12 +35,12 @@
                                 <el-form-item label="手机号" style="" class="">
                                     <el-input v-model="seachForm.telephoneNum" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
-                                <el-form-item label="姓名" style="" class="">
+                               <!-- <el-form-item label="姓名" style="" class="">
                                     <el-input v-model="seachForm.userName" placeholder=""  @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                                 <el-form-item label="房间号" style="" class="">
                                     <el-input v-model="seachForm.roomName" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
-                                </el-form-item>
+                                </el-form-item> -->
                             </el-form>
                             <div class="btns btns1 absolute" style="left: 0; bottom: 0" @click="customSeach('seachForm')">检索</div>
                         </div>
