@@ -1007,7 +1007,7 @@
                                     
                                 }
                                 t.technicianList = res[0].employees;
-                                
+                                t.$forceUpdate();
                                 resolve();
                             }
                         
@@ -1027,6 +1027,7 @@
                 const t = this;
                 t.choosenProject = [];
                 t.choosenProjectIndex = '0';
+                t.chooseTechnicIdAll = [];
                 for(const v of t.itemClassList){
                     if(v.itemList && v.itemList.length){
                         for(const v2 of v.itemList){
