@@ -908,7 +908,7 @@
                 t.choosenProject[t.choosenProjectIndex].choosenTechnician = [];
                 for(const res of t.technicianList){
                     if(res.choosed){
-                        t.choosenProject[t.choosenProjectIndex].choosenTechnician.push(v);
+                        t.choosenProject[t.choosenProjectIndex].choosenTechnician.push(res);
                     }else{
 
                     }
@@ -973,6 +973,7 @@
                                         v.hasChoosedByOther = false
                                     }
                                 }
+                                t.technicianList = res[0].employees;
                                 if(!selfChoosedIds.length){
                                     // 没有选过技师，默认选价格最高
                                     res[0].employees.sort(function (a, b) {
@@ -988,7 +989,7 @@
                                         // 点击等待过来
                                         for(const i in res[0].employees){
                                             let obj = res[0].employees[i];
-                                            if(t.choosenProject[t.choosenProjectIndex].waitId == obj.id){
+                                            if(t.choosenProject[t.choosenProjectIndex].waitId == obj.id && !obj.hasChoosedByOther){
                                                 t.doChooseTechnic(obj, i);
                                                 break
                                             }
@@ -997,7 +998,7 @@
                                     }else{
                                         for(const i in res[0].employees){
                                             let obj = res[0].employees[i];
-                                            if(obj.waitTime==0){
+                                            if(obj.waitTime==0 && !obj.hasChoosedByOther){
                                                 t.doChooseTechnic(obj, i);
                                                 break
                                             }
