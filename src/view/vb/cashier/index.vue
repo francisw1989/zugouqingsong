@@ -117,7 +117,7 @@
                                                         <!-- // 1.待支付 2.已支付待到店 3.已到店待服务 4.服务中 5.服务完成 6.系统取消 7.用户取消 -->
                                                         <div v-if="oIndex==v.orderItems.length-1">
                                                             <el-button type="primary" size="mini" v-if='v.status==2' @click.stop='confirmArrived(i, v)'>确认到店</el-button>
-                                                            <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'更换房间':'分配房间'}}</el-button>
+                                                            <el-button v-if="v.status==3 || v.status==2" type="primary" size="mini" class="left10" @click.stop="doFpfj(v, i)">{{v.orderItems[0].roomId?'更换房间':'分配房间'}}</el-button>
                                                             <el-button v-if="v.status==3" type="primary" size="mini" class="left10" @click.stop="doChangeJishi(v, i)">更换技师</el-button>
                                                             <!-- <el-button v-if="v.status==4" type="primary" size="mini" class="left10" @click.stop="finishOrder(v, i)">结束服务</el-button> -->
                                                         </div>
@@ -250,8 +250,9 @@
                     <span class="left10">¥{{v.pricePerMinute/100}}/分钟</span>
                     <span class="col999 right">评分:{{Number(v.score).toFixed(1)}}分</span>
                 </p>
-                <p class="" v-if="v.waitTime==0"><span class="pointer right" :class="v.choosed?'col999':'colblue'" @click="doChooseTechnic(v, i)">{{v.choosed?'取消':'选择'}}</span></p>
-                <p class="" v-if="v.waitTime>0"><span class="pointer right colblue" @click="waitClick(v, i)">等待</span></p>
+                <p class="align-right" v-if="v.waitTime==0"><span class="pointer" :class="v.choosed?'col999':'colblue'" @click="doChooseTechnic(v, i)">{{v.choosed?'取消':'选择'}}</span></p>
+                <p class="align-right" v-if="v.waitTime>0"><span class="pointer colblue" @click="waitClick(v, i)">等待</span></p>
+                <p class="align-right" v-if="v.waitTime>0">该技师需等待{{v.waitTime}}分钟</p>
             </div>
         </template>
         <span slot="footer" class="dialog-footer">
@@ -905,8 +906,8 @@
                     t.chooseTechnicIdAll.push(v.id)
                 }
                 t.choosenProject[t.choosenProjectIndex].choosenTechnician = [];
-                for(const v of t.technicianList){
-                    if(v.choosed){
+                for(const res of t.technicianList){
+                    if(res.choosed){
                         t.choosenProject[t.choosenProjectIndex].choosenTechnician.push(v);
                     }else{
 
@@ -983,7 +984,7 @@
                                             return 1;
                                         }
                                     });
-                                    if(t.choosenProject[t.choosenProjectIndex].waitId){
+                                    if(t.choosenProject[t.choosenProjectIndex].waitId || t.choosenProject[t.choosenProjectIndex].waitId==0){
                                         // 点击等待过来
                                         for(const i in res[0].employees){
                                             let obj = res[0].employees[i];
