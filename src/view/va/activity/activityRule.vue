@@ -193,6 +193,19 @@
 							        </div>
 							    </div>
 							</div>
+							<!-- 完善信息 -->
+							<div v-if="type==6">
+							    <div class="top10">
+							        <el-checkbox label="积分" v-model='form.isScore'></el-checkbox>
+							    </div>
+							    <div v-if="form.isScore">
+							        <p class="col999">赠送积分规则</p>
+							        <div class="" >
+							            <span>完善信息送</span>
+							            <el-input v-model="form.scoreList[0].amount" class="left5" style="width: 80px"></el-input>
+							        </div>
+							    </div>
+							</div>
                         </el-form-item>
                     </div>
                     <div v-if='type==4'>
@@ -274,8 +287,8 @@
                 id: -1,
 
                 type: 0,
-                //活动类型（0充值1注册2消费3邀请好友4拼团5评价）
-                typeList: ['充值', '注册', '消费', '邀请好友', '拼团', '评价']
+                //活动类型（0充值1注册2消费3邀请好友4拼团5评价6完善信息）
+                typeList: ['充值', '注册', '消费', '邀请好友', '拼团', '评价','完善信息']
             }
         },
         components:{
