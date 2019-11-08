@@ -29,6 +29,10 @@
                     <span v-if="!edit.birthday">{{birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
                     <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
+                <el-form-item label="身份证" >
+                    <span v-if="!edit.cardNumber">{{cardNumber}} <i class="el-icon-edit left20 pointer" @click="openEdit('cardNumber')"></i> </span>
+                    <el-input v-if="edit.cardNumber" ref="cardNumber" @blur='save'  value-format="yyyy-MM-dd" v-model="cardNumber" style="width: 220px;"></el-input>
+                </el-form-item>
                 <el-form-item label="黑名单" >
                     <el-switch v-model="inBlacklist" class=""></el-switch>
                     <span v-if="inBlacklist" class="col999 left5">{{form.updateTime}} 修改</span>
@@ -152,7 +156,8 @@
         id: '',
         birthday: '',
         inBlacklist: '',
-        inRedlist: ''
+        inRedlist: '',
+        cardNumber: ''
     }
     export default {
         name: 'customerDetail',
@@ -182,6 +187,7 @@
                 customerDate: {},
                 rechargeRecord: [],
                 birthday: '',
+                cardNumber:'',
                 inBlacklist:'',
                 inRedlist: '',
                 finishInit: false
@@ -215,6 +221,7 @@
                 params.birthday = t.birthday;
                 params.inBlacklist = t.inBlacklist?'1':'0';
                 params.inRedlist = t.inRedlist?'1':'0';
+                params.cardNumber = t.cardNumber;
                 params.id = t.row.id;
                 customerService.save(params).then((res)=>{
                     this.$message.success('修改成功');
@@ -264,8 +271,8 @@
         mounted(){
             const t = this;
             console.log(t.row);
-            t.row.inBlacklist=t.row.inBlacklist==0?false:true;
-            t.row.inRedlist=t.row.inRedlist==0?false:true;
+            t.row.inBlacklist=t.row.inBlacklist=='否'?false:true;
+            t.row.inRedlist=t.row.inRedlist=='否'?false:true;
             t.row.sexName=t.sexList[t.row.sex];
             t.row.balance=(t.row.virtualAccount+t.row.savingsAccount)/100;
             t.form = t.row;

@@ -45,6 +45,7 @@
                         {{(scope.row.savingsAccount/100).toFixed(2)}}
                     </template>
                 </el-table-column>
+                <el-table-column prop="cardNumber" label="身份证"></el-table-column>
                 <el-table-column prop="inBlacklist" label="黑名单"></el-table-column>
                 <el-table-column prop="inRedlist" label="红名单"></el-table-column>
                 <el-table-column prop="userTags" label="标签"></el-table-column>
@@ -119,7 +120,7 @@
             //客户详情
             handle1(index, row) {
                 this.idx = index;
-                this.row = row;
+                this.row = JSON.parse(JSON.stringify(row));
                 this.viewVisible = true;
             },
             handle2(index, row){
@@ -138,8 +139,8 @@
 
                 customerService.getCustomerList(params).then((res)=>{
                     for(const v of res.records){
-                        v.inBlacklist = v.inBlacklist == 1 ? '是' : '/';
-                        v.inRedlist = v.inRedlist == 1 ? '是' : '/';
+                        v.inBlacklist = v.inBlacklist == 1 ? '是' : '否';
+                        v.inRedlist = v.inRedlist == 1 ? '是' : '否';
                     }
                     t.list = res.records;
                     t.total = res.total

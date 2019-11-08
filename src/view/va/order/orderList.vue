@@ -179,11 +179,14 @@
                     res.orderInfo.actualOrderPrice=res.orderInfo.actualOrderPrice/100;
                     res.orderInfo.totalPrice=res.orderInfo.totalPrice/100;
                     res.orderInfo.refundPrice=res.orderInfo.refundPrice/100;
-                    res.orderInfo.payTypeName=res.orderInfo.payType.split('-').map((v)=>{
-                        return v&&t.payTypeList[v]
-                    }).filter((v2)=>{
-                        return v2!=''
-                    }).join('、')
+                    if(res.orderInfo.payType){
+                        res.orderInfo.payTypeName=res.orderInfo.payType.split('-').map((v)=>{
+                            return v&&t.payTypeList[v]
+                        }).filter((v2)=>{
+                            return v2!=''
+                        }).join('、')
+                    }
+                    
 
                     for(const v3 of res.orderInfo.orderItems){
                         v3.orderPrice=v3.orderPrice/100;

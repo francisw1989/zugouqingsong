@@ -128,7 +128,7 @@
                 <div class="pad20 bor_btm_so">
                     <p class="font14b">状态信息</p>
 
-                    <el-row v-for="(v,index) in info.orderRecordInfo.reverse()" :key="v.id"  class="top10 font12">
+                    <el-row v-for="(v,index) in info.orderRecordInfo" :key="v.id"  class="top10 font12">
                         <el-col :span="8" class="">
                             <p class="colblue">{{v.createTime}}</p>
                             
@@ -162,6 +162,7 @@
         mounted(){
             const t = this;
             console.log(t.info)
+            t.info.orderRecordInfo.reverse()
             // orderService.getOrderDetal().then((res)=>{
             //     t.info = res
             // })

@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">{{title}}</div>
+        <div class="logo">{{storeName}}管理系统</div>
         <div class="header-right">
             <div class="header-user-con">
                 
@@ -62,6 +62,10 @@
                 }else{
                     return this.name
                 }
+            },
+            storeName(){
+                let userInfo = JSON.parse(localStorage.userInfo);
+                return userInfo.stores.name
             }
         },
         methods:{
