@@ -296,7 +296,7 @@
             t.birthday = t.form.birthday;
             t.cardNumber = t.form.cardNumber;
             t.redlistReason = t.form.redlistReason;
-            t.blacklistReason = t.blacklistReason;
+            t.blacklistReason = t.form.blacklistReason;
             setTimeout(() => {
                 t.finishInit = true;
             }, 1000);
