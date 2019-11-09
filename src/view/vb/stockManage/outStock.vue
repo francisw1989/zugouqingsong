@@ -34,6 +34,7 @@
                 <el-table-column prop="count" label="数量"></el-table-column>
                 <el-table-column prop="unit" label="单位"></el-table-column>
 				<el-table-column prop="statusName" label="状态"></el-table-column>
+				<el-table-column prop="remark" label="备注"></el-table-column>
 				<el-table-column label="操作" width="150" align="center">
 				    <template slot-scope="scope">
 				        <el-button size="mini" v-show="scope.row.status==2" type='danger' 
@@ -63,6 +64,9 @@
                 </el-form-item>
                 <el-form-item label="数量" prop="count">
                     <el-input v-model="form.count"></el-input>
+                </el-form-item>
+				<el-form-item label="备注" prop="remark">
+                    <el-input v-model="form.remark"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -100,7 +104,8 @@
 	    articleId: '',
 	    storeId: window.Store.id,
 	    count: '',
-	    employeeId: ''
+		employeeId: '',
+		remark:''
 	}
     export default {
         data() {

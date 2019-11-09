@@ -111,7 +111,7 @@
             </el-col>
         </el-row>
         <el-row :gutter='20' class="top10">
-            <el-col :span='8'>
+            <el-col :span='6'>
                 <el-card shadow="hover" class="">
                      <div slot="header" class="clearfix">
                         <span  v-if="sysRoute=='va'">本月各门店收入排行榜</span>
@@ -126,7 +126,7 @@
                             <el-table-column
                                 type="index"
                                 label="排名"
-                                width="180">
+                                width="">
                                 <template slot-scope="scope">
                                     <span class="colfff" style="padding: 0 5px; background-color: #3398DB">{{ scope.$index +1 }}</span>
                                 </template>
@@ -134,7 +134,7 @@
                             <el-table-column
                                 prop="a"
                                 label="店名"
-                                width="180">
+                                width="">
                             </el-table-column>
                             <el-table-column
                                 align='right'
@@ -151,7 +151,7 @@
                             <el-table-column
                                 type="index"
                                 label="排名"
-                                width="180">
+                                width="">
                                 <template slot-scope="scope">
                                     <span class="colfff" style="padding: 0 5px; background-color: #f25e43">{{ scope.$index +1 }}</span>
                                 </template>
@@ -159,7 +159,7 @@
                             <el-table-column
                                 prop="a"
                                 label="商品名"
-                                width="180">
+                                width="">
                             </el-table-column>
                             <el-table-column
                                 prop="b"
@@ -171,7 +171,7 @@
                     </div>
                 </el-card>
             </el-col>
-            <el-col :span='8'>
+            <el-col :span='6'>
                 <el-card shadow="hover" class="" >
                      <div slot="header" class="clearfix">
                         <span>本月技师服务次数排行</span>
@@ -185,7 +185,7 @@
                             <el-table-column
                                 type="index"
                                 label="排名"
-                                width="180">
+                                width="">
                                 <template slot-scope="scope">
                                     <span class="colfff" style="padding: 0 5px; background-color: #f25e43">{{ scope.$index +1 }}</span>
                                 </template>
@@ -193,7 +193,7 @@
                             <el-table-column
                                 prop="a"
                                 label="姓名"
-                                width="180">
+                                width="">
                             </el-table-column>
                             <el-table-column
                                 prop="b"
@@ -206,7 +206,7 @@
                     </div>
                 </el-card>
             </el-col>
-            <el-col :span='8'>
+            <el-col :span='6'>
                 <el-card shadow="hover" class="">
                      <div slot="header" class="clearfix">
                         <span>本月技师收入排行</span>
@@ -220,7 +220,7 @@
                             <el-table-column
                                 type="index"
                                 label="排名"
-                                width="180">
+                                width="">
                                 <template slot-scope="scope">
                                     <span class="colfff" style="padding: 0 5px; background-color: #459E8C">{{ scope.$index +1 }}</span>
                                 </template>
@@ -228,12 +228,46 @@
                             <el-table-column
                                 prop="a"
                                 label="姓名"
-                                width="180">
+                                width="">
                             </el-table-column>
                             <el-table-column
                                 prop="b"
                                 align='right'
                                 label="收入">
+                            </el-table-column>
+                            </el-table>
+                        </template>
+                    </div>
+                </el-card>
+            </el-col>
+            <el-col :span='6'>
+                <el-card shadow="hover" class="">
+                     <div slot="header" class="clearfix">
+                        <span>热门项目排行</span>
+                    </div>
+                    <div>
+                        <template>
+                            <el-table
+                            height="250"
+                            :data="rmxmList"
+                            style="width: 100%">
+                            <el-table-column
+                                type="index"
+                                label="排名"
+                                width="">
+                                <template slot-scope="scope">
+                                    <span class="colfff" style="padding: 0 5px; background-color: #459E8C">{{ scope.$index +1 }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                prop="a"
+                                label="名称"
+                                width="">
+                            </el-table-column>
+                            <el-table-column
+                                prop="b"
+                                align='right'
+                                label="次数">
                             </el-table-column>
                             </el-table>
                         </template>
@@ -270,6 +304,7 @@
                 spList: [],
                 jsfwList: [],
                 jssrList: [],
+                rmxmList: [],
                 sysRoute: window.sysRoute || '',
                 D: {}
             }
@@ -493,6 +528,12 @@
                         return {
                             a: item,
                             b: res.incomeRankByTechnician[1][index]/100
+                        }
+                    })
+                    t.rmxmList = res.itemRankByStore[0].map((item, index)=>{
+                        return {
+                            a: item,
+                            b: res.itemRankByStore[1][index]
                         }
                     })
                 })

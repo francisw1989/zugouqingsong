@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">{{storeName}}管理系统</div>
+        <div class="logo">{{storeName}}</div>
         <div class="header-right">
             <div class="header-user-con">
                 
@@ -64,8 +64,14 @@
                 }
             },
             storeName(){
+                const t = this;
                 let userInfo = JSON.parse(localStorage.userInfo);
-                return userInfo.stores.name
+                if(userInfo.stores && userInfo.stores.name){
+                    return userInfo.stores.name + ' 门店管理系统'
+                }else{
+                    return t.$GD.sysName
+                }
+                
             }
         },
         methods:{

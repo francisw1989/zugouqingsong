@@ -49,6 +49,11 @@
                 <el-table-column prop="inBlacklist" label="黑名单"></el-table-column>
                 <el-table-column prop="inRedlist" label="红名单"></el-table-column>
                 <el-table-column prop="userTags" label="标签"></el-table-column>
+                <el-table-column prop="userTags" label="来源">
+                    <template slot-scope="scope">
+                        {{sourceName[scope.row.source]}}
+                    </template>
+                </el-table-column>
                 <el-table-column label="操作" width="150" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
@@ -99,7 +104,8 @@
                 checked2: '',
                 total: 0,
                 pageSize: 10,
-                pageNumber: 1
+                pageNumber: 1,
+                sourceName: ['小程序', '客服台', '客户端']
             }
         },
         components:{

@@ -25,6 +25,9 @@
                 <el-form-item label="注册时间" >
                     {{form.createTime}}
                 </el-form-item>
+                <el-form-item label="地区" >
+                    {{form.city}}
+                </el-form-item>
                 <el-form-item label="出生日期" >
                     <span v-if="!edit.birthday">{{birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
                     <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="birthday" type="date" placeholder="选择日期"></el-date-picker>

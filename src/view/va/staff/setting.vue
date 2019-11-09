@@ -39,14 +39,15 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="jobNumber" label="工号"  width="150" sortable></el-table-column>
-                <el-table-column prop="employeeName" label="姓名" width="120"></el-table-column>
+                <el-table-column prop="jobNumber" label="工号" sortable></el-table-column>
+                <el-table-column prop="employeeName" label="姓名"></el-table-column>
                 <el-table-column prop="sexName" label="性别"></el-table-column>
                 <el-table-column prop="storeName" label="所属门店"></el-table-column>
                 <el-table-column prop="postName" label="岗位"></el-table-column>
                 <el-table-column prop="gradeNameN" label="等级"></el-table-column>
                 <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
                 <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
+                <el-table-column prop="lastLoginTime" label="最后登录"></el-table-column>
                 <el-table-column prop="status" label="状态">
                 	<template slot-scope="scope">
                         <span v-if="scope.row.status==0">正常</span>
