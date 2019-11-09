@@ -25,7 +25,7 @@
                        欢迎 {{username}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>修改密码</el-dropdown-item>
+                        <el-dropdown-item command='updatePassword'>修改密码</el-dropdown-item>
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -37,51 +37,135 @@
                 </div>
             </div>
         </div>
+        <el-dialog :title="'修改密码'" :visible.sync="editVisible" width="400px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="90px">
+                <el-form-item  label="原密码" prop="oldPassword" :show-password='true'>
+                    <el-input v-model="form.oldPassword" show-password></el-input>
+                </el-form-item>
+                <el-form-item label="新密码" prop="newPassword" :show-password='true'>
+                    <el-input v-model="form.newPassword" show-password></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="conifrmPassword" :show-password='true'>
+                    <el-input v-model="form.conifrmPassword" show-password></el-input>
+                </el-form-item>
+                
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updatePassword('form')">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
+    
 </template>
 <script>
-    import bus from '../../bus';
-    import {commonService} from '../../service/common';
-    import {accountService} from '../../service/account';
-    export default {
-        data() {
-            return {
-                collapse: false,
-                fullscreen: false,
-                name: 'francis',
-                message: 2,
-                title: ''
+import bus from '../../bus';
+import {commonService} from '../../service/common';
+import {accountService} from '../../service/account';
+export default {
+    data() {
+        var validatePass = (rule, value, callback) => {
+            if (value.length<6) {
+                callback(new Error('请输入6位数密码'));
+            }else{
+                callback();
             }
-        },
-        computed:{
-            username(){
-                let userInfo = JSON.parse(localStorage.userInfo);
-                let username = '';
-                if(userInfo){
-                    return userInfo.account || userInfo.employeeName;
-                }else{
-                    return this.name
-                }
+        };
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请再次输入密码'));
+            } else if (value != this.form.newPassword) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        };
+        return {
+            editVisible: false,
+            collapse: false,
+            fullscreen: false,
+            name: 'francis',
+            message: 2,
+            title: '',
+            form: {
+                oldPassword: '',
+                newPassword: '',
+                conifrmPassword: '',
             },
-            storeName(){
-                const t = this;
-                let userInfo = JSON.parse(localStorage.userInfo);
-                if(userInfo.stores && userInfo.stores.name){
-                    return userInfo.stores.name + ' 门店管理系统'
-                }else{
-                    return t.$GD.sysName
-                }
-                
+            rules: {
+                oldPassword: [
+                    { required: true, message: '请输入',  trigger: 'blur' },
+                    { validator: validatePass },
+                ],
+                newPassword: [
+                    { required: true, message: '请输入',  trigger: 'blur' },
+                    { validator: validatePass },
+                ],
+                conifrmPassword: [
+                    { validator: validatePass2 ,trigger: 'blur' },
+                ],
+            },
+        }
+    },
+    computed:{
+        username(){
+            let userInfo = JSON.parse(localStorage.userInfo);
+            let username = '';
+            if(userInfo){
+                return userInfo.account || userInfo.employeeName;
+            }else{
+                return this.name
             }
         },
-        methods:{
+        storeName(){
+            const t = this;
+            let userInfo = JSON.parse(localStorage.userInfo);
+            if(userInfo.stores && userInfo.stores.name){
+                return userInfo.stores.name + ' 门店管理系统'
+            }else{
+                return t.$GD.sysName
+            }
+            
+        }
+    },
+    methods:{
+        updatePassword(form){
+            const t = this;
+            this.$refs[form].validate((valid) => {
+                if (valid) {
+                    let params = {
+                        userId: JSON.parse(localStorage.userInfo).id,
+                        type: localStorage.sysRoute=='vb'? '1':'0',
+                        oldPassword: t.form.oldPassword,
+                        newPassword: t.form.newPassword
+                    }
+                    accountService.updatePassword(params).then((res)=>{
+                        this.$message.success('修改成功，请重新登录');
+                        setTimeout(() => {
+                            localStorage.removeItem('token');
+                            this.$router.push('/login?'+localStorage.sysRoute||'vb');
+                        }, 2000);
+                    })
+                        
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+                
+            },
             // 用户名下拉菜单选择事件
             handleCommand(command) {
+                const t = this;
                 if(command == 'loginout'){
                     accountService.logout().then(()=>{
                         localStorage.removeItem('token');
                         this.$router.push('/login?'+localStorage.sysRoute||'vb');
                     })
+                }
+                if(command == 'updatePassword'){
+                    t.editVisible = true;
+                    
                 }
             },
             // 侧边栏折叠

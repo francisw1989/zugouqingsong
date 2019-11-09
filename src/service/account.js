@@ -1,5 +1,21 @@
 import {$axios} from './axios.js';
 let accountService = {
+    // /api/v1/sysUser/updatePassword
+    // 修改账户密码
+    updatePassword(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'post',
+                url: '/api/v1/sysUser/updatePassword',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
     // /api/v1/sysUser/{id}
     // 根据id修改账户
     save(params){
