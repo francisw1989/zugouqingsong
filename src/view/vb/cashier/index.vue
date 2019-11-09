@@ -81,8 +81,14 @@
                                     <!-- <div class="colye">余额不足</div> -->
                                 </el-form-item>
                             </el-form>
-                            <div class="col999 top10" v-if="userForm.inRedlist">*此用户为红名单用户</div>
-                            <div class="col999 top10"  v-if="userForm.inBlacklist">*此用户为黑名单用户</div>
+                            <div class="col999 top10" v-if="userForm.inRedlist">
+                                <p>*此用户为红名单用户<p>
+                                <p class='top5'>{{userForm.redlistReason}}</p>
+                            </div>
+                            <div class="col999 top10"  v-if="userForm.inBlacklist">
+                                <p>*此用户为黑名单用户</p>
+                                <p class='top5'>{{userForm.blacklistReason}}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -41,8 +41,14 @@
                     <span v-if="inBlacklist" class="col999 left5">{{form.updateTime}} 修改</span>
                     <p class="top5" v-if="inBlacklist && form.userTags">{{form.userTags?form.userTags.tags:''}}</p>
                 </el-form-item>
+                <el-form-item v-if='inBlacklist' label="" >
+                    <el-input @blur='save' v-model="blacklistReason" style="width: 220px;"></el-input>
+                </el-form-item>
                 <el-form-item label="红名单" >
                     <el-switch v-model="inRedlist" class=""></el-switch>
+                </el-form-item>
+                <el-form-item v-if='redlistReason' label="" >
+                    <el-input @blur='save' v-model="redlistReason" style="width: 220px;"></el-input>
                 </el-form-item>
                 
             </el-form>
@@ -160,7 +166,9 @@
         birthday: '',
         inBlacklist: '',
         inRedlist: '',
-        cardNumber: ''
+        cardNumber: '',
+        blacklistReason: '',
+        redlistReason: ''
     }
     export default {
         name: 'customerDetail',
@@ -193,6 +201,8 @@
                 cardNumber:'',
                 inBlacklist:'',
                 inRedlist: '',
+                blacklistReason: '',
+                redlistReason: '',
                 finishInit: false
             }
         },
@@ -225,6 +235,8 @@
                 params.inBlacklist = t.inBlacklist?'1':'0';
                 params.inRedlist = t.inRedlist?'1':'0';
                 params.cardNumber = t.cardNumber;
+                params.redlistReason = t.redlistReason;
+                params.blacklistReason = t.blacklistReason;
                 params.id = t.row.id;
                 customerService.save(params).then((res)=>{
                     this.$message.success('修改成功');
@@ -282,6 +294,9 @@
             t.inBlacklist = t.form.inBlacklist;
             t.inRedlist = t.form.inRedlist;
             t.birthday = t.form.birthday;
+            t.cardNumber = t.form.cardNumber;
+            t.redlistReason = t.form.redlistReason;
+            t.blacklistReason = t.blacklistReason;
             setTimeout(() => {
                 t.finishInit = true;
             }, 1000);
