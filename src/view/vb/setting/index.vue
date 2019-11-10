@@ -84,11 +84,11 @@
                     </el-form-item>
                     <el-form-item label="忙碌时间开始" prop="busyStartTime">
                         <span v-if='!openEdit'>{{form.busyStartTime}}</span>
-                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.busyStartTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyStartTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="开始时间"></el-time-select>
                     </el-form-item>
                     <el-form-item label="忙碌时间结束" prop="busyEndTime">
                         <span v-if='!openEdit'>{{form.busyEndTime}}</span>
-                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.busyEndTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyEndTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
                     </el-form-item>
                 </el-form>
             </div>
@@ -146,6 +146,18 @@
             
         },
         methods:{
+            getTime(data){
+                return Number(data.split(':')[0])*60 + Number(data.split(':')[1])
+            },
+            checkBusyTime(){
+                const t = this;
+                if(t.form.busyEndTime && t.form.busyStartTime){
+                    if(t.getTime(t.form.busyEndTime)<=t.getTime(t.form.busyStartTime)){
+                        this.$message.error('忙碌时间结束必须大于忙碌时间开始');
+                    }
+                }
+                
+            },
             getFile(file, fileList){
                 const t = this;
                 t.$commonService.getBase64(file.raw).then((Base64)=>{

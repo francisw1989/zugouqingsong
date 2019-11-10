@@ -47,7 +47,7 @@
                 <el-form-item label="红名单" >
                     <el-switch v-model="inRedlist" class=""></el-switch>
                 </el-form-item>
-                <el-form-item v-if='redlistReason' label="" >
+                <el-form-item v-if='inRedlist' label="" >
                     <el-input @blur='save' v-model="redlistReason" style="width: 220px;"></el-input>
                 </el-form-item>
                 

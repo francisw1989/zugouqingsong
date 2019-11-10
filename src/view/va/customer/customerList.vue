@@ -156,7 +156,12 @@
         
         },
         watch:{
-             inRedlist(val){
+            viewVisible(val){
+                if(!val){
+                    this.getCustomerList();
+                }
+            },
+            inRedlist(val){
                 this.getCustomerList();
             },
             inBlacklist(){
