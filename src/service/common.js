@@ -34,6 +34,13 @@ let commonService = {
                             title: '订单列表',
                             id: 4
                         },
+                    ]
+                },{
+                    icon: 'el-icon-lx-goods',
+                    index: '1',
+                    title: '项目管理',
+                    id: 60,
+                    subs: [
                         {
                             index: '/va/project',
                             title: '服务项目',
