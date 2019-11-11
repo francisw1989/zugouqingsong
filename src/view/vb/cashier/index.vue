@@ -420,22 +420,17 @@
             </table>
             <p class='title1 top15'>支付方式</p>
             <div class="left10 top15 clearfix">
-                <div v-if="showPayButton">
-                    <div class="clearfix top5">
-                        <el-checkbox v-model="czzhCheck" :disabled="D.user.totalAccount==0?true:false"></el-checkbox>
-                        <span class="left20">储值账户</span>
-                        <span class="left40">当前余额：<span class="colred">{{D.user.totalAccount / 100}}</span></span>
-                        <span class="colblue right pointer" @click="rechargeVisible=true">充值 ></span>
-                    </div>
-                    <div class="top5">
-                        <el-checkbox v-model="otherCheck" :disabled='otherDisable'></el-checkbox>
-                        <el-select class="left20" v-model="otherPayType" placeholder="请选择支付方式">
-                            <el-option v-for="(v) in otherPay" :key="v.id" :label="v.name" :value="v.id"></el-option>
-                        </el-select>
-                    </div>
+                <div class="clearfix top5">
+                    <el-checkbox v-model="czzhCheck" :disabled="D.user.totalAccount==0?true:false"></el-checkbox>
+                    <span class="left20">储值账户</span>
+                    <span class="left40">当前余额：<span class="colred">{{D.user.totalAccount / 100}}</span></span>
+                    <span class="colblue right pointer" @click="rechargeVisible=true">充值 ></span>
                 </div>
-                <div v-if="!showPayButton">
-                    微信支付
+                <div class="top5">
+                    <el-checkbox v-model="otherCheck" :disabled='otherDisable'></el-checkbox>
+                    <el-select class="left20" v-model="otherPayType" placeholder="请选择支付方式" :disabled="otherDistable">
+                        <el-option v-for="(v) in otherPay" :key="v.id" :label="v.name" :value="v.id"></el-option>
+                    </el-select>
                 </div>
             </div>
             <div class="top10 align-right">总金额：<span class="colred">{{D.totalPrice/100}}</span></div>
@@ -642,7 +637,8 @@
                     {content: '订单号为：4D313CF1EB604C649F02EC7870A063DB的订单因超时未到已被系统自动取消!'},    
                 ],
                 newsRemindList: [],
-                waitId: ''
+                waitId: '',
+                otherDistable: false
             }
         },
         components: {
@@ -846,6 +842,7 @@
                         t.showPayButton = false;
                         setTimeout(() => {
                             t.QRCodeMsg = res.data;
+                            t.otherDistable = true;
                             let GT = new Date().getTime() + 5*60*1000;
                             t.$commonService.getTime('payTime', GT,()=>{
                                 setTimeout(() => {
@@ -1250,6 +1247,7 @@
             // 选择技师确认
             confirmChange(){
                 const t = this;
+                t.otherDistable = false;
                 if(t.directBook){
                     
                     let canGoNext = true;
