@@ -137,7 +137,7 @@
                                             </table>
                                            
                                         </div>
-                                        <div class="pad10TB clearfix" v-if="v.articleList.length">
+                                        <div class="pad10TB clearfix" v-if="v.articleList && v.articleList.length">
                                             <span class="left5">
                                                 <i class="el-icon-lx-cart"></i>
                                                 <span class="left10">购买商品：</span>

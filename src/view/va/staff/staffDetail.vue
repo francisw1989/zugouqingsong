@@ -423,14 +423,15 @@
                     return v.id == id
                 })[0].postGradeList;
                 if(t.postGradeList.length){
-                    t.postGradeChange(t.postGradeList[0].id);
+                    t.postGradeChange(t.postGradeList[0].level);
+                    t.form.grade = t.postGradeList[0].level;
                 }   
                 
             },
             postGradeChange(id){
                 const t = this;
                 t.postGradeBean = t.postGradeList.filter((v)=>{
-                    return v.id == id
+                    return v.level == id
                 })[0]
             },
             prevMouth(){
