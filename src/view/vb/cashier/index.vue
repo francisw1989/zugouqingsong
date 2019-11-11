@@ -103,7 +103,7 @@
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
-                                        <el-button type="primary" size="mini" class="left10" @click="removeOrder(v)">取消订单</el-button>
+                                        <el-button type="primary" size="mini" class="left10" @click.stop="removeOrder(v, i)">取消订单</el-button>
                                         <span class="right colblue" v-if="v.status==2">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
                                         <span class="right colblue" v-if="v.status==3">已到店,待服务</span>
                                         <span class="right colblue" v-if="v.status==4">服务中</span>
@@ -722,14 +722,16 @@
             }
         },
         methods:{
-            removeOrder(obj){
+            removeOrder(obj, i){
                 const t = this;
                 console.log(obj)
                 let params = {
                     orderId: obj.id,
                     userId: obj.userId
                 }
-                cashierService.removeOrder(params);
+                cashierService.removeOrder(params).then(()=>{
+                    t.appointList.splice(i, 1)
+                });
             },
             check(i){
                 var num;
@@ -1245,7 +1247,7 @@
             // 选择技师确认
             confirmChange(){
                 const t = this;
-                t.otherDistable = true;
+                t.otherDistable = false;
                 if(t.directBook){
                     
                     let canGoNext = true;
