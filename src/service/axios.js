@@ -44,8 +44,14 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
             _loading && _loading.close();
             // 1001 登录失效
             if(res.response.data.code == 1102){
+                if(res.response.data.msg){
+                    alert(res.response.data.msg)
+                }
                 localStorage.removeItem('token');
-                window.location.reload();
+                if(url.indexOf('login')<0){
+                    window.location.reload();
+                }
+                
             }else{
                 typeof(oLoading)!='undefined' && oLoading && oLoading.close();
                 reject(res.response.data)
