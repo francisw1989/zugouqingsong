@@ -290,8 +290,12 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+						debugger
                         params.isRecommend = params.isRecommend? '1':'0';
                         params.isAssemble = params.isAssemble? '1':'0';
+						params.threePrice = params.threePrice==""? '0': params.threePrice;
+						params.fivePrice = params.fivePrice==""? '0': params.fivePrice;
+						params.tenPrice = params.tenPrice==""? '0': params.tenPrice;
                         if(t.idx == '-1'){
                             orderService.itemAdd(params).then((res)=>{
                                 t.getItemList()
