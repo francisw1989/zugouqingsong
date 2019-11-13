@@ -154,7 +154,7 @@
                         </el-form-item>
                         <el-form-item label="级别" v-if="postGradeList.length">
                             <el-select class="" v-model="form.grade" placeholder=""  @change='postGradeChange'>
-                                <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
+                                <el-option v-for="(v) in postGradeList" :key="v.id" :label="v.gradeName" :value="v.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <div v-if="postGradeBean && postGradeBean.priceCoefficient">
@@ -424,15 +424,15 @@
                     return v.id == id
                 })[0].postGradeList;
                 if(t.postGradeList.length){
-                    t.postGradeChange(t.postGradeList[0].level);
-                    t.form.grade = t.postGradeList[0].level;
+                    t.postGradeChange(t.postGradeList[0].id);
+                    t.form.grade = t.postGradeList[0].id;
                 }   
                 
             },
             postGradeChange(id){
                 const t = this;
                 t.postGradeBean = t.postGradeList.filter((v)=>{
-                    return v.level == id
+                    return v.postId == id
                 })[0]
             },
             prevMouth(){

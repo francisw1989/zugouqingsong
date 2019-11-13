@@ -56,7 +56,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="240" align="center">
-                    <template slot-scope="scope">
+                    <template slot-scope="scope" v-if="scope.row.status==0">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
                         <el-button size="mini" type="danger" @click="dodelete(scope.$index, scope.row)">删除</el-button>
                         <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">重置密码</el-button>
