@@ -579,8 +579,8 @@
                 let params = {};
                 this.editVisible = false;
                 
-                t.form.isMobilePosition = t.form.isMobilePosition?'1':'0';
-				 t.form.status = t.form.status?'1':'0';
+                
+				 
                 t.form.isTechnician = t.form.isTechnician?'1':'0';
                 if(t.form.itemClassList.length){
                     t.form.itemClassIds =  t.form.itemClassList.map(v=>{
@@ -602,6 +602,11 @@
                 
                 for(let key in Form){
                     params[key] = t.form[key]
+                }
+                params.status = params.status?'1':'0';
+                params.isMobilePosition = params.isMobilePosition?'1':'0';
+                if(!t.postGradeList.length){
+                    params.grade = ''
                 }
                 if(window.sysRoute=='vb'){
                     params.storesId = window.storesId
