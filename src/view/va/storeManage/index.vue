@@ -95,8 +95,8 @@
                             <el-input v-model="form.detailAddress"  placeholder="请输入详细地址" class="left" style="width: 80%"></el-input>
                             <el-button size="small" class="left left10" @click="searchByStationName" type='primary'>搜索</el-button>
                         </div>
-                        <p class="top5">地图定位  {{jwd}}</p>
-                        <div style="height: 300px;" id="map" class="top10"></div>
+                        <!-- <p class="top5">地图定位  {{jwd}}</p> -->
+                        <div style="height: 250px;" id="map" class="top10"></div>
                     </el-form-item>
                 </div>
             </el-form>
