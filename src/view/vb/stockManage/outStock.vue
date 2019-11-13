@@ -241,11 +241,9 @@
 			    const t = this;
 			    t.goodsList = [];
 			    let params = {
-			        pageSize: 100,
-			        pageNumber: 1,
-					articleType:2
+					articleType:2,
 			    }
-			    stockService.getArticleManagerList(params).then((res)=>{
+			    stockBySotreService.getArticleStockList(params).then((res)=>{
 			        t.goodsList = res.records;
 			    })
 			},
