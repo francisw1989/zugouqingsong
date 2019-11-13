@@ -244,7 +244,8 @@
 					articleType:2,
 			    }
 			    stockBySotreService.getArticleStockList(params).then((res)=>{
-			        t.goodsList = res.records;
+					debugger
+			        t.goodsList = res;
 			    })
 			},
 			getEmployeeList(){
