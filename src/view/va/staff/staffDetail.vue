@@ -5,7 +5,8 @@
             <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
-                        <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
+                        <img v-if="form.photo"  :src="form.photo" alt="" class="tx1 left">
+                        <img v-if="!form.photo" src= '../../../assets/img/img.jpg' alt="" class="tx1 left">
                         <div class="ghWap font12">工号:{{form.jobNumber}}</div>
                     </div>
                 </el-col>

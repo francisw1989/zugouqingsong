@@ -416,8 +416,9 @@
                 let map = new BMap.Map("map");// 创建地图实例  
                 t.map = map;
                 // 创建中心点坐标
-                let point = '南京';
-                if(t.row){
+                let point = new BMap.Point(118.778074408,32.0572355018);
+                
+                if(t.row.id){
                     point = new BMap.Point(t.row.y, t.row.x)
                 }
                 var myIcon = new BMap.Icon(img, new BMap.Size(50,50));
@@ -431,7 +432,7 @@
 
 
                 t.map.addControl(new BMap.NavigationControl());
-                t.map.enableScrollWheelZoom(true);
+                t.map.enableScrollWheelZoom();
                 t.geoc = new BMap.Geocoder();
                 t.localSearch = new BMap.LocalSearch(t.map);
                 t.localSearch.enableAutoViewport();

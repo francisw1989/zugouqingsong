@@ -205,6 +205,8 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+                        params.costPrice = params.costPrice*100;
+                        params.salesPrice = params.salesPrice*100;
                         if(t.idx == '-1'){
                             stockService.platformArticleStockAdd(params).then((res)=>{
                                 t.getPlatformArticleStockList()
