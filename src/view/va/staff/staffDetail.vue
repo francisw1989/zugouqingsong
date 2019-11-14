@@ -606,6 +606,7 @@
                 for(let key in Form){
                     params[key] = t.form[key]
                 }
+				params.isTechnician = params.isTechnician?'1':'0';
                 params.status = params.status?'1':'0';
                 params.isMobilePosition = params.isMobilePosition?'1':'0';
                 if(!t.postGradeList.length){
