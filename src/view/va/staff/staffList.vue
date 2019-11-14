@@ -48,7 +48,7 @@
                 <el-table-column prop="gradeNameN" label="等级"></el-table-column>
                 <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
                 <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
-                
+                <el-table-column prop="isTechnician" label="是否为技师"></el-table-column>
                 <el-table-column prop="status" label="状态">
                 	<template slot-scope="scope">
                         <span v-if="scope.row.status==0">正常</span>
@@ -397,7 +397,8 @@
                         v.postName = v.postBean?v.postBean.postName: '';
                         v.storeName = v.stores?v.stores.name: '';
                         if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
-                        v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
+						v.isTechnician = v.isTechnician==1?'是':'否';
+						v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
                         v.gradeNameN = v.postGrade?v.postGrade.gradeName:'';
                     }
                     t.list = res.records;

@@ -31,6 +31,9 @@
                     <span v-if="!edit.birthday">{{form.birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
                     <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
+				<el-form-item label="是否为技师" >
+				    <el-switch v-model="form.isTechnician" class=""></el-switch>
+				</el-form-item>
                 <el-form-item label="是否流动" >
                     <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                 </el-form-item>
@@ -328,7 +331,7 @@
         salary: '',
         info: '',
         itemClassIds: '',
-        isTechnician: true,
+        isTechnician: false,
         storesIds:'', // 可服务门店
         status:false   //是否离职（0否  1是）
     };
