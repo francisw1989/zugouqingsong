@@ -69,9 +69,9 @@
             }
         },
         mounted(){
-            if(localStorage.token){
-                window.location.href = '/';
-            }
+            // if(localStorage.token){
+            //     window.location.href = '/';
+            // }
             
 
         }
