@@ -43,6 +43,7 @@
                 <el-table-column prop="employeeName" label="姓名"></el-table-column>
                 <el-table-column prop="sexName" label="性别"></el-table-column>
                 <el-table-column prop="storeName" label="所属门店"></el-table-column>
+				<el-table-column prop="roleName" label="角色"></el-table-column>
                 <el-table-column prop="postName" label="岗位"></el-table-column>
                 <el-table-column prop="gradeNameN" label="等级"></el-table-column>
                 <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
@@ -107,7 +108,7 @@
                 shopList: [],
                 jobNumber: '',
                 sexName: '',
-                
+                roleNames:'',
                 postName: '',
                 storeName: '',
                 shop: '',
@@ -175,6 +176,7 @@
                 }
                 staffService.saveRole(params).then((res)=>{
                     t.$message.success('设置成功');
+					t.getEmployeesList();
                 })
                 
             },
@@ -219,6 +221,7 @@
                 staffService.getEmployeesList(params).then((res)=>{
                     for(const v of res.records){
                         v.postName = v.postBean?v.postBean.postName: '';
+						v.roleName = v.role?v.role.roleName : '';
                         v.storeName = v.stores?v.stores.name: '';
                         if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
                         v.isMobilePositionName=v.isMobilePosition==0?'否':'是';

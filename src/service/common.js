@@ -34,6 +34,13 @@ let commonService = {
                             title: '订单列表',
                             id: 4
                         },
+                    ]
+                },{
+                    icon: 'el-icon-lx-goods',
+                    index: '2',
+                    title: '项目管理',
+                    id: 60,
+                    subs: [
                         {
                             index: '/va/project',
                             title: '服务项目',
@@ -48,7 +55,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-friend',
-                    index: '2',
+                    index: '3',
                     title: '员工管理',
                     id: 7,
                     subs: [
@@ -81,7 +88,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-group',
-                    index: '3',
+                    index: '4',
                     title: '客户管理',
                     id: 13,
                     subs: [
@@ -103,7 +110,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-global',
-                    index: '4',
+                    index: '5',
                     title: '物料商品管理',
                     id: 36,
                     subs: [
@@ -120,7 +127,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-recharge',
-                    index: '5',
+                    index: '6',
                     title: '优惠卷管理',
                     id:57,
                     subs: [
@@ -130,7 +137,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-present',
-                    index: '6',
+                    index: '7',
                     title: '常规活动',
                     id: 24,
                     subs: [
@@ -140,7 +147,7 @@ let commonService = {
                 },
                 {
                     icon: 'el-icon-lx-message',
-                    index: '7',
+                    index: '8',
                     title: '评价管理',
                     id: 27,
                     subs: [

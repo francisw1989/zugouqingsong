@@ -198,7 +198,7 @@
                     id: row.id
                 }
                 this.$confirm('确认删除？').then(() => {
-                    jurisdictionService.delete(params).then((res)=>{
+                    accountService.delete(params).then((res)=>{
                         this.$message.success('删除成功！');
                         t.getList();
                     })

@@ -5,7 +5,8 @@
             <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
-                        <img src="../../../assets/img/img.jpg" alt="" class="tx1 left">
+                        <img v-if="form.photo"  :src="form.photo" alt="" class="tx1 left">
+                        <img v-if="!form.photo" src= '../../../assets/img/img.jpg' alt="" class="tx1 left">
                         <div class="ghWap font12">工号:{{form.jobNumber}}</div>
                     </div>
                 </el-col>
@@ -30,6 +31,9 @@
                     <span v-if="!edit.birthday">{{form.birthday}} <i class="el-icon-edit left20 pointer" @click="openEdit('birthday')"></i> </span>
                     <el-date-picker v-if="edit.birthday" ref="birthday"  value-format="yyyy-MM-dd" v-model="form.birthday" type="date" placeholder="选择日期"></el-date-picker>
                 </el-form-item>
+				<el-form-item label="是否为技师" >
+				    <el-switch v-model="form.isTechnician" class=""></el-switch>
+				</el-form-item>
                 <el-form-item label="是否流动" >
                     <el-switch v-model="form.isMobilePosition" class=""></el-switch>
                 </el-form-item>
@@ -153,7 +157,7 @@
                         </el-form-item>
                         <el-form-item label="级别" v-if="postGradeList.length">
                             <el-select class="" v-model="form.grade" placeholder=""  @change='postGradeChange'>
-                                <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
+                                <el-option v-for="(v) in postGradeList" :key="v.id" :label="v.gradeName" :value="v.id"></el-option>
                             </el-select>
                         </el-form-item>
                         <div v-if="postGradeBean && postGradeBean.priceCoefficient">
@@ -327,7 +331,7 @@
         salary: '',
         info: '',
         itemClassIds: '',
-        isTechnician: true,
+        isTechnician: false,
         storesIds:'', // 可服务门店
         status:false   //是否离职（0否  1是）
     };
@@ -424,13 +428,14 @@
                 })[0].postGradeList;
                 if(t.postGradeList.length){
                     t.postGradeChange(t.postGradeList[0].id);
+                    t.form.grade = t.postGradeList[0].id;
                 }   
                 
             },
             postGradeChange(id){
                 const t = this;
                 t.postGradeBean = t.postGradeList.filter((v)=>{
-                    return v.id == id
+                    return v.postId == id
                 })[0]
             },
             prevMouth(){
@@ -577,8 +582,8 @@
                 let params = {};
                 this.editVisible = false;
                 
-                t.form.isMobilePosition = t.form.isMobilePosition?'1':'0';
-				 t.form.status = t.form.status?'1':'0';
+                
+				 
                 t.form.isTechnician = t.form.isTechnician?'1':'0';
                 if(t.form.itemClassList.length){
                     t.form.itemClassIds =  t.form.itemClassList.map(v=>{
@@ -600,6 +605,12 @@
                 
                 for(let key in Form){
                     params[key] = t.form[key]
+                }
+				params.isTechnician = params.isTechnician?'1':'0';
+                params.status = params.status?'1':'0';
+                params.isMobilePosition = params.isMobilePosition?'1':'0';
+                if(!t.postGradeList.length){
+                    params.grade = ''
                 }
                 if(window.sysRoute=='vb'){
                     params.storesId = window.storesId

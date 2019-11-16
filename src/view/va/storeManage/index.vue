@@ -38,51 +38,38 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="600px">
+        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="1000px" top="5vh">
             <el-form ref="form" :model="form"  :rules="rules"   label-width="100px">
                 <div class="clearfix">
-                    <el-form-item label="名称" prop="name" style="width: 50%" class="left">
+                    <el-form-item label="名称" prop="name" style="width: 25%" class="left">
                         <el-input v-model="form.name" placeholder="输入门店名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="开业日期" prop="openingDate" style="width: 50%"  class="left">
+                    <el-form-item label="开业日期" prop="openingDate" style="width: 25%"  class="left">
                         <el-date-picker type="date" placeholder="选择日期" v-model="form.openingDate" value-format="yyyy-MM-dd" style="width: 100%;"></el-date-picker>
                     </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="电话" prop="phoneNum" style="width: 50%" class="left">
+                    <el-form-item label="电话" prop="phoneNum" style="width: 25%" class="left">
                         <el-input v-model="form.phoneNum" placeholder="输入门店电话"></el-input>
                     </el-form-item>
-                    <el-form-item label="面积" prop="area" style="width: 50%"  class="left">
+                    <el-form-item label="面积" prop="area" style="width: 25%"  class="left">
                         <el-input v-model="form.area" placeholder="输入面积"></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="店长" prop="shopowner" style="width: 50%" class="left">
+                    <el-form-item label="店长" prop="shopowner" style="width: 25%" class="left">
                         <el-input v-model="form.shopowner" placeholder="店长姓名"></el-input>
                     </el-form-item>
-                    <el-form-item label="租金" prop="rent" style="width: 50%"  class="left">
+                    <el-form-item label="租金" prop="rent" style="width: 25%"  class="left">
                         <el-input v-model="form.rent" placeholder="租金(元/年)"></el-input>
                     </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="店长手机" prop="shopownerPhoneNum" style="width: 50%" class="left">
+                    <el-form-item label="店长手机" prop="shopownerPhoneNum" style="width: 25%" class="left">
                         <el-input v-model="form.shopownerPhoneNum" placeholder="联系电话"></el-input>
                     </el-form-item>
-                    <el-form-item label="物业" style="width: 50%"  class="left">
+                    <el-form-item label="物业" style="width: 25%"  class="left">
                         <el-input v-model="form.propertyCosts" placeholder="租金(元/年/平)"></el-input>
                     </el-form-item>
                 </div>
                 <div class="clearfix">
-                    <el-form-item label="营业时间" style="width: 50%" class="left">
-                        <el-time-select style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '08:30',step: '00:30',end: '18:30'}" placeholder="开始时间"></el-time-select>
-                        <el-time-select class="top10" style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
-                    </el-form-item>
-                    <el-form-item label="门店标签" style="width: 50%" class="left">
-                        <el-input v-model="form.tags" placeholder="英文逗号','隔开"></el-input>
-                    </el-form-item>
-                </div>
-                <div class="clearfix">
-                    <el-form-item label="门店照片" prop="imgs">
+                    <el-form-item label="门店照片" prop="imgs" style="width: 25%" class="left">
                         <el-upload
                         :file-list='form.imgListShow'
                         :auto-upload='false'
@@ -93,15 +80,23 @@
                         <i class="el-icon-plus"></i>
                         </el-upload>
                     </el-form-item>
+                    <el-form-item label="营业时间" style="width: 25%" class="left">
+                        <el-time-select style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '08:30',step: '00:30',end: '18:30'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select class="top10" style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                    </el-form-item>
+                    <el-form-item label="门店标签" style="width: 25%" class="left">
+                        <el-input v-model="form.tags" placeholder="英文逗号','隔开"></el-input>
+                    </el-form-item>
                 </div>
+
                 <div class="clearfix">
                     <el-form-item label="详细地址" prop="detailAddress">
                         <div class="clearfix">
                             <el-input v-model="form.detailAddress"  placeholder="请输入详细地址" class="left" style="width: 80%"></el-input>
                             <el-button size="small" class="left left10" @click="searchByStationName" type='primary'>搜索</el-button>
                         </div>
-                        <p class="top5">地图定位  {{jwd}}</p>
-                        <div style="height: 300px;" id="map" class="top10"></div>
+                        <!-- <p class="top5">地图定位  {{jwd}}</p> -->
+                        <div style="height: 250px;" id="map" class="top10"></div>
                     </el-form-item>
                 </div>
             </el-form>
@@ -416,22 +411,23 @@
                 let map = new BMap.Map("map");// 创建地图实例  
                 t.map = map;
                 // 创建中心点坐标
-                let point = '南京';
-                if(t.row){
+                let point = new BMap.Point(118.778074408,32.0572355018);
+                
+                if(t.row.id){
                     point = new BMap.Point(t.row.y, t.row.x)
                 }
                 var myIcon = new BMap.Icon(img, new BMap.Size(50,50));
                 t.marker = new BMap.Marker(point,{icon:myIcon});  // 创建标注
                 t.map.addOverlay(t.marker);              // 将标注添加到地图中
                 t.map.centerAndZoom(point, 13);
-
+                t.map.enableScrollWheelZoom(true);
 
                 // var point = new BMap.Point(120.391655,36.067588);  // 创建点坐标
                 // t.map.centerAndZoom(point, 15);
 
 
                 t.map.addControl(new BMap.NavigationControl());
-                t.map.enableScrollWheelZoom(true);
+                
                 t.geoc = new BMap.Geocoder();
                 t.localSearch = new BMap.LocalSearch(t.map);
                 t.localSearch.enableAutoViewport();

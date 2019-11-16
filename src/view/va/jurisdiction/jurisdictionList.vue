@@ -14,7 +14,7 @@
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="roleName" label="权限名称" width="150"></el-table-column>
-                <el-table-column prop="roleStatusName" label="状态" width="120"></el-table-column>
+                <!-- <el-table-column prop="roleStatusName" label="状态" width="120"></el-table-column> -->
                 <el-table-column prop="roleDesc" label="描述"></el-table-column>
                 <el-table-column label="操作" width="160" align="center">
                     <template slot-scope="scope">
@@ -37,9 +37,9 @@
                             <el-form-item label="权限名称" prop="roleName">
                                 <el-input v-model="form.roleName"></el-input>
                             </el-form-item>
-                            <el-form-item label="权限状态">
+                           <!-- <el-form-item label="权限状态">
                                 <el-switch v-model="form.roleStatus" class="left10"></el-switch>
-                            </el-form-item>
+                            </el-form-item> -->
                             <el-form-item label="权限描述" prop="roleDesc">
                                 <el-input v-model="form.roleDesc" type="textarea"></el-input>
                             </el-form-item>

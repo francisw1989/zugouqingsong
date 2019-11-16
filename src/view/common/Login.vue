@@ -28,8 +28,8 @@
         data: function(){
             return {
                 ruleForm: {
-                    username: 'admin',
-                    password: '123456'
+                    username: '',
+                    password: ''
                 },
                 rules: {
                     username: [
@@ -68,11 +68,10 @@
             }
         },
         mounted(){
-            if(localStorage.token){
-                window.location.href = '/';
-                return
-            }
-             if(window.location.href.split('?')[1]){
+            // if(localStorage.token){
+            //     window.location.href = '/';
+            // }
+            if(window.location.href.split('?')[1]){
                 localStorage.sysRoute = window.location.href.split('?')[1]
             }else{
                 window.location.href = window.location.href + '?' + localStorage.sysRoute || 'vb'

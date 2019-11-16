@@ -103,7 +103,7 @@
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
-                                        <el-button type="primary" size="mini" class="left10" @click="removeOrder(v)">取消订单</el-button>
+                                        <el-button type="primary" size="mini" class="left10" @click.stop="removeOrder(v, i)">取消订单</el-button>
                                         <span class="right colblue" v-if="v.status==2">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
                                         <span class="right colblue" v-if="v.status==3">已到店,待服务</span>
                                         <span class="right colblue" v-if="v.status==4">服务中</span>
@@ -137,7 +137,7 @@
                                             </table>
                                            
                                         </div>
-                                        <div class="pad10TB clearfix" v-if="v.articleList.length">
+                                        <div class="pad10TB clearfix" v-if="v.articleList && v.articleList.length">
                                             <span class="left5">
                                                 <i class="el-icon-lx-cart"></i>
                                                 <span class="left10">购买商品：</span>
@@ -421,14 +421,14 @@
             <p class='title1 top15'>支付方式</p>
             <div class="left10 top15 clearfix">
                 <div class="clearfix top5">
-                    <el-checkbox v-model="czzhCheck" :disabled="D.user.totalAccount==0?true:false"></el-checkbox>
+                    <el-checkbox v-model="czzhCheck" :disabled="D.user.totalAccount==0?true:false || otherDistable"></el-checkbox>
                     <span class="left20">储值账户</span>
                     <span class="left40">当前余额：<span class="colred">{{D.user.totalAccount / 100}}</span></span>
                     <span class="colblue right pointer" @click="rechargeVisible=true">充值 ></span>
                 </div>
                 <div class="top5">
-                    <el-checkbox v-model="otherCheck" :disabled='otherDisable'></el-checkbox>
-                    <el-select class="left20" v-model="otherPayType" placeholder="请选择支付方式" >
+                    <el-checkbox v-model="otherCheck" :disabled='otherDisable || otherDistable'></el-checkbox>
+                    <el-select class="left20" v-model="otherPayType" placeholder="请选择支付方式" :disabled="otherDistable">
                         <el-option v-for="(v) in otherPay" :key="v.id" :label="v.name" :value="v.id"></el-option>
                     </el-select>
                 </div>
@@ -637,7 +637,8 @@
                     {content: '订单号为：4D313CF1EB604C649F02EC7870A063DB的订单因超时未到已被系统自动取消!'},    
                 ],
                 newsRemindList: [],
-                waitId: ''
+                waitId: '',
+                otherDistable: false
             }
         },
         components: {
@@ -721,14 +722,16 @@
             }
         },
         methods:{
-            removeOrder(obj){
+            removeOrder(obj, i){
                 const t = this;
                 console.log(obj)
                 let params = {
                     orderId: obj.id,
                     userId: obj.userId
                 }
-                cashierService.removeOrder(params);
+                cashierService.removeOrder(params).then(()=>{
+                    t.appointList.splice(i, 1)
+                });
             },
             check(i){
                 var num;
@@ -839,6 +842,7 @@
                         t.showPayButton = false;
                         setTimeout(() => {
                             t.QRCodeMsg = res.data;
+                            t.otherDistable = true;
                             let GT = new Date().getTime() + 5*60*1000;
                             t.$commonService.getTime('payTime', GT,()=>{
                                 setTimeout(() => {
@@ -1243,7 +1247,7 @@
             // 选择技师确认
             confirmChange(){
                 const t = this;
-                
+                t.otherDistable = false;
                 if(t.directBook){
                     
                     let canGoNext = true;

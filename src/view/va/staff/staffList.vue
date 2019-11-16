@@ -48,7 +48,7 @@
                 <el-table-column prop="gradeNameN" label="等级"></el-table-column>
                 <el-table-column prop="isMobilePositionName" label="是否流动"></el-table-column>
                 <el-table-column prop="telephoneNum" label="手机号"></el-table-column>
-                
+                <el-table-column prop="isTechnicianName" label="是否为技师"></el-table-column>
                 <el-table-column prop="status" label="状态">
                 	<template slot-scope="scope">
                         <span v-if="scope.row.status==0">正常</span>
@@ -58,8 +58,8 @@
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handle1(scope.$index, scope.row)">查看</el-button>
-                        <el-button size="mini" type="danger" @click="dodelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button size="mini" type="danger" @click="handle2(scope.$index, scope.row)">重置密码</el-button>
+                        <el-button size="mini" v-show="scope.row.status==0" type="danger" @click="dodelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" v-show="scope.row.status==0" type="danger" @click="handle2(scope.$index, scope.row)">重置密码</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -195,7 +195,7 @@
         initiationTime: '',
         salary: '',
         info: '',
-        isTechnician: true,
+        isTechnician: false,
 		status:false
     }
     export default {
@@ -362,7 +362,7 @@
             // 员工详情
             handle1(index, row) {
                 this.idx = index;
-                this.row = row;
+                this.row = JSON.parse(JSON.stringify(row));
                 console.log(this.row)
                 this.viewVisible = true;
             },
@@ -397,7 +397,8 @@
                         v.postName = v.postBean?v.postBean.postName: '';
                         v.storeName = v.stores?v.stores.name: '';
                         if(v.sex==0) {v.sexName='女'} else if(v.sex==1) {v.sexName='男'} else {v.sexName='未知'}
-                        v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
+						v.isTechnicianName = v.isTechnician==0?'否':'是';
+						v.isMobilePositionName=v.isMobilePosition==0?'否':'是';
                         v.gradeNameN = v.postGrade?v.postGrade.gradeName:'';
                     }
                     t.list = res.records;

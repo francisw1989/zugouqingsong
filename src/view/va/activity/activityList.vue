@@ -11,7 +11,7 @@
                 <el-input v-model="userName" placeholder="姓名" class="handle-input"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
                 <span class="left20">活动类型</span>
-                <el-select class="left10" v-model="type" placeholder="请选择类型" style="width: 120px">
+                <el-select class="left10" v-model="type" placeholder="请选择类型" clearable style="width: 120px">
                     <el-option v-for="(v,i) in ffTypeList" :key="i" :label="v" :value="i"></el-option>
                 </el-select>
             </div>

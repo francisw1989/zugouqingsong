@@ -19,6 +19,23 @@ let stockBySotreService = {
         })
         return p;
     },
+	
+	//物料库存列表展示
+	 getArticleStockList(params){
+	    let p = new Promise((resolve, reject)=>{
+	        let data = {
+	            method: 'get',
+	            url: '/api/v1/storeArticleStock/getList',
+	            params: params,
+	            loading: true,
+	        }
+	        $axios(data).then((res)=>{
+	            resolve(res)
+	        })
+	    })
+	    return p;
+	},
+	
     //物料入库列表查询
     getStoreInRecordList(params){
         let p = new Promise((resolve, reject)=>{

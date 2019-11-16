@@ -43,7 +43,7 @@
                     <template  v-if='shopItem.showAll' >
                         <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
                             <td style="width: 80px">{{peopleItem.employeeName}}</td>
-                            <td style="width: 80px">{{peopleItem.postBean.postName}}</td>
+                            <td style="width: 80px"><span v-if="peopleItem.postBean && peopleItem.postBean.postName">{{peopleItem.postBean.postName}}</span></td>
                             <template  v-for="(dayItem, dayIndex) in peopleItem.employeeScheduleList">
                                 <td  class="td" :key="dayIndex">
                                     <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
