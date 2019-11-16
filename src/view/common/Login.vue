@@ -49,7 +49,6 @@
                             account: this.ruleForm.username,
                             password: this.ruleForm.password
                         }
-                        localStorage.sysRoute = window.location.href.split('?')[1] || 'vb';
                         accountService.login(params).then((res)=>{
                             localStorage.token = res.token;
                             accountService.userLoginInfo().then((userInfo)=>{
@@ -71,6 +70,12 @@
         mounted(){
             if(localStorage.token){
                 window.location.href = '/';
+                return
+            }
+             if(window.location.href.split('?')[1]){
+                localStorage.sysRoute = window.location.href.split('?')[1]
+            }else{
+                window.location.href = window.location.href + '?' + localStorage.sysRoute || 'vb'
             }
             
 
