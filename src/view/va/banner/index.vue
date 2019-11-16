@@ -27,8 +27,6 @@
                 </el-table-column>
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
-						<el-button size="mini" type='text' @click.stop="sortUp(scope.$index, scope.row)">上移 </el-button>
-						<el-button size="mini" type='text' @click.stop="sortDown(scope.$index, scope.row)">下移</el-button>
                         <el-button size="mini" v-if="scope.row.type==4||scope.row.type==5" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="mini" @click="handlePublish(scope.$index, scope.row)">{{scope.row.isPublish==0?'发布':'取消发布'}}</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -91,7 +89,6 @@
         resourceId: '',
         isPublish: 0
     }
-	import Vue from 'vue'
     import bus from '../../../bus';
     import {bannerService} from '../../../service/banner';
     export default {
@@ -132,32 +129,6 @@
                     })
                 })
             },
-			 // 上移按钮
-			sortUp (index, row) {
-			 if (index === 0) {
-			        this.$message({
-			          message: '已经是列表中第一个素材！',
-			          type: 'warning'
-			        })
-			      } else {
-			        let temp = this.list[index - 1]
-			        Vue.set(this.list, index - 1, this.list[index])
-			        Vue.set(this.list, index, temp)
-			    }
-			},
-			 // 下移按钮
-			    sortDown (index, row) {
-			      if (index === (this.list.length - 1)) {
-			        this.$message({
-			          message: '已经是列表中最后一个素材！',
-			          type: 'warning'
-			        })
-			      } else {
-			        let i = this.list[index + 1]
-			        Vue.set(this.list, index + 1, this.list[index])
-			        Vue.set(this.list, index, i)
-			      }
-			    },
             beforeImgUpload(file) {
                 console.log(file)
                 const isJPG = file.type === 'image/jpeg';
