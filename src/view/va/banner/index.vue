@@ -25,9 +25,11 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="创建时间">
                 </el-table-column>
+				<!-- <el-table-column prop="sort" label="展示顺序">
+				</el-table-column> -->
                 <el-table-column label="操作" width="240" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" v-if="scope.row.type==4||scope.row.type==5" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button size="mini"  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="mini" @click="handlePublish(scope.$index, scope.row)">{{scope.row.isPublish==0?'发布':'取消发布'}}</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
@@ -59,6 +61,9 @@
                 <el-form-item v-if='form.type == 4' label="链接地址" prop="url">
                     <el-input v-model="form.url"></el-input>
                 </el-form-item>
+				<el-form-item label="展示顺序" prop="url">
+				    <el-input v-model="form.sort"></el-input>
+				</el-form-item>
                 <el-form-item label="是否发布" prop="isPublish">
                     <el-switch v-model="form.isPublish" class="left10"></el-switch>
                 </el-form-item>
@@ -87,6 +92,7 @@
         type: '',
         url: '',
         resourceId: '',
+		sort:'',
         isPublish: 0
     }
     import bus from '../../../bus';
@@ -205,6 +211,10 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+						if(params.type==null){
+							t.$message.error('类型不能为空');
+							return ;
+						}
                         params.isPublish = params.isPublish? '1':'0';
                         if(t.idx == '-1'){
                             bannerService.add(params).then((res)=>{
