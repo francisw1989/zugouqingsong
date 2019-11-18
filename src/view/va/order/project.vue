@@ -45,7 +45,8 @@
                         <el-button size="mini" @click="handleRecommend(scope.$index, scope.row)">{{scope.row.isRecommend==0?'推荐':'取消推荐'}}</el-button>
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button size="mini" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
+                        <el-button size="mini" v-if="scope.row.isBanner==0" type="danger" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
+						<el-button size="mini" v-else type="success" @click="handleBanner(scope.$index, scope.row)">已推荐至banner</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -176,6 +177,7 @@
         mixDuration: '',
         maxDuration: '',
         isRecommend: false,
+		isBanner:false,
         isAssemble: false,
         threePrice: '',
         fivePrice: '',
@@ -375,11 +377,19 @@
                     resourceId: row.id,
                     isPublish:0
                 }
-                console.log(params);
+				let param = {
+					resourceId: row.id,
+					isBanner:1
+				}
+				debugger
+                //console.log(params);
                  bannerService.add(params).then((res)=>{
                     this.$message.success('推荐成功');
-                    t.getItemList();
-                })
+                    //t.getItemList();
+                });
+				orderService.itemBanner(param).then((res)=>{
+					t.getItemList();
+				})
             },
             handleDelete(index, row) {
                 const t = this;
