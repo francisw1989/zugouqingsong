@@ -145,6 +145,21 @@ let orderService = {
         })
         return p;
     },
+	// 服务项目推荐Banner
+	itemBanner(params){
+	    let p = new Promise((resolve, reject)=>{
+	        let data = {
+	            method: 'PATCH',
+	            url: '/api/v1/item/banner/' + params.resourceId,
+	            params: params,
+	            loading: true
+	        }
+	        $axios(data).then((res)=>{
+	            resolve(res)
+	        })
+	    })
+	    return p;
+	},
      //服务分类项目新增
      itemClassAdd(params){
         let p = new Promise((resolve, reject)=>{
