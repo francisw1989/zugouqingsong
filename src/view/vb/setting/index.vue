@@ -68,11 +68,11 @@
                     <div class="font16b">【营业设置】</div>
                     <el-form-item class="top20" label="开始营业时间" prop="openStartTime">
                         <span v-if='!openEdit'>{{form.openStartTime}}</span>
-                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '08:30',step: '00:30',end: '18:30'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '00:00',step: '00:05',end: '12:00'}" placeholder="开始时间"></el-time-select>
                     </el-form-item>
                     <el-form-item label="结束营业时间" prop="openEndTime">
                         <span v-if='!openEdit'>{{form.openEndTime}}</span>
-                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                        <el-time-select v-if='openEdit' style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:05',end: '24:00'}" placeholder="结束时间"></el-time-select>
                     </el-form-item>
                     <el-form-item label="最大可容纳人数" prop="maxPeopleNum">
                         <span v-if='!openEdit'>{{form.maxPeopleNum}}</span>
@@ -84,11 +84,11 @@
                     </el-form-item>
                     <el-form-item label="忙碌时间开始" prop="busyStartTime">
                         <span v-if='!openEdit'>{{form.busyStartTime}}</span>
-                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyStartTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyStartTime" :picker-options="{start: '00:00',step: '00:05',end: '24:00'}" placeholder="开始时间"></el-time-select>
                     </el-form-item>
                     <el-form-item label="忙碌时间结束" prop="busyEndTime">
                         <span v-if='!openEdit'>{{form.busyEndTime}}</span>
-                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyEndTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                        <el-time-select @change='checkBusyTime' v-if='openEdit' style="width: 100%" v-model="form.busyEndTime" :picker-options="{start: '00:00',step: '00:05',end: '24:00'}" placeholder="结束时间"></el-time-select>
                     </el-form-item>
                 </el-form>
             </div>
@@ -191,6 +191,10 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+						if(params.openStartTime==null||params.openEndTime==null){
+							this.$message.error(`营业时间不能为空`);
+							return;
+						}
                         storeService.edit(params).then((res)=>{
                             // t.getList()
                             this.$message.success(`修改成功`);
