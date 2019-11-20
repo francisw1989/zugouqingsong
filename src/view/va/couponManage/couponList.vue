@@ -27,9 +27,9 @@
                 <el-table-column prop="couponName" label="优惠券名称" sortable width="150"></el-table-column>
                 <el-table-column prop="couponScopeName" label="使用范围" width="120"></el-table-column>
                 <el-table-column prop="couponTypeName" label="类型"></el-table-column>
+				<el-table-column prop="couponCondition" label="使用条件"></el-table-column>
                 <el-table-column prop="couponDenomination" label="面额"></el-table-column>
-                <el-table-column prop="couponCondition" label="使用条件"></el-table-column>
-                <el-table-column prop="grantCount" label="发放数量"></el-table-column>
+				<el-table-column prop="grantCount" label="发放数量"></el-table-column>
                 <el-table-column prop="receivingCount" label="已领取数量"></el-table-column>
                 <el-table-column prop="limitCount" label="限领"></el-table-column>
                 <el-table-column prop="expiryDate" label="有效期截止时间"></el-table-column>
@@ -101,7 +101,7 @@
                         <p class="col999 top10">折扣设置(优惠价 = 原价 x 折率)</p>
                         <div class="">
                             折率<el-input v-model="form.couponDenomination" placeholder="7" class="left5" style="width: 80px"></el-input>
-                            <span class="left5">折</span>
+                            <span class="left5">%（请填写整数）</span>
                         </div>
                     </div>
                     <div class="top10" v-if="form.couponType=='4'">
@@ -267,12 +267,17 @@
                             params[key] = t.form[key]
                         }
                         console.log(params);
+						if(params.couponType == 3 && 
+							(1>params.couponCondition||params.couponCondition>100)){
+							t.$message.error('折扣必须为整数');
+							return;
+						}
                         if(params.couponType == 1 || params.couponType == 2){
                             params.couponCondition = params.couponCondition * 100;
                             params.couponDenomination = params.couponDenomination * 100;
                         }
                         if(params.couponType == 3){
-                            params.couponDenomination = params.couponDenomination * 10;
+                            params.couponDenomination = params.couponDenomination;
                         }
                         if(t.idx == '-1'){
                             couponService.couponManagerAdd(params).then((res)=>{
@@ -372,7 +377,7 @@
                          if(v.couponType == 1 || v.couponType == 2){
                             v.couponCondition = v.couponCondition / 100;
                             v.couponDenomination = v.couponDenomination / 100;
-                        }
+                        } 
                         if(v.couponScope == null){
                             v.couponScopeName = ''
                         }else{
