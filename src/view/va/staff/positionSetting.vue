@@ -35,7 +35,7 @@
         <!-- 新增 -->
        <el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="750px">
             <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-                <el-form-item label="岗位名称">
+                <el-form-item label="岗位名称" prop="postName">
                     <el-input v-model="form.postName" placeholder="" style="width: 80%;"></el-input>
                 </el-form-item>
                 <el-form-item label="此岗位级别" class="clearfix">
@@ -103,8 +103,8 @@
                 jbList:[],
                 xsList: [],
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
+                    postName: [
+                        { required: true, message: '请输入', trigger: 'blur' },
                     ]
                 },
                 idx: -1,

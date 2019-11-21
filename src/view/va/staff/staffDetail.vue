@@ -274,14 +274,14 @@
     </el-row>
     <!-- 新增历程 -->
         <el-dialog :title="lcForm.courseType==1?'新增培训':'新增晋升'" :visible.sync="jslcVisible" width="350px" :modal='false'>
-            <el-form ref="form" :model="lcForm"  :rules="rules"   label-width="60px">
-                <el-form-item label="标题" prop="">
+            <el-form ref="form" :model="lcForm" :rules="rules"  label-width="60px">
+                <el-form-item label="标题" prop="courseTitle" >
                     <el-input v-model="lcForm.courseTitle" placeholder=""></el-input>
                 </el-form-item>
-                <el-form-item label="时间" prop="">
+                <el-form-item label="时间" prop="courseTime">
                     <el-date-picker v-model="lcForm.courseTime" type="date" value-format="yyyy-MM-dd"  placeholder="选择日期"></el-date-picker>
                 </el-form-item>
-                <el-form-item label="内容" prop="">
+                <el-form-item label="内容" prop="courseContent" >
                     <el-input v-model="lcForm.courseContent" type="textarea" placeholder=""></el-input>
                 </el-form-item>
             </el-form>
@@ -353,9 +353,15 @@
                 form: {},
                 lcForm: JSON.parse(JSON.stringify(LcForm)),
                 rules: {
-                    a: [
-                        { required: true, message: '请选择类型', trigger: 'change' },
-                    ]
+                    courseTitle: [
+                        { required: true, message: '请输入', trigger: 'blur' }
+                    ],
+					courseTime: [
+					    { required: true, message: '请输入', trigger: 'blur' }
+					],
+					courseContent: [
+					    { required: true, message: '请输入', trigger: 'blur' }
+					]
                 },
                 edit:{
                     
@@ -518,6 +524,7 @@
                 // children.splice(index, 1);
                 const t = this;
                 console.log(node, data)
+				debugger
                 t.$confirm('确认删除？').then(() => {
                     let params = {
                         employeeId: data.id,
@@ -584,7 +591,7 @@
                 
                 
 				 
-                t.form.isTechnician = t.form.isTechnician?'1':'0';
+                //t.form.isTechnician = t.form.isTechnician?'1':'0';
                 if(t.form.itemClassList.length){
                     t.form.itemClassIds =  t.form.itemClassList.map(v=>{
                         if(v.id){
@@ -606,6 +613,7 @@
                 for(let key in Form){
                     params[key] = t.form[key]
                 }
+				debugger
 				params.isTechnician = params.isTechnician?'1':'0';
                 params.status = params.status?'1':'0';
                 params.isMobilePosition = params.isMobilePosition?'1':'0';

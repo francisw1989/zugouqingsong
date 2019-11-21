@@ -128,7 +128,7 @@
                     </div>
                     <!-- <p  class="center top10"><span class="pointer colblue">查看完整记录</span></p> -->
                 </div>
-                <div v-if="tabName=='消费明细'">
+                <div v-if="tabName=='商品消费明细'">
                     <p class="font20 col000  clearfix"><span class="right ">本月共消费{{articleOrderTotalNum}}元</span>消费明细</p>
                     <table  v-for="(v) in articleOrderItemRecord" :key="v.id"  class="m-table1 top20">
                         <tr>
@@ -185,7 +185,7 @@
                 },
                 shopList: [],
                 projectList: [],
-                tabs: ['行为统计', '服务明细', '消费明细', '充值记录'],
+                tabs: ['行为统计', '服务明细', '商品消费明细', '充值记录'],
                 tabsType:[],
                 tabName: '行为统计',
                 hei: false,

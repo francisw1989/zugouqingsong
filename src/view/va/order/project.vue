@@ -44,9 +44,9 @@
                     <template slot-scope="scope">
                         <el-button size="mini" @click="handleRecommend(scope.$index, scope.row)">{{scope.row.isRecommend==0?'推荐':'取消推荐'}}</el-button>
                         <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+						<el-button size="mini" v-if="scope.row.isBanner==0" type="danger" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
+						<el-button size="mini" v-else type="success" disabled="disabled" @click="handleBanner(scope.$index, scope.row)">已推荐至banner</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-                        <el-button size="mini" v-if="scope.row.isBanner==0" type="danger" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
-						<el-button size="mini" v-else type="success" @click="handleBanner(scope.$index, scope.row)">已推荐至banner</el-button>
                     </template>
                 </el-table-column>
             </el-table>
