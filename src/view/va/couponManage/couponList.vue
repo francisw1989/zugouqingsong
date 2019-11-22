@@ -101,7 +101,7 @@
                         <p class="col999 top10">折扣设置(优惠价 = 原价 x 折率)</p>
                         <div class="">
                             折率<el-input v-model="form.couponDenomination" placeholder="7" class="left5" style="width: 80px"></el-input>
-                            <span class="left5">%（请填写整数）</span>
+                            <span class="left5">折</span>
                         </div>
                     </div>
                     <div class="top10" v-if="form.couponType=='4'">
@@ -268,8 +268,8 @@
                         }
                         console.log(params);
 						if(params.couponType == 3 && 
-							(1>params.couponCondition||params.couponCondition>100)){
-							t.$message.error('折扣必须为整数');
+							(0>params.couponDenomination * 10||params.couponDenomination * 10>=100)){
+							t.$message.error('折扣必须在0~9.9折之间');
 							return;
 						}
                         if(params.couponType == 1 || params.couponType == 2){
@@ -277,7 +277,7 @@
                             params.couponDenomination = params.couponDenomination * 100;
                         }
                         if(params.couponType == 3){
-                            params.couponDenomination = params.couponDenomination;
+                            params.couponDenomination = params.couponDenomination * 10;
                         }
                         if(t.idx == '-1'){
                             couponService.couponManagerAdd(params).then((res)=>{
@@ -378,6 +378,9 @@
                             v.couponCondition = v.couponCondition / 100;
                             v.couponDenomination = v.couponDenomination / 100;
                         } 
+						if(v.couponType == 3){
+						    v.couponDenomination = v.couponDenomination / 10;
+						} 
                         if(v.couponScope == null){
                             v.couponScopeName = ''
                         }else{
