@@ -38,7 +38,7 @@
             <el-table :data="list"  border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange">
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
-                <el-table-column prop="outTradeNo" label="订单编号" sortable width="150"></el-table-column>
+                <el-table-column prop="outTradeNo" label="订单编号" width="150"></el-table-column>
                 <el-table-column prop="itemNames" label="项目名称" width="120">
                     <template slot-scope="scope">
                         <span v-html="scope.row.itemNames"></span>
@@ -131,7 +131,7 @@
                 isPintuan: false,
                 isQuan: false,
                 total: 0,
-                pageSize: 10,
+                pageSize: 8,
                 pageNumber: 1,
                 statusList: ['待支付','已支付待到店','已到店待服务','服务中','服务完成','系统取消','用户取消'],
                 statusN:['','1','4','5'],
