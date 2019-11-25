@@ -36,10 +36,10 @@
                 <el-table-column prop="evaluateLabel" label="评价标签"></el-table-column>
                 <el-table-column prop="content" label="评价内容"></el-table-column>
                 <el-table-column prop="itemName" label="项目名称"></el-table-column>
-                <el-table-column prop="actualOrderPrice" label="实际消费"></el-table-column>
+                <el-table-column prop="actualOrderPrice" label="实际消费(元)"></el-table-column>
                  <el-table-column label="操作" width="80" align="center">
                     <template slot-scope="scope">
-                        <el-button size="mini" @click="handle1(scope.$index, scope.row)">回复</el-button>
+                        <el-button size="mini" type="success" @click="handle1(scope.$index, scope.row)">回复</el-button>
                     </template>
                 </el-table-column> 
             </el-table>
@@ -205,9 +205,11 @@
                 }
                 evaluateService.list(params).then((res)=>{
 					t.list = res.records;
-                    // for(const v of t.list){
-                    //     v.orderTechnician.actualEmployeePrice = orderTechnician.actualEmployeePrice/1000
-                    // }
+                    for(const v of t.list){
+                        v.actualOrderPrice = v.actualOrderPrice/100;
+						v.evaluateLabel = v.evaluateLabel==""?'/':v.evaluateLabel;
+						v.content = v.content==""?'/':v.content;
+                    }
                     t.total = res.total
                 });
             }
