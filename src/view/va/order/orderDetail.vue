@@ -92,10 +92,22 @@
                     <el-col :span="4" class="col999">优惠券名称</el-col>
                     <el-col :span="8" class="">{{info.couponInfo.couponName}}</el-col>
                 </el-row>
-                <el-row class="top5">
-                    <el-col :span="5" class="col999">优惠金额(元)</el-col>
-                    <el-col :span="7" class=""></el-col>
-                </el-row>
+				<el-row class="top5">
+				    <el-col :span="5" class="col999">优惠类型</el-col>
+				    <el-col :span="7" class="">{{info.couponInfo.couponType}}</el-col>
+				</el-row>
+				<el-row class="top5" v-if="info.couponInfo.couponType=='折扣'">
+				    <el-col :span="5" class="col999">优惠折扣（折）</el-col>
+				    <el-col :span="7" class="">{{info.couponInfo.couponDenomination}}折</el-col>
+				</el-row>
+				<el-row class="top5" v-else-if="info.couponInfo.couponType=='抵扣分钟'">
+				    <el-col :span="5" class="col999">优惠时长（分）</el-col>
+				    <el-col :span="7" class="">{{info.couponInfo.couponDenomination}}分</el-col>
+				</el-row>
+				<el-row class="top5" v-else>
+				    <el-col :span="5" class="col999">优惠金额（元）</el-col>
+				    <el-col :span="7" class="">{{info.couponInfo.couponDenomination}}元</el-col>
+				</el-row>
             </el-card>
         </el-col>
         <el-col :span="8" style="padding-left: 10px">
@@ -119,9 +131,9 @@
                     <p class="font16b">用户评价</p>
                     <div v-for="(v) in info.OrderEvaluateInfo" :key="v.id">
                         <el-row class="top10">
-                            <el-col :span="8" class="">{{v.employeeId}}</el-col>
-                            <el-col :span="7" class="">{{v.evaluateScore}}分</el-col>
-                            <el-col :span="9" class="">{{v.evaluateLabel}}</el-col>
+                            <el-col :span="8" class="">技师：{{v.employeeName}}</el-col>
+                            <el-col :span="7" class="">评分：{{v.evaluateScore}}分</el-col>
+                            <el-col :span="9" class="">标签：{{v.evaluateLabel}}</el-col>
                         </el-row>
                     </div>
                 </div>

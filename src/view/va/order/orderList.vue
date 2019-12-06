@@ -138,6 +138,7 @@
                 info: {},
                 payTypeList:['','虚拟账户','现金账户','微信支付','现金','微信转账','支付宝转账'],
                 sexList:['女','男','未知'],
+				couponTypeList:['','满减','满赠','折扣','抵扣分钟'],
                 sysRoute: window.sysRoute || ''
             }
         },
@@ -202,6 +203,11 @@
                             return v5.userName
                         }).join('、'):'';
                     }
+					if(res.couponInfo!=null){
+						res.couponInfo.couponType = t.couponTypeList[res.couponInfo.couponType]
+					}
+					
+					
                     t.info = res;
                 })
             },
