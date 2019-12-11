@@ -39,6 +39,11 @@ let vaRouter = [
                 component: resolve => require(['../view/va/order/projectCat.vue'], resolve),
                 meta: { title: '服务分类' },
             },
+			{
+			    path: 'recommendProject',
+			    component: resolve => require(['../view/va/order/recommendProject.vue'], resolve),
+			    meta: { title: '推荐项目' },
+			},
             {
                 path: 'staffList',
                 component: resolve => require(['../view/va/staff/staffList.vue'], resolve),
