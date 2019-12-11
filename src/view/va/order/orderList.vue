@@ -8,6 +8,11 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
+				<div style="height: 40px">
+					<span>客户名称</span>
+					<el-input v-model="userName" style='width: 110px!important' placeholder="输入客户姓名" class="handle-input left10"></el-input>
+					<el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
+				</div>
                 <el-radio-group v-model="status" class="">
                     <el-radio-button :label="i"  v-for="(v, i) in typeList" :key="i" >{{v}}</el-radio-button>
                 </el-radio-group>
@@ -39,6 +44,7 @@
                 <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
                 <!-- <el-table-column type="index" label="序号"  width="50" align='center'></el-table-column> -->
                 <el-table-column prop="outTradeNo" label="订单编号" width="150"></el-table-column>
+				<el-table-column prop="user.userName" label="客户姓名"></el-table-column>
                 <el-table-column prop="itemNames" label="项目名称" width="120">
                     <template slot-scope="scope">
                         <span v-html="scope.row.itemNames"></span>
@@ -101,6 +107,7 @@
             return {
                 isAssemble: '',
                 startTime: '',
+				userName:'',
                 endTime: '',
                 isCoupon: '',
                 status: '0',
@@ -159,7 +166,9 @@
                 this.getOrderList();
             },
             search() {
-                this.is_search = true;
+                //this.is_search = true;
+				const t = this;
+				t.getOrderList();
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
@@ -219,7 +228,7 @@
                     pageNumber: t.pageNumber,
                     storeId: t.storeId,
                     isAssemble: t.isAssemble,
-                   
+                    userName: t.userName,
                     endTime: t.endTime,
                     isCoupon: t.isCoupon
                 }

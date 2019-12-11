@@ -8,7 +8,7 @@
 		</div>
 		<div class="container">
 			<div class=" clearfix top10">
-				<el-button type="primary" icon="el-icon-circle-plus-outline" class="handle-del right" @click="handleEdit">新增</el-button>
+				<el-button type="primary" class="handle-del right" @click="updatePage()">刷新页面</el-button>
 				<span>项目名称</span>
 				<el-input v-model="itemName" style='width: 110px!important' placeholder="输入项目名称" class="handle-input left10"></el-input>
 				<el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
@@ -17,18 +17,11 @@
 				 filterable>
 					<el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName" :value="v.id"></el-option>
 				</el-select>
-				<span class="left20">是否推荐</span>
-				<el-select class="left10" clearable v-model="isRecommend" placeholder="" style='width: 60px' filterable>
-					<el-option label="是" value="1"></el-option>
-					<el-option label="否" value="0"></el-option>
-				</el-select>
-
 				<span class="left20">是否拼团</span>
 				<el-select class="left10" clearable v-model="isAssemble" placeholder="" style='width: 60px' filterable>
 					<el-option label="是" value="1"></el-option>
 					<el-option label="否" value="0"></el-option>
 				</el-select>
-				<el-button type="primary" @click="updatePage" class="left10">刷新页面</el-button>
 			</div>
 
 			<el-table :data="list" border class="table top20" ref="multipleTable" @selection-change="handleSelectionChange"
@@ -40,20 +33,24 @@
 				<el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
 				<el-table-column prop="defaultPrice" label="默认价格(元)"></el-table-column>
 				<el-table-column label="排序(双击修改)">
-					 <template slot-scope="{row}">
-					    <span v-if="!isEdit[row.index]">{{row.sort}}</span>
-					    <el-input v-if="isEdit[row.index]" @blur="changeSort(row)" v-model="row.sortNum" placeholder="序号"></el-input>
-					  </template>
+					<template slot-scope="{row}">
+						<span v-if="!isEdit[row.index]">{{row.recommendSort}}</span>
+						<el-input v-if="isEdit[row.index]" @blur="changeSort(row)" v-model="row.sortNum" placeholder="序号"></el-input>
+					</template>
 				</el-table-column>
+				<!-- <el-table-column prop="recommendSort" label="排序(双击修改)" edit="false">
+					<template slot-scope="scope">
+						<el-input v-if="scope.row.recommendSort.edit"  v-model="scope.row.sortNum.value" @blur="scope.row.recommendSort.edit = false">
+						</el-input>
+						<span v-else>{{ scope.row.recommendSort }}</span>
+					</template>
+				</el-table-column> -->
 				<el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
 				<el-table-column prop="isAssembleName" label="是否可拼团"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间"></el-table-column>
-				<el-table-column label="操作" width="430" align="center">
+				<el-table-column label="操作" width="300" align="center">
 					<template slot-scope="scope">
 						<el-button size="mini" @click="handleRecommend(scope.$index, scope.row)">{{scope.row.isRecommend==0?'推荐':'取消推荐'}}</el-button>
-						<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-						<el-button size="mini" v-if="scope.row.isBanner==0" type="danger" @click="handleBanner(scope.$index, scope.row)">推荐至banner</el-button>
-						<el-button size="mini" v-else type="success" disabled="disabled" @click="handleBanner(scope.$index, scope.row)">已推荐至banner</el-button>
 						<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
 					</template>
 				</el-table-column>
@@ -64,109 +61,9 @@
 				</el-pagination>
 			</div>
 		</div>
-
-		<!-- 编辑弹出框 -->
-		<el-dialog :title="idx==-1?'新增':'编辑'" :visible.sync="editVisible" width="40%">
-			<el-form ref="form" :model="form" :rules="rules" label-width="120px">
-				<div class="clearfix">
-					<el-form-item label="项目名称" prop="itemName" style="width: 50%" class="left">
-						<el-input v-model="form.itemName" placeholder="输入项目名称"></el-input>
-					</el-form-item>
-					<el-form-item label="所属分类" prop="itemClassId" style="width: 50%" class="left">
-						<el-select v-model="form.itemClassId" @change='itemClassListChange' placeholder="请选择项目分类" filterable>
-							<el-option v-for="(v, i) in itemClassList" :key='v.id' :label="v.itemClassName" :value="v.id"></el-option>
-						</el-select>
-					</el-form-item>
-				</div>
-				<div class="clearfix">
-					<el-form-item label="推荐时长" prop="defaultDuration" style="width: 50%" class="left">
-						<el-input v-model="form.defaultDuration" placeholder=""></el-input>
-					</el-form-item>
-					<el-form-item label="默认价格(元)" prop="defaultPrice" style="width: 50%" class="left">
-						<el-input v-model="form.defaultPrice" placeholder="0"></el-input>
-					</el-form-item>
-				</div>
-				<div class="clearfix">
-					<el-form-item label="最少服务时间" prop="mixDuration" style="width: 50%" class="left">
-						<el-input v-model="form.mixDuration" placeholder=""></el-input>
-					</el-form-item>
-					<el-form-item label="最高服务时间" prop="maxDuration" style="width: 50%" class="left">
-						<el-input v-model="form.maxDuration" placeholder=""></el-input>
-					</el-form-item>
-				</div>
-				<div class="clearfix">
-					<el-form-item label="是否推荐" prop="isRecommend" style="width: 50%" class="left">
-						<el-switch v-model="form.isRecommend" class=""></el-switch>
-					</el-form-item>
-
-				</div>
-				<div class="clearfix">
-					<el-form-item label="是否拼团" prop="isAssemble">
-						<el-switch v-model="form.isAssemble" class=""></el-switch>
-						<div class="clear"></div>
-						<div v-if="form.isAssemble" style="border: 1px solid #ddd; display: inline-block; padding: 10px 20px;" class=" top10">
-							<div>
-								<span>拼团人数</span>
-								<span class='pad10RL'>3</span>
-								<span class="">价格(总价/元)</span>
-								<el-input v-model="form.threePrice" style="width: 80px;" class="left5"></el-input>
-							</div>
-							<div class="top10">
-								<span>拼团人数</span>
-								<span class='pad10RL'>5</span>
-								<span class="">价格(总价/元)</span>
-								<el-input v-model="form.fivePrice" style="width: 80px;" class="left5"></el-input>
-							</div>
-							<div class="top10">
-								<span>拼团人数</span>
-								<span class='pad10RL'>10</span>
-								<span class="">价格(总价/元)</span>
-								<el-input v-model="form.tenPrice" style="width: 80px;" class="left5"></el-input>
-							</div>
-						</div>
-					</el-form-item>
-				</div>
-				<div class="clearfix">
-					<el-form-item label="项目图片" prop="imgs">
-						<el-upload :file-list='form.imgListShow' :auto-upload='false' action="" :on-change="getFile" list-type="picture-card"
-						 :on-remove="beforeRemove">
-							<i class="el-icon-plus"></i>
-						</el-upload>
-
-					</el-form-item>
-				</div>
-				<el-form-item label="适宜人群" prop="crowd">
-					<el-input type="textarea" v-model="form.crowd" placeholder="" style="width: 70%; "></el-input>
-				</el-form-item>
-				<el-form-item label="调理方法" prop="conditioningMethod">
-					<el-input type="textarea" v-model="form.conditioningMethod" placeholder="" style="width: 70%; "></el-input>
-				</el-form-item>
-				<el-form-item label="调理流程" prop="conditioningProcess">
-					<el-input type="textarea" v-model="form.conditioningProcess" placeholder="" style="width: 70%; "></el-input>
-				</el-form-item>
-				<el-form-item label="自我保养方法" prop="maintenanceMethod">
-					<el-input type="textarea" v-model="form.maintenanceMethod" placeholder="" style="width: 70%; "></el-input>
-				</el-form-item>
-
-
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="editVisible = false">取 消</el-button>
-				<el-button type="primary" @click="saveEdit('form')">确 定</el-button>
-			</span>
-		</el-dialog>
-
-		<!-- 删除提示框 -->
-		<el-dialog title="提示" :visible.sync="delVisible" width="300px" left>
-			<div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="delVisible = false">取 消</el-button>
-				<el-button type="primary" @click="deleteRow()">确 定</el-button>
-			</span>
-		</el-dialog>
-
 	</div>
 </template>
+
 <script>
 	import bus from '../../../bus';
 	import Vue from 'vue';
@@ -207,6 +104,7 @@
 				}
 			};
 			return {
+				edit: false,
 				isEdit: [],
 				list: [],
 				cur_page: 1,
@@ -324,11 +222,11 @@
 						params.tenPrice = params.tenPrice == "" ? '0' : params.tenPrice;
 						if (t.idx == '-1') {
 							orderService.itemAdd(params).then((res) => {
-								t.getItemList()
+								t.recommendList()
 							})
 						} else {
 							orderService.itemEdit(params).then((res) => {
-								t.getItemList()
+								t.recommendList()
 							})
 						}
 
@@ -344,12 +242,12 @@
 
 			handleCurrentChange(val) {
 				this.cur_page = val;
-				this.getItemList();
+				this.recommendList();
 			},
 			search() {
 				//this.is_search = true;
 				const t = this;
-				t.getItemList();
+				t.recommendList();
 			},
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
@@ -363,7 +261,7 @@
 				};
 				orderService.itemRecommend(params).then((res) => {
 					this.$message.success('设置成功');
-					t.getItemList();
+					t.recommendList();
 				})
 			},
 			handleEdit(index, row) {
@@ -408,42 +306,56 @@
 				//console.log(params);
 				bannerService.add(params).then((res) => {
 					this.$message.success('推荐成功');
-					//t.getItemList();
+					//t.recommendList();
 				});
 				orderService.itemBanner(param).then((res) => {
-					t.getItemList();
+					t.recommendList();
 				})
 			},
 			changeSort(row) {
 				const t = this;
-				if(row.sortNum==undefined){
+				if (row.sortNum == undefined) {
 					//window.location.reload();
 					this.$message.error('序号不能为空');
 					return;
 				}
 				this.sortNum = row.sortNum;
 				this.id = row.id;
-				let params= {
+				let params = {
 					id: this.id,
-					sort:this.sortNum
+					sort: this.sortNum
 				}
-				orderService.changeSort(params).then((res)=>{
+				orderService.changeRecommengSort(params).then((res) => {
 					this.$message.success('修改成功');
-					//t.getItemList();
+					//t.recommendList();
 				})
 			},
-			updatePage(){
+			updatePage() {
 				window.location.reload();
 			},
 			rowDblclick(row, column, cell, event) {
 				//判断是否是需要编辑的列 再改变对应的值
 				if (column.label == '排序(双击修改)') {
-					/*第一个参数是你要改变的数组， 
+					// t.sortNum = row.recommendSort;
+					// row.sortNum = t.sortNum;
+					/* 第一个参数是你要改变的数组， 
 					  第二个参数是你要改变数组中对应值的索引，
-					  第三个参数是你要将这个值改成什么*/
-					this.$set(this.isEdit, row.index, true)
+					  第三个参数是你要将这个值改成什么 */
+					this.$set(this.isEdit, row.$index, true)
 				}
 			},
+			// rowDblclick(row, column, cell, event) {
+			// 	//判断是否是需要编辑的列 再改变对应的值
+			// 	debugger
+			// 	if (column.label == '排序(双击修改)') {
+			// 		if (row[column.property]) {
+			// 			row[column.property].edit = true
+			// 			setTimeout(() => {
+			// 				this.$refs[column.property].focus()
+			// 			}, 20)
+			// 		}
+			// 	}
+			// },
 			handleDelete(index, row) {
 				const t = this;
 				this.idx = index;
@@ -460,10 +372,10 @@
 				orderService.itemDelete(parmas).then((res) => {
 					this.$message.success('排序成功');
 					this.delVisible = false;
-					t.getItemList();
+					t.recommendList();
 				})
 			},
-			getItemList() {
+			recommendList() {
 				const t = this;
 				t.list = [];
 
@@ -472,11 +384,9 @@
 					pageNumber: t.pageNumber,
 					itemName: t.itemName,
 					itemClassId: t.itemClassId,
-					isRecommend: t.isRecommend,
 					isAssemble: t.isAssemble
 				}
-				console.log(params);
-				orderService.getItemList(params).then((res) => {
+				orderService.recommendList(params).then((res) => {
 					for (const v of res.records) {
 						v.isRecommendName = v.isRecommend == 0 ? '未推荐' : '已推荐';
 						v.isAssembleName = v.isAssemble == 0 ? '不参与' : '参与';
@@ -488,19 +398,18 @@
 		},
 		watch: {
 			itemClassId(val) {
-				this.getItemList();
+				this.recommendList();
 			},
 			isRecommend() {
-				this.getItemList();
+				this.recommendList();
 			},
 			isAssemble() {
-				this.getItemList();
+				this.recommendList();
 			}
-
 		},
 		mounted() {
 			const t = this;
-			t.getItemList()
+			t.recommendList()
 
 			orderService.getItemClassList().then((res) => {
 				t.itemClassList = res.records;
@@ -509,6 +418,6 @@
 		}
 	}
 </script>
-<style scoped>
 
+<style scoped>
 </style>
