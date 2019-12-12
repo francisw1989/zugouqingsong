@@ -32,19 +32,17 @@
 				<el-table-column prop="itemClassName" sortable width="110" label="所属分类"></el-table-column>
 				<el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
 				<el-table-column prop="defaultPrice" label="默认价格(元)"></el-table-column>
-				<el-table-column label="排序(双击修改)">
+				<!-- <el-table-column  label="排序(双击修改)">
 					<template slot-scope="{row}">
 						<span v-if="!isEdit[row.index]">{{row.recommendSort}}</span>
 						<el-input v-if="isEdit[row.index]" @blur="changeSort(row)" v-model="row.sortNum" placeholder="序号"></el-input>
 					</template>
-				</el-table-column>
-				<!-- <el-table-column prop="recommendSort" label="排序(双击修改)" edit="false">
-					<template slot-scope="scope">
-						<el-input v-if="scope.row.recommendSort.edit"  v-model="scope.row.sortNum.value" @blur="scope.row.recommendSort.edit = false">
-						</el-input>
-						<span v-else>{{ scope.row.recommendSort }}</span>
-					</template>
 				</el-table-column> -->
+				<el-table-column prop="recommendSort" label="排序(双击修改)">
+					<!-- <template slot-scope="scope">
+						<el-input v-model="scope.row.sortNum" @blur="changeSort(scope.row)"></el-input>
+					</template> -->
+				</el-table-column>
 				<el-table-column prop="isRecommendName" label="是否推荐"></el-table-column>
 				<el-table-column prop="isAssembleName" label="是否可拼团"></el-table-column>
 				<el-table-column prop="createTime" label="创建时间"></el-table-column>
@@ -333,29 +331,49 @@
 			updatePage() {
 				window.location.reload();
 			},
-			rowDblclick(row, column, cell, event) {
-				//判断是否是需要编辑的列 再改变对应的值
-				if (column.label == '排序(双击修改)') {
-					// t.sortNum = row.recommendSort;
-					// row.sortNum = t.sortNum;
-					/* 第一个参数是你要改变的数组， 
-					  第二个参数是你要改变数组中对应值的索引，
-					  第三个参数是你要将这个值改成什么 */
-					this.$set(this.isEdit, row.$index, true)
-				}
-			},
 			// rowDblclick(row, column, cell, event) {
 			// 	//判断是否是需要编辑的列 再改变对应的值
-			// 	debugger
 			// 	if (column.label == '排序(双击修改)') {
-			// 		if (row[column.property]) {
-			// 			row[column.property].edit = true
-			// 			setTimeout(() => {
-			// 				this.$refs[column.property].focus()
-			// 			}, 20)
-			// 		}
+			// 		 t.sortNum = row.recommendSort;
+			// 		 row.sortNum = t.sortNum;
+			// 		/* 第一个参数是你要改变的数组， 
+			// 		  第二个参数是你要改变数组中对应值的索引，
+			// 		  第三个参数是你要将这个值改成什么 */
+			// 		this.$set(this.isEdit, row.$index, true)
 			// 	}
 			// },
+			rowDblclick(row, column, cell, event) {
+				const t = this;
+				console.log(row, column, cell, event);
+				if (column.label == "排序(双击修改)") {
+					event.target.innerHTML = "";
+					let i = row.id;
+					let v = document.getElementById(i);
+					if (v == null || v.length < 1) {
+						let cellInput = document.createElement("input");
+						cellInput.id = row.id
+						cellInput.value = row.recommendSort;
+						cellInput.setAttribute("type", "text");
+						cellInput.style.width = "80%";
+						cell.appendChild(cellInput);
+						cellInput.onblur = function() {
+							cell.removeChild(cellInput);
+							event.target.innerHTML = cellInput.value;
+							t.sortNum = cellInput.value;
+							t.id = row.id;
+							let params = {
+								id: t.id,
+								sort: t.sortNum
+							}
+							orderService.changeRecommengSort(params).then((res) => {
+								//this.$message.success('修改成功');
+								debugger
+								t.recommendList();
+							})
+						};
+					}
+				}
+			},
 			handleDelete(index, row) {
 				const t = this;
 				this.idx = index;
@@ -378,7 +396,6 @@
 			recommendList() {
 				const t = this;
 				t.list = [];
-
 				let params = {
 					pageSize: t.pageSize,
 					pageNumber: t.pageNumber,
@@ -410,7 +427,6 @@
 		mounted() {
 			const t = this;
 			t.recommendList()
-
 			orderService.getItemClassList().then((res) => {
 				t.itemClassList = res.records;
 			})
