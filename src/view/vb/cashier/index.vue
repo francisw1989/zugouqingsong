@@ -35,10 +35,14 @@
                                 <el-form-item label="手机号" style="" class="">
                                     <el-input v-model="seachForm.telephoneNum" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
-                               <!-- <el-form-item label="姓名" style="" class="">
-                                    <el-input v-model="seachForm.userName" placeholder=""  @keyup.enter.native="customSeach('seachForm')"></el-input>
-                                </el-form-item>
-                                <el-form-item label="房间号" style="" class="">
+                                <div>
+								<el-form-item label="验证码" style="" class="">
+								<el-input type="text" v-model="seachForm.verificationCode"  placeholder="请输入" style="width: 40%"/>
+								<el-button v-show="sendAuthCode"  type="success" @click="getAuthCode('seachForm')">获取验证码</el-button>
+								<span v-show="!sendAuthCode" class="auth_text"> <span class="auth_text_blue">{{auth_time}} </span> 秒后重试</span> 
+								</el-form-item>
+                                </div>
+                                <!--<el-form-item label="房间号" style="" class="">
                                     <el-input v-model="seachForm.roomName" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item> -->
                             </el-form>
@@ -508,8 +512,8 @@
     }
     const SeachForm = {
         memberNum: '',
+		verificationCode: '',
         telephoneNum:'',
-        userName: '',
         roomName: '',
         pageSize: '100',
         pageNumber: '1'  
@@ -525,6 +529,8 @@
     export default {
         data() {
             return {
+				sendAuthCode:true,
+				auth_time:0,
                 messageVisible: false,
                 nowTimeData: '',
                 welcomeTitle: '欢迎来到足够轻松门店收银系统',
@@ -1149,8 +1155,32 @@
                 })
                 
             },
-           
+			getAuthCode(seachform){
+				const t = this;
+				let params = {};
+				// t.editVisible = false;
+				for(let key in SeachForm){
+				    params[key] = t.seachForm[key]
+				}
+				if(params.memberNum=="" && params.telephoneNum==""){
+					t.$message.error('手机号或会员号必须填写');
+					return
+				}
+				cashierService.sendVerificationCode(params).then((res=>{
+					t.sendAuthCode = false;
+					     //设置倒计时秒
+					      t.auth_time = 300;
+					      var auth_timetimer = setInterval(()=>{
+					        t.auth_time--;
+					        if(t.auth_time<=0){
+					          t.sendAuthCode = true;
+					          clearInterval(auth_timetimer);
+					        }
+					      }, 1000);
+				}))
+			},
             customSeach(seachform){
+				debugger
                 const t = this;
                 let _do = ()=>{
                     let params = {};
@@ -1158,6 +1188,14 @@
                     for(let key in SeachForm){
                         params[key] = t.seachForm[key]
                     }
+					if(params.memberNum=="" && params.telephoneNum==""){
+						t.$message.error('手机号或会员号必须填写');
+						return;
+					}
+					if(params.verificationCode==""){
+						t.$message.error('验证码必须填写');
+						return;
+					}
                     cashierService.customSeach(params).then((res)=>{
                         if(res && res.userInfo.id){
                             if(res.orderInfo.records.length){
@@ -1528,4 +1566,13 @@
 .imgWap{ width: 50px; height: 50px; float: left; position: relative;}
 .imgWap .xinWap{ position: absolute; width: 100%; left: 0; bottom: 0;  }
 .imgWap .xinWap .xin{ width: 10px; height: 10px; float: right; margin-left: 3px;}
+.auth_input{
+  width:140px;
+  height:38px;
+  margin-bottom:20px;
+  border:1px solid #DCDFE6;
+  /* color:red; */
+  padding-left:10px;
+  border-radius: 8%;
+}
 </style>
