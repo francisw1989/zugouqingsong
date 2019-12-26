@@ -315,6 +315,22 @@ let cashierService = {
         })
         return p;
     },
+	// 客服台发送短信验证码
+	sendVerificationCode(params){
+	    let p = new Promise((resolve, reject)=>{
+	        let data = {
+	            method: 'get',
+	            url: '/api/v1/custom/sendVerificationCode/',
+	            loading: true,
+	            params: params
+	        }
+	        $axios(data).then((res)=>{
+	            resolve(res)
+	        })
+	    })
+	    return p;
+	},
+	
     list(){
 
         let p = new Promise((resolve, reject)=>{
