@@ -3,12 +3,12 @@
 		<!-- 根据地址的路由来展示页面标题 -->
 		<div class="login-header">
 			<div class="login-title" v-if="sysRoute=='va'">
-				足够轻松 平台管理页面
+				足够轻松 平台管理
 			</div>
-			<div class="login-title" v-else>足够轻松 门店管理页面</div>
+			<div class="login-title" v-else>足够轻松 门店管理</div>
 		</div>
         <div class="ms-login">
-            <div class="ms-title">登录</div>
+            <div class="ms-title">账户登录</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="请输入用户名">
@@ -25,6 +25,9 @@
                 </div>
             </el-form>
         </div>
+		<div class="login-foot">
+			<div class="companyNmae">技术支持 南京宏智洋科技有限公司</div>
+		</div>
     </div>
 </template>
 
@@ -136,17 +139,40 @@
     }
 	.login-header{
 		 position: absolute;
-		 left:1%;
-		 top:1%;
-		 width:350px;
-		 height: 50px;
+		 top:0px;
+		/* left:1%;
+		 top:1%; */
+		 width:100%;
+		 height: 80px;
 		 border-radius: 5px;
-		 background: rgba(255,255,255, 0.8);
+		 background: rgba(255,255,255, 1);
 		 overflow: hidden;
 	}
+	.login-foot{
+		position: absolute;
+		/* left:1%;*/
+		bottom: 0px;
+		left: 0px;
+		 width:100%;
+		 height: 180px;
+		 border-radius: 5px;
+		 background: rgba(255,255,255, 1);
+		 overflow: hidden;
+	}
+	.companyNmae{
+		position: absolute;
+		font-size: 14px;
+		color: #5f5f5f;
+		margin: 4% 0 1% 43%;
+		/* left: 45%;
+		top:20%; */
+	}
 	.login-title{
+		position: absolute;
 		font-size: 30px;
-		color: #000000;
-		text-align: center;
+		color: #555555;
+		margin: 1% ;
+		/* left: 3%;
+		top: 20%; */
 	}
 </style>
