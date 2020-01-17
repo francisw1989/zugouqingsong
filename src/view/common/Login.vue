@@ -163,7 +163,7 @@
 		position: absolute;
 		font-size: 14px;
 		color: #5f5f5f;
-		margin: 4% 0 1% 43%;
+		margin: 3% 0 1% 43%;
 		/* left: 45%;
 		top:20%; */
 	}
