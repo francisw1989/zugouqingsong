@@ -1,7 +1,14 @@
 <template>
     <div class="login-wrap">
+		<!-- 根据地址的路由来展示页面标题 -->
+		<div class="login-header">
+			<div class="login-title" v-if="sysRoute=='va'">
+				足够轻松 平台管理页面
+			</div>
+			<div class="login-title" v-else>足够轻松 门店管理页面</div>
+		</div>
         <div class="ms-login">
-            <div class="ms-title">足够轻松 平台管理</div>
+            <div class="ms-title">登录</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
                 <el-form-item prop="username">
                     <el-input v-model="ruleForm.username" placeholder="请输入用户名">
@@ -14,7 +21,7 @@
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
-                    <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                    <el-button type="primary" style="background-color: #2093ff; font-size: 16px;" @click="submitForm('ruleForm')">登 录</el-button>
                 </div>
             </el-form>
         </div>
@@ -38,7 +45,8 @@
                     password: [
                         { required: true, message: '请输入密码', trigger: 'blur' }
                     ]
-                }
+                },
+				sysRoute:'',
             }
         },
         methods: {
@@ -72,7 +80,8 @@
             //     window.location.href = '/';
             // }
             if(window.location.href.split('?')[1]){
-                localStorage.sysRoute = window.location.href.split('?')[1]
+                localStorage.sysRoute = window.location.href.split('?')[1];
+				this.sysRoute = window.location.href.split('?')[1];
             }else{
                 window.location.href = window.location.href + '?' + localStorage.sysRoute || 'vb'
             }
@@ -95,17 +104,18 @@
         line-height: 50px;
         text-align: center;
         font-size:20px;
-        color: #fff;
+        color: #000000;
         border-bottom: 1px solid #ddd;
     }
     .ms-login{
         position: absolute;
-        left:50%;
+        left:80%;
         top:50%;
         width:350px;
         margin:-190px 0 0 -175px;
         border-radius: 5px;
-        background: rgba(255,255,255, 0.3);
+		background: rgba(255,255,255, 0.8);
+        /* background: rgba(255,255,255, 0.3); */
         overflow: hidden;
     }
     .ms-content{
@@ -124,4 +134,19 @@
         line-height:30px;
         color:#fff;
     }
+	.login-header{
+		 position: absolute;
+		 left:1%;
+		 top:1%;
+		 width:350px;
+		 height: 50px;
+		 border-radius: 5px;
+		 background: rgba(255,255,255, 0.8);
+		 overflow: hidden;
+	}
+	.login-title{
+		font-size: 30px;
+		color: #000000;
+		text-align: center;
+	}
 </style>
