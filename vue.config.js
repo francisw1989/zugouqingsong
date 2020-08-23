@@ -7,11 +7,11 @@ module.exports = {
         port: 8081,
         proxy: {
           '/api': {
-            target: 'https://zzh.hzysofti.com',
+            target: 'https://pc.zugouqingsong.com',
             changeOrigin: true,
           },
           '/common': {
-            target: 'https://zzh.hzysofti.com',
+            target: 'https://pc.zugouqingsong.com',
             changeOrigin: true,
           }
         }

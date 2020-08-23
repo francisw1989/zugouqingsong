@@ -31,8 +31,8 @@ export default {
                 let html = 
                 `
                     <audio id="message${t.index}">
-                        <source src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=${currentMessage}" type="audio/mpeg">
-                        <embed height="0" width="0" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=${currentMessage}">
+                        <source src="https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=${currentMessage}" type="audio/mpeg">
+                        <embed height="0" width="0" src="https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=5&text=${currentMessage}">
                     </audio>
                 `
                 $eleWap.innerHTML += html;
