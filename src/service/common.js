@@ -328,7 +328,7 @@ let commonService = {
 	// 列表查询系统菜单
 	getSysMenu() {
 		let p = new Promise((resolve, reject) => {
-			let type = '';
+			let type = 0;
 			if (localStorage.sysRoute == 'va') {
 				type = 1;
 			} else if (localStorage.sysRoute == 'vb') {
