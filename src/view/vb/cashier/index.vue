@@ -729,14 +729,30 @@
         },
         methods:{
             removeOrder(obj, i){
-                const t = this;
-                console.log(obj)
-                let params = {
-                    orderId: obj.id,
-                    userId: obj.userId
-                }
-                cashierService.removeOrder(params).then(()=>{
-                    t.appointList.splice(i, 1)
+                this.$prompt('请输入取消理由', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                }).then(({ value }) => {
+                    if(value.length > 256){
+                        this.$message({
+                            type: 'info',
+                            message: '取消原因请限制在128个汉字内'
+                        });
+                        return;
+                    }
+                    const t = this;
+                    console.log(obj)
+                    let params = {
+                        orderId: obj.id,
+                        userId: obj.userId,
+                        reason: value
+                    }
+                    console.log(params);
+                    cashierService.removeOrder(params).then(()=>{
+                        t.appointList.splice(i, 1)
+                    });
+                }).catch(() => {
+                    console.log("取消预约");
                 });
             },
             check(i){
@@ -1516,18 +1532,21 @@
             Bus.$emit('currentMessage', t.welcomeTitle);
             t.newsRemind();
             setInterval(()=>{
-                t.NowTime()
+                t.NowTime();
             },1000);
 
-            
-
+            setInterval(()=>{
+                t.getAppointList()
+            },5000);
 
             t.userInfo = JSON.parse(localStorage.userInfo);
             t.cal();
             t.leveName = t.$GD.leveName;
+
             t.getAppointList();
             t.getItemClassList();
             t.getRoomList();
+
             t.vipRechargeInfo();
 
             // setTimeout(()=>{

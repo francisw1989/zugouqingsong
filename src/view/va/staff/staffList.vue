@@ -157,7 +157,7 @@
                 </div>
                 <div class="clearfix">
                    <el-form-item label="">
-                        <el-checkbox v-model="form.checked">新增之后继续完善员工信息</el-checkbox>
+                        <!--<el-checkbox v-model="form.checked">新增之后继续完善员工信息</el-checkbox>-->
                     </el-form-item>
                 </div>
                 
@@ -326,6 +326,7 @@
                         params.isTechnician = params.isTechnician?'1':'0';
                         staffService.employeesAdd(params).then((res)=>{
                             t.getEmployeesList();
+                            t.form = Form;
                         })
                     } else {
                         console.log('error submit!!');

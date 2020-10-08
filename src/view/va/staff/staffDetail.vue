@@ -5,6 +5,12 @@
             <el-row>
                 <el-col :span="7">
                     <div style="width: 80px" class="relative clearfix">
+                        <el-upload action=""
+                                   :show-file-list="false"
+                                   :on-change='getFile'
+                                   :auto-upload='false'>
+                            <el-button size="small" type="primary">点击上传</el-button>
+                        </el-upload>
                         <img v-if="form.photo"  :src="form.photo" alt="" class="tx1 left">
                         <img v-if="!form.photo" src= '../../../assets/img/img.jpg' alt="" class="tx1 left">
                         <div class="ghWap font12">工号:{{form.jobNumber}}</div>
@@ -400,6 +406,14 @@
         },
         props: ['row'],
         methods:{
+            getFile(file, fileList){
+                const t = this;
+                t.$commonService.getBase64(file.raw).then((Base64)=>{
+                    t.$commonService.upload(Base64).then((res)=>{
+                        t.form.photo = res.netUrl
+                    })
+                })
+            },
             addJslc(courseType){
                 const t = this;
                 t.lcForm = JSON.parse(JSON.stringify(LcForm));
