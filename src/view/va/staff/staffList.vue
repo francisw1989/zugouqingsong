@@ -317,7 +317,6 @@
                 this.$refs[form].validate((valid) => {
                     if (valid) {
                         let params = {};
-                        this.editVisible = false;
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
@@ -345,6 +344,7 @@
                                 isTechnician: false,
                                 status:false
                             };
+                            this.editVisible = false;
                         })
                     } else {
                         console.log('error submit!!');
