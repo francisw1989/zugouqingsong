@@ -326,14 +326,32 @@
                         params.isTechnician = params.isTechnician?'1':'0';
                         staffService.employeesAdd(params).then((res)=>{
                             t.getEmployeesList();
-                            t.form = Form;
+                            t.form = {
+                                employeeName: '',
+                                password: '111111',
+                                sex: '1',
+                                birthday: '',
+                                photo: '',
+                                age: '',
+                                post: '',
+                                grade: '',
+                                isMobilePosition: false,
+                                storesId: '',
+                                jobNumber: '',
+                                telephoneNum: '',
+                                initiationTime: '',
+                                salary: '',
+                                info: '',
+                                isTechnician: false,
+                                status:false
+                            };
                         })
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
-                
+
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
