@@ -36,11 +36,11 @@
                                     <el-input v-model="seachForm.telephoneNum" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
                                 </el-form-item>
                                 <div>
-								<el-form-item label="验证码" style="" class="">
+								<!-- <el-form-item label="验证码" style="" class="">
 								<el-input type="text" v-model="seachForm.verificationCode"  placeholder="请输入" style="width: 40%"/>
 								<el-button v-show="sendAuthCode"  type="success" @click="getAuthCode('seachForm')">获取验证码</el-button>
 								<span v-show="!sendAuthCode" class="auth_text"> <span class="auth_text_blue">{{auth_time}} </span> 秒后重试</span> 
-								</el-form-item>
+								</el-form-item> -->
                                 </div>
                                 <!--<el-form-item label="房间号" style="" class="">
                                     <el-input v-model="seachForm.roomName" placeholder="" @keyup.enter.native="customSeach('seachForm')"></el-input>
@@ -1196,7 +1196,6 @@
 				}))
 			},
             customSeach(seachform){
-				debugger
                 const t = this;
                 let _do = ()=>{
                     let params = {};
@@ -1208,10 +1207,10 @@
 						t.$message.error('手机号或会员号必须填写');
 						return;
 					}
-					if(params.verificationCode==""){
-						t.$message.error('验证码必须填写');
-						return;
-					}
+					// if(params.verificationCode==""){
+					// 	t.$message.error('验证码必须填写');
+					// 	return;
+					// }
                     cashierService.customSeach(params).then((res)=>{
                         if(res && res.userInfo.id){
                             if(res.orderInfo.records.length){

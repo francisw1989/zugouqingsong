@@ -134,7 +134,7 @@ let commonService = {
 				{
 					icon: 'el-icon-lx-recharge',
 					index: '6',
-					title: '优惠卷管理',
+					title: '优惠券管理',
 					id: 57,
 					subs: [{
 							index: '/va/couponList',
