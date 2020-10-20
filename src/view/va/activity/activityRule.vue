@@ -20,7 +20,7 @@
                     <div v-if='type!=4 && form.status==1'>
                         <el-form-item label="有效期开始时间">
                             <el-date-picker type="date" placeholder="选择日期" v-model="form.startTime" value-format="yyyy-MM-dd" style=""></el-date-picker>
-                            <span class="col999 left5">默认取当前时间</span>
+                            <span class="col999 left5">生效时开始时间必填</span>
                         </el-form-item>
                         <el-form-item label="有效期结束时间">
                             <el-date-picker type="date" placeholder="选择日期" v-model="form.endTime" value-format="yyyy-MM-dd" style=""></el-date-picker>
