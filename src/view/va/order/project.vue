@@ -38,7 +38,7 @@
 				<el-table-column prop="itemName" label="项目名称" sortable width="110"></el-table-column>
 				<el-table-column prop="itemClassName" sortable width="110" label="所属分类"></el-table-column>
 				<el-table-column prop="defaultDuration" label="推荐时长(分钟)"></el-table-column>
-				<el-table-column prop="defaultPrice" label="默认价格(元)"></el-table-column>
+				<el-table-column prop="defaultPrice" label="推荐时长价格(元)"></el-table-column>
 				<el-table-column prop="sort" label="排序(双击修改)">
 					<!-- <template slot-scope="{row}">
 					    <span v-if="!isEdit[row.index]">{{row.sort}}</span>
@@ -79,10 +79,10 @@
 					</el-form-item>
 				</div>
 				<div class="clearfix">
-					<el-form-item label="推荐时长" prop="defaultDuration" style="width: 50%" class="left">
+					<el-form-item label="推荐时长(分)" prop="defaultDuration" style="width: 50%" class="left">
 						<el-input v-model="form.defaultDuration" placeholder=""></el-input>
 					</el-form-item>
-					<el-form-item label="默认价格(元)" prop="defaultPrice" style="width: 50%" class="left">
+					<el-form-item label="推荐时长价格(元)" prop="defaultPrice" style="width: 50%" class="left">
 						<el-input v-model="form.defaultPrice" placeholder="0"></el-input>
 					</el-form-item>
 				</div>
