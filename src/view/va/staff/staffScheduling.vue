@@ -45,9 +45,9 @@
                             <td style="width: 80px">{{peopleItem.employeeName}}</td>
                             <td style="width: 80px"><span v-if="peopleItem.postBean && peopleItem.postBean.postName">{{peopleItem.postBean.postName}}</span></td>
                             <template  v-for="(dayItem, dayIndex) in peopleItem.employeeScheduleList">
-                                <td  class="td" :key="dayIndex">
+                                <td  class="td" :key="dayIndex" :style="{'background': colors[dayItem.shiftsName || '无']}">
                                     <el-dropdown trigger="click" placement='bottom-start' @command="handleCommand">
-                                        <span class="pointer">{{dayItem.shiftsName || '无'}}</span>
+                                        <span class="pointer colfff">{{dayItem.shiftsName || '无'}}</span>
                                         <el-dropdown-menu slot="dropdown">
                                             <el-dropdown-item v-for="(v, i) in shiftsSettingList" :key="v.id"  :command="shopIndex+','+peopleIndex+','+dayIndex + ',' + i">{{v.shiftsName}}</el-dropdown-item>
                                         </el-dropdown-menu>
@@ -79,7 +79,8 @@
                 mouth: '',
                 loadDay: false,
                 shiftsSettingList: [],
-                sysRoute: window.sysRoute || ''
+                sysRoute: window.sysRoute || '',
+                colors: {'无': '#aeaeae', '早班': '#00ee2d', '中班': '#00b4ff', '晚班': '#ffde00'}
             }
         },
         components:{

@@ -23,7 +23,7 @@
             </div>
             <div class="top20">
                 <span v-for="(v, i) in typeList" :key="i" class="right10">
-                    <i :class="v.icon"></i><span class="left5">{{v.name}}</span>
+                    <i :class="v.icon"></i><span class="left5" :style="{'color':v.color}">{{v.name}}</span>
                 </span>
             </div>
              <!-- <el-checkbox-group v-model="typeValue" class="top20"  @change='type_change' disabled>
@@ -46,8 +46,8 @@
                             <td style="width: 80px">{{peopleItem.employeeName}}</td>
                             <td style="width: 80px">{{peopleItem.postBean.postName}}</td>
                             <template  v-for="(dayItem, dayIndex) in peopleItem.employeeAttendanceList">
-                                 <td  class="td" :key="dayIndex" v-if="dayItem.status==null"><i :class="typeList[2].icon"></i></td>
-                                 <td  class="td" :key="dayIndex" v-else><i :class="typeList[dayItem.status].icon"></i></td>
+                                 <td  class="td" :key="dayIndex" :style="{'background': typeList[2].color}" v-if="dayItem.status==null"><i :class="typeList[2].icon + ' colfff'"></i></td>
+                                 <td  class="td" :key="dayIndex" :style="{'background': typeList[dayItem.status].color}" v-else><i :class="typeList[dayItem.status].icon + ' colfff'"></i></td>
                             </template>
                         </tr>
                     </template>
@@ -75,13 +75,13 @@
                 mouth: new Date().getMonth() +1,
                 //  0.请假 1正常  2.未打卡  3.休假   4.迟到  5.早退  6.迟到早退
                 typeList: [
-                    {name: '请假', icon:'el-icon-circle-close-outline'},
-                    {name: '正常', icon:'el-icon-check'},
-                    {name: '未打卡', icon:'el-icon-circle-close'},
-                    {name: '休班', icon:'el-icon-remove-outline'},
-                    {name: '迟到', icon:'el-icon-arrow-down'},
-                    {name: '早退', icon:'el-icon-arrow-up'},
-                    {name: '迟到早退', icon:'el-icon-close'},
+                    {name: '请假', icon:'el-icon-circle-close-outline', color: '#aeaeae'},
+                    {name: '正常', icon:'el-icon-check', color: '#00ee2d'},
+                    {name: '未打卡', icon:'el-icon-circle-close', color: '#ff3c3c'},
+                    {name: '休班', icon:'el-icon-remove-outline', color: '#aeaeae'},
+                    {name: '迟到', icon:'el-icon-arrow-down', color: '#ffde00'},
+                    {name: '早退', icon:'el-icon-arrow-up', color: '#ff9600'},
+                    {name: '迟到早退', icon:'el-icon-close', color: '#ffde00'},
                 ],
                 typeValue: [],
                 loadDay: false,

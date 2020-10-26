@@ -37,7 +37,10 @@ const i18n = new VueI18n({
 router.beforeEach((to, from, next) => {
     const token = localStorage.token;
     if (!token && to.path !== '/login') {
-        next('/login?' + localStorage.sysRoute||'vb');
+        let _query = to.path.split('/')[1];
+        let query;
+        query = _query || localStorage.sysRoute || 'vb';
+        next('/login?' + query);
     } else if (to.meta.permission) {
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
         // token === 'admin' ? next() : next('/403');
