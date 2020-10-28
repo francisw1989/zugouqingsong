@@ -58,10 +58,8 @@
                         }
                         
                     });
-                    console.log(v1.title)
                     if(item && item.length){
                         v1.show = true;
-                        console.log(v1.title)
                         if(v1.subs && v1.subs.length){
                             for(const v3 of v1.subs){
                                 if(item[0].sysMenu && item[0].sysMenu.length){

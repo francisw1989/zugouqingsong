@@ -8,7 +8,8 @@
         </div>
         <div class="container">
             <div class=" clearfix top10">
-				<div style="height: 40px">
+				<div style="height: 40px" class="clearfix">
+					<el-button type="primary" @click="orderExport" class="right">导出</el-button>
 					<span>客户名称</span>
 					<el-input v-model="userName" style='width: 110px!important' placeholder="输入客户姓名" class="handle-input left10"></el-input>
 					<el-button type="primary" icon="el-icon-search" @click="search" class="left10">搜索</el-button>
@@ -268,7 +269,21 @@
                     t.list = res.records;
                     t.total = res.total
                 })
-            }
+            },
+            orderExport(){
+                const t = this;
+                let params = {
+                    storeId: t.storeId,
+                    isAssemble: t.isAssemble,
+                    userName: t.userName,
+                    endTime: t.endTime,
+                    isCoupon: t.isCoupon
+                }
+                params.startTime=t.startTime?t.startTime+' 00:00:00':'';
+                params.endTime=t.endTime?t.endTime+' 23:59:59':'';
+                params.status=t.statusN[t.status];
+                orderService.orderExport(params)
+            },
         },
         watch:{
             status(val){

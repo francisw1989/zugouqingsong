@@ -489,3 +489,6 @@ a {
 .xmWap .el-input-number--mini{ width: 100px!important;}
 
 .title1{ line-height: 20px; border-left: 2px solid #459E8C; padding-left: 10px; color: #333}
+.ci{ width: 14px; height: 14px; cursor: pointer; display: inline-block; background: url(../c1-1.png); background-size: 100% 100%;}
+.ci.checked{ background-image: url(../c1-2.png);}
+

@@ -108,12 +108,27 @@ let staffService = {
         })
         return p;
     },
-     // 设置排班
-     scheduleSet(params){
+    // 设置排班
+    scheduleSet(params){
         let p = new Promise((resolve, reject)=>{
             let data = {
                 method: 'POST',
                 url: '/api/v1/employeeSchedule/record/employees/',
+                params: params,
+                loading: true
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // 批量设置排班
+    scheduleSetbatch(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'POST',
+                url: '/api/v1/employeeSchedule/record/employees/batch',
                 params: params,
                 loading: true
             }
