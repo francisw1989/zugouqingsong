@@ -180,18 +180,28 @@
             },
             handleCheckAllChange(shopIndex) {
                 const t = this;
-                if(t.shopList[shopIndex].checkedAll){
-                    t.shopList[shopIndex].checkedAll = false;
-                    t.shopList[shopIndex].peopleList.forEach(v=>{
-                        v.checked = false;
+                let _do = ()=>{
+                    if(t.shopList[shopIndex].checkedAll){
+                        t.shopList[shopIndex].checkedAll = false;
+                        t.shopList[shopIndex].peopleList.forEach(v=>{
+                            v.checked = false;
+                        })
+                    }else{
+                        t.shopList[shopIndex].checkedAll = true;
+                        t.shopList[shopIndex].peopleList.forEach(v=>{
+                            v.checked = true;
+                        })
+                    }
+                    t.$set(t.shopList,shopIndex,t.shopList[shopIndex])
+                }
+                if(t.shopList[shopIndex].showAll == false){
+                    t.showAll(shopIndex).then(res=>{
+                        _do();
                     })
                 }else{
-                    t.shopList[shopIndex].checkedAll = true;
-                    t.shopList[shopIndex].peopleList.forEach(v=>{
-                        v.checked = true;
-                    })
+                    _do();
                 }
-                t.$set(t.shopList,shopIndex,t.shopList[shopIndex])
+                
             },
             handleCheckedChange(shopIndex, peopleIndex) {
                 const t = this;
@@ -223,12 +233,15 @@
             scheduleSetbatch(){
                 const t = this;
                 let params = {
-                    employeeIds: t.handleCheckedPeopleList.map((v)=>{return v.id}),
+                    employeeIds: t.handleCheckedPeopleList.map((v)=>{return v.id}).join(','),
                     shiftsId: t.handleShiftsId,
                     scheduleDate: t.handleScheduleDate
                 }
                 staffService.scheduleSetbatch(params).then(res=>{
-                    t.showAll(t.handleShopIndex)
+                    t.plpbVisible = false;
+                    t.shopList[t.handleShopIndex].peopleList = null;
+                    t.shopList[t.handleShopIndex].showAll = false;
+                    t.showAll(t.handleShopIndex);
                 })
             },
             handleCommand(res){
@@ -256,27 +269,34 @@
             },
             showAll(shopIndex){
                 const t = this;
-                if(!t.shopList[shopIndex].showAll){
-                    let storeId = t.shopList[shopIndex].id;
-                    if(!t.shopList[shopIndex].peopleList){
-                        t.getStoreEmployeeScheduleList(storeId).then((res)=>{
-                            res.forEach((v, i)=>{
-                                v.checked = false;
+                let p = new Promise((resolve, reject)=>{
+                    if(!t.shopList[shopIndex].showAll){
+                        let storeId = t.shopList[shopIndex].id;
+                        if(!t.shopList[shopIndex].peopleList){
+                            t.getStoreEmployeeScheduleList(storeId).then((res)=>{
+                                res.forEach((v, i)=>{
+                                    v.checked = false;
+                                })
+                                t.shopList[shopIndex].peopleList = res;
+                                t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                                t.loadDay = true;
+                                resolve();
                             })
-                            t.shopList[shopIndex].peopleList = res;
+                        }else{
                             t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
-                            t.loadDay = true;
-                        })
+                            resolve();
+                        }
+                        setTimeout(() => {
+                            t.shopList[shopIndex].showAll = true;    
+                        }, 0);
                     }else{
+                        t.shopList[shopIndex].showAll = false;
                         t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
+                        resolve();
                     }
-                    setTimeout(() => {
-                        t.shopList[shopIndex].showAll = true;    
-                    }, 0);
-                }else{
-                    t.shopList[shopIndex].showAll = false;
-                    t.$set(t.shopList,shopIndex,t.shopList[shopIndex]);
-                }
+                })
+                return p;
+                
                 
             },
             checkBoxChange(){
