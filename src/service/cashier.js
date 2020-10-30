@@ -210,7 +210,7 @@ let cashierService = {
                 method: 'get',
                 url: '/api/v1/custom/list',
                 params: params,
-                loading: true
+                loading: false
             }
             $axios(data).then((res)=>{
                 resolve(res)

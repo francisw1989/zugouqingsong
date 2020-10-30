@@ -44,7 +44,7 @@
                     <template  v-if='shopItem.showAll' >
                         <tr v-for="(peopleItem, peopleIndex) in shopItem.peopleList" :key="peopleIndex">
                             <td style="width: 80px">{{peopleItem.employeeName}}</td>
-                            <td style="width: 80px">{{peopleItem.postBean.postName}}</td>
+                            <td style="width: 80px">{{peopleItem.postBean && peopleItem.postBean.postName}}</td>
                             <template  v-for="(dayItem, dayIndex) in peopleItem.employeeAttendanceList">
                                  <td  class="td" :key="dayIndex" :style="{'background': typeList[2].color}" v-if="dayItem.status==null"><i :class="typeList[2].icon + ' colfff'"></i></td>
                                  <td  class="td" :key="dayIndex" :style="{'background': typeList[dayItem.status].color}" v-else><i :class="typeList[dayItem.status].icon + ' colfff'"></i></td>
