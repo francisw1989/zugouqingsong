@@ -81,10 +81,10 @@
                         </el-upload>
                     </el-form-item>
                     <el-form-item label="营业时间" prop="openStartTime" style="width: 25%" class="left">
-                        <el-time-select style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '00:00',step: '00:05',end: '12:00'}" placeholder="开始时间"></el-time-select>
+                        <el-time-select style="width: 100%" v-model="form.openStartTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="开始时间"></el-time-select>
                     </el-form-item>
 					<el-form-item label="歇业时间" prop="openEndTime" style="width: 25%" class="left">
-					    <el-time-select class="top10" style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '12:00',step: '00:05',end: '24:00'}" placeholder="结束时间"></el-time-select>
+					    <el-time-select class="top10" style="width: 100%" v-model="form.openEndTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
 					</el-form-item>
                     <el-form-item label="门店标签" style="width: 25%" class="left">
                         <el-input v-model="form.tags" placeholder="英文逗号','隔开"></el-input>
