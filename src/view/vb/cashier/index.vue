@@ -243,7 +243,36 @@
         <el-tabs v-model="currentOrderItemIndex" class="" @tab-click="tab3Click">
             <el-tab-pane v-for='(v, i) in currentOrder.orderItems' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
         </el-tabs>
-        <template v-for='(v, i) in currentOrder.orderItems'>
+        <div style="max-height: 350px; overflow: auto">
+            <template v-for='(v, i) in currentOrder.orderItems'>
+                <el-radio-group v-model="v.roomId" :key="i" v-if="i==currentOrderItemIndex" style="width: 100%">
+                    <table class="m-table">
+                        <tr class="tr2 font12">
+                            <td></td>
+                            <td>房间名</td>
+                            <td>人数</td>
+                            <td>标签</td>
+                        </tr>
+                        <tr class="font12" style="color: #fff" :style="{'background':v2.count>0?'rgb(255, 222, 0)':'rgb(0, 180, 255)'}" v-for="(v2) in roomList" :key="v2.id">
+                            <td>
+                                <el-radio :label="v2.id"><span></span></el-radio>
+                            </td>
+                            <td>
+                                {{v2.name}}
+                            </td>
+                            <td>
+                                剩余：{{v2.count || 0}}位/{{v2.peopleNum}}位
+                            </td>
+                            <td>
+                                {{v2.labels}}
+                            </td>
+                        </tr>
+                    </table>
+                </el-radio-group>
+            </template>
+        </div>
+        
+        <!-- <template v-for='(v, i) in currentOrder.orderItems'>
             <el-radio-group v-model="v.roomId" :key="i" v-if="i==currentOrderItemIndex">
                 <el-radio :label="v2.id" v-for="(v2) in roomList" :key="v2.id" style="margin: 10px 0 0 0">
                     <span>{{v2.name}}</span>
@@ -251,7 +280,7 @@
                     <span class="left10">{{v2.labels}}</span>
                 </el-radio>
             </el-radio-group>
-        </template>
+        </template> -->
         <span slot="footer" class="dialog-footer">
             <!-- <el-button @click="fpfjVisible = false">取 消</el-button> -->
             <el-button type="primary" @click="confirmDoFpfj">确 定</el-button>
@@ -285,7 +314,9 @@
         </span>
     </el-dialog>
     <el-dialog title="服务时间选择" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="serviceTimeVisible" width="300px">
-        <el-time-select v-model="time" @change="dateTimeChange" :picker-options="{start: stores.openStartTime, step: '00:30',end: stores.openEndTime}" placeholder="选择时间" style="width: 100%;"></el-time-select>
+        <!-- stores.openStartTime
+        stores.openEndTime -->
+        <el-time-select v-model="time" @change="dateTimeChange" :picker-options="{start: '00:00', step: '00:30',end: '24:00'}" placeholder="选择时间" style="width: 100%;"></el-time-select>
         <span slot="footer" class="dialog-footer">
             <!-- <el-button type="primary" @click="serviceTimePrev">上一步</el-button> -->
             <el-button type="primary" @click="serviceTimeNext">下一步</el-button>
@@ -1528,6 +1559,9 @@
         },
         mounted(){
             const t = this;
+            window.setfpfjVisible = ()=>{
+                t.fpfjVisible = true;
+            }
             Bus.$emit('currentMessage', t.welcomeTitle);
             t.newsRemind();
             setInterval(()=>{
