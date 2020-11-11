@@ -28,8 +28,8 @@
                     <el-input v-model="form.shiftsName" placeholder="" style="width: 80%;"></el-input>
                 </el-form-item>
                 <el-form-item label="班次时间">
-                    <el-time-select style="width: 130px;" v-model="form.startTime" :picker-options="{start: '05:30',step: '00:15',end: '24:00'}" placeholder="开始时间"></el-time-select>
-                    <el-time-select style="width: 130px;" class="left10" v-model="form.endTime" :picker-options="{start: '05:30',step: '00:15',end: '24:00'}" placeholder="结束时间"></el-time-select>
+                    <el-time-select style="width: 130px;" v-model="form.startTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="开始时间"></el-time-select>
+                    <el-time-select style="width: 130px;" class="left10" v-model="form.endTime" :picker-options="{start: '00:00',step: '00:30',end: '24:00'}" placeholder="结束时间"></el-time-select>
                 </el-form-item>
                 
             </el-form>
