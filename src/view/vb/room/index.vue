@@ -13,7 +13,7 @@
                 <el-button type="primary" icon="el-icon-circle-plus-outline" class="right" @click="handleEdit">新增</el-button>
             </div>
             <div class="clearfix top20">
-                <el-card v-for="(v, i) in list" :key="i" shadow="hover" style="width: 300px;" class="left roomBox">
+                <el-card :style="{'background':v.count>0?'rgba(255, 222, 0, 0.1)':'rgba(0, 180, 255, 0.1)'}" v-for="(v, i) in list" :key="i" shadow="hover" style="width: 300px;" class="left roomBox">
                     <div slot="header" class="clearfix">
                         <div class="right ">
                             <i class="el-icon-delete  icon" @click="handleDelete(i, v)" ></i>
