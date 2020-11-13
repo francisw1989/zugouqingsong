@@ -85,7 +85,6 @@
             return {
                 list: [],
                 levelList: ['普通会员','一星会员','二星会员','三星会员'],
-                cur_page: 1,
                 multipleSelection: [],
                 select_cate: '',
                 memberNum: '',
