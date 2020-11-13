@@ -89,6 +89,11 @@ let vbRouter = [
                 component: resolve => require(['../view/vb/setting/index.vue'], resolve),
                 meta: { title: '门店配置' },
             },
+            {
+                path: 'projectreport',
+                component: resolve => require(['../view/vb/report/project.vue'], resolve),
+                meta: { title: '项目销售报表' },
+            },
         ]
     },
 ]
