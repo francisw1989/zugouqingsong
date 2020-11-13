@@ -239,35 +239,34 @@
             </template>
         </div>
     </el-dialog>
-    <el-dialog title="分配房间" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="fpfjVisible" width="350px">
+    <el-dialog title="分配房间" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="fpfjVisible" width="920px">
         <el-tabs v-model="currentOrderItemIndex" class="" @tab-click="tab3Click">
             <el-tab-pane v-for='(v, i) in currentOrder.orderItems' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
         </el-tabs>
         <div style="max-height: 350px; overflow: auto">
-            <template v-for='(v, i) in currentOrder.orderItems'>
-                <el-radio-group v-model="v.roomId" :key="i" v-if="i==currentOrderItemIndex" style="width: 100%">
-                    <table class="m-table">
-                        <tr class="tr2 font12">
-                            <td></td>
-                            <td>房间名</td>
-                            <td>人数</td>
-                            <td>标签</td>
-                        </tr>
-                        <tr class="font12" style="color: #fff" :style="{'background':v2.count>0?'rgb(255, 222, 0)':'rgb(0, 180, 255)'}" v-for="(v2) in roomList" :key="v2.id">
-                            <td>
-                                <el-radio :label="v2.id"><span></span></el-radio>
-                            </td>
-                            <td>
-                                {{v2.name}}
-                            </td>
-                            <td>
-                                剩余：{{v2.count || 0}}位/{{v2.peopleNum}}位
-                            </td>
-                            <td>
-                                {{v2.labels}}
-                            </td>
-                        </tr>
-                    </table>
+            <template v-for='(v1, i1) in currentOrder.orderItems'>
+                <el-radio-group v-model="v1.roomId" :key="i1" v-if="i1==currentOrderItemIndex" style="width: 100%">
+                    <div class='clearfix'>
+                        <el-card :style="{'background':v.count>0?'rgba(255, 222, 0, 0.1)':'rgba(0, 180, 255, 0.1)'}" v-for="(v, i) in roomList" :key="i" shadow="hover" style="width: 200px;" class="left roomBox">
+                            <div slot="header" class="clearfix">
+                                <div class="right ">
+                                    <el-radio :label="v.id"><span></span></el-radio>
+                                </div>
+                                <span><span class="col000 font16">{{v.name}}</span><span class="left10 col999 font12">{{v.count||0}}/{{v.peopleNum}}</span> </span>
+                            </div>
+                            <div class="col999">{{v.labels}}</div>
+                            <div style="height: 60px; overflow: auto">
+                                <div class="top10">
+                                    <el-tag class="tag" v-if="v.itemAccount[0].item_class_name != undefined" v-for="(item, i) in v.itemAccount" :key="i" >
+                                        {{item.item_class_name}}
+                                        <i class="el-icon-lx-friend"></i>
+                                        ({{item.total}})
+                                    </el-tag>
+                                    
+                                </div>
+                            </div>
+                        </el-card>
+                    </div>
                 </el-radio-group>
             </template>
         </div>
@@ -1515,7 +1514,7 @@
                 let nowHour = now.getHours();
                 let nowMin = now.getMinutes();
                 let min;
-                min = Number(t.stores.openStartTime.split(':')[0]) > nowHour ? Number(t.data.I.openStartTime.split(':')[0]) : nowHour;
+                min = Number(t.stores.openStartTime.split(':')[0]) > nowHour ? Number(t.stores.openStartTime.split(':')[0]) : nowHour;
                 if (nowMin > t.stores.openStartTime.split(':')[1]) {
                     min = min + 1;
                     t.stores.openStartTime = min+':'+'00'

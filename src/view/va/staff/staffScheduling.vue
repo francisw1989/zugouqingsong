@@ -421,10 +421,10 @@ import { clearInterval } from 'timers';
                     shiftsName: '无',
                     id: 0
                 })
-                t.colors[res[0].shiftsName] = '#00ee2d';
-                t.colors[res[1].shiftsName] = '#00b4ff';
-                t.colors[res[2].shiftsName] = '#ffde00';
-                t.colors[res[3].shiftsName] = '#aeaeae';
+                t.colors[res[0].shiftsName] = 'rgba(0,238,45,0.7)';
+                t.colors[res[1].shiftsName] = 'rgba(0,180,255,0.7)';
+                t.colors[res[2].shiftsName] = 'rgba(255,222,0,0.7)';
+                t.colors[res[3].shiftsName] = 'rgba(174,174,174,0.7)';
                 t.shiftsSettingList = res;
             })
         }
