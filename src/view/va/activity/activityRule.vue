@@ -57,6 +57,8 @@
                                         <el-select class="left10" v-model="v.couponIds" placeholder="请选择" style="width: 120px">
                                             <el-option v-for="(v2) in couponList" :key="v2.id" :label="v2.couponName" :value="v2.id"></el-option>
                                         </el-select>
+                                        <el-input-number v-model="v.num" :min="1" :max="10" class="left5" style="width: 120px"></el-input-number>
+                                        张
                                         <!--<el-input v-model="v.amount" placeholder="张" class="left5" style="width: 80px" :readonly="true" :value="1"></el-input>
                                         <span class="left5">张</span>-->
                                         <i class="el-icon-circle-plus-outline left10 pointer" @click="mdAdd('couponIds', 'couponList')"></i>
@@ -248,7 +250,8 @@
                 activityCondition: 0,
                 amount: 0,
                 couponIds: '',
-                grantType: 0
+                grantType: 0,
+                num: 1
             }
         ],
         endTime: '',
@@ -419,6 +422,7 @@
                     if(res.couponList && res.couponList.length){
                         res.isCoupon = true;
                         for(const v of  res.couponList){
+                            v.num = 1;
                             v.couponIds = Number(v.couponIds)
                             v.activityCondition = v.activityCondition/100;
                         }
@@ -428,7 +432,8 @@
                             activityCondition: '',
                             amount: '',
                             couponIds: '',
-                            grantType: 2
+                            grantType: 2,
+                            num: 1
                         }]
                     };
                     // 满送 金额处理

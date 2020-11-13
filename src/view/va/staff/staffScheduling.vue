@@ -99,11 +99,14 @@
             <div class="top10">
                 日期：
                 <el-date-picker style="width: 220px"
-                    v-model="handleScheduleDate"
-                    type="date"
-                    value-format="yyyy-MM-dd"
-                    placeholder="选择日期">
+                v-model="handleScheduleDate"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
                 </el-date-picker>
+                
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="plpbVisible = false">取 消</el-button>
@@ -118,6 +121,7 @@
     import {storeService} from '../../../service/store';
     import settingVue from './setting.vue';
     import StaffDetail from './staffDetail';
+import { clearInterval } from 'timers';
     export default {
         data() {
             return {
@@ -137,13 +141,29 @@
                 handleShopIndex: 0,
                 handleCheckedPeopleList: [],
                 handleShiftsId: '',
-                handleScheduleDate: ''
+                handleScheduleDate: '',
+                datalength: ''
             }
         },
         components:{
             StaffDetail
         },
         watch:{
+            handleScheduleDate(){
+                const t = this;
+                console.log(t.handleScheduleDate)
+                let _time = new Date(t.handleScheduleDate[1]).getTime() - new Date(t.handleScheduleDate[0]).getTime();
+                let datalength = _time/1000/60/60/24 + 1;
+                console.log(datalength)
+                if(datalength>30){
+                    t.handleScheduleDate = [];
+                    t.$message({
+                        message: '最多只能选择一个月',
+                        type: 'warning'
+                    });
+                    return
+                }
+            },
             mouth(){
                 const t = this;
                 t.loadDay = false;
@@ -230,19 +250,58 @@
                 }
                 t.mouth ++;
             },
+            formatEveryDay(){
+                const t = this;
+                let start = t.handleScheduleDate[0],
+                    end   = t.handleScheduleDate[1];
+                let getDate = (datestr)=>{
+                    var temp = datestr.split("-");
+                    var date = new Date(temp[0], temp[1] - 1, temp[2]);
+                    return date;
+                }
+                let dateList = []; 
+                var startTime = getDate(start);
+                var endTime = getDate(end);
+
+                while ((endTime.getTime() - startTime.getTime()) >= 0) {
+                    var year = startTime.getFullYear();
+                    var month = startTime.getMonth() + 1 < 10 ? '0' + (startTime.getMonth() + 1) : startTime.getMonth() + 1;
+                    var day = startTime.getDate().toString().length == 1 ? "0" + startTime.getDate() : startTime.getDate();
+                    dateList.push(year + "-" + month + "-" + day); 
+                    startTime.setDate(startTime.getDate() + 1);
+                }
+                return dateList;
+            },
+            refreash(){
+                const t = this;
+                t.plpbVisible = false;
+                t.shopList[t.handleShopIndex].peopleList = null;
+                t.shopList[t.handleShopIndex].showAll = false;
+                t.showAll(t.handleShopIndex);
+            },
             scheduleSetbatch(){
                 const t = this;
-                let params = {
-                    employeeIds: t.handleCheckedPeopleList.map((v)=>{return v.id}).join(','),
-                    shiftsId: t.handleShiftsId,
-                    scheduleDate: t.handleScheduleDate
+                let len = 0;
+                let _do = (scheduleDate)=>{
+                    let params = {
+                        employeeIds: t.handleCheckedPeopleList.map((v)=>{return v.id}).join(','),
+                        shiftsId: t.handleShiftsId,
+                        scheduleDate: scheduleDate
+                    }
+                    staffService.scheduleSetbatch(params).then(res=>{
+                        len += 1;
+                    })
                 }
-                staffService.scheduleSetbatch(params).then(res=>{
-                    t.plpbVisible = false;
-                    t.shopList[t.handleShopIndex].peopleList = null;
-                    t.shopList[t.handleShopIndex].showAll = false;
-                    t.showAll(t.handleShopIndex);
+                let dateList = t.formatEveryDay();
+                dateList.forEach((v, i)=>{
+                    _do(v)
                 })
+                let setii = setInterval(() => {
+                    if(len == dateList.length){
+                        t.refreash();
+                        window.clearInterval(setii);
+                    }
+                }, 100);
             },
             handleCommand(res){
                 const t = this;
