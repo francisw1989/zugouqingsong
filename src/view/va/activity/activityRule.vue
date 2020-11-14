@@ -422,7 +422,6 @@
                     if(res.couponList && res.couponList.length){
                         res.isCoupon = true;
                         for(const v of  res.couponList){
-                            v.couponNums = 1;
                             v.couponIds = Number(v.couponIds)
                             v.activityCondition = v.activityCondition/100;
                         }
