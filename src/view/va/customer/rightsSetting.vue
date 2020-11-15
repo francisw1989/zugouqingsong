@@ -14,6 +14,11 @@
                 <el-table-column prop="memberLevel" label="会员等级" width=""></el-table-column>
                 <el-table-column prop="memberLevelName" label="等级名称" width=""></el-table-column>
                 <el-table-column prop="amountCondition" label="金额条件" width=""></el-table-column>
+                <el-table-column prop="changebackScale" label="扣款比率" width="">
+                    <template slot-scope="scope">
+                        <span>{{scope.row.changebackScale}}%</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="frequencyCondition" label="频次条件" width=""></el-table-column>
                 <el-table-column prop="interestsContent" label="权益内容" width=""></el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
@@ -39,6 +44,10 @@
                 </el-form-item>
                 <el-form-item label="金额条件">
                     <el-input v-model="form.amountCondition"></el-input>
+                </el-form-item>
+                <el-form-item label="扣款比率">
+                    <el-input-number style="width: 80%" v-model="form.changebackScale" :min="1" :max="100"></el-input-number>
+                    %
                 </el-form-item>
                 <el-form-item label="频次名称">
                     <el-input v-model="form.frequencyCondition"></el-input>
@@ -67,6 +76,7 @@
         amountCondition: '',
         frequencyCondition: '',
         interestsContent: '',
+        changebackScale: ''
     }
     export default {
         data() {
@@ -90,7 +100,7 @@
             handleEdit(index, row){
                 this.idx = index;
                 this.id = row.id;
-                this.form = row;
+                this.form = JSON.parse(JSON.stringify(row));
                 this.editVisible = true;
             },
             // 保存编辑

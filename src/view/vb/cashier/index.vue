@@ -108,10 +108,16 @@
                                     <div class="pad10TB bor_btm_so clearfix col000">
                                         订单编号：<span class='col999'>{{v.outTradeNo}}</span>
                                         <el-button type="primary" size="mini" class="left10" @click.stop="removeOrder(v, i)">取消订单</el-button>
+                                        <span v-if="v.parentOrderItemId" class="left10 ">
+                                            <span class='colblue'>续时订单</span>
+                                            <!-- <span>主订单号：{{v.parentOrderItemId}}</span> -->
+                                        </span>
+
                                         <span class="right colblue" v-if="v.status==2">距离到店还有：<span v-bind:time='v.orderStartTimeObj' :id="'time' + i"></span></span>
                                         <span class="right colblue" v-if="v.status==3">已到店,待服务</span>
                                         <span class="right colblue" v-if="v.status==4">服务中</span>
                                         <span class="right colblue" v-if="v.status==5">服务完成</span>
+                                        
                                     </div>
                                     <div class="" style="padding: 0 15px">
                                         <div class="bor_btm_so pad10TB clearfix">
