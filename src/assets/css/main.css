@@ -481,6 +481,10 @@ a {
 .m-table5{ width: 100%; border-spacing: 0; border-collapse: collapse;}
 .m-table5 td{  padding: 2px 5px!important; border: none!important}
 
+.m-table6{ width: 100%; border-spacing: 0; border-collapse: collapse;}
+.m-table6 .tr1:hover td, .m-table6 .tr2 td{ background-color: #f5f7fa;}
+.m-table6 td{  padding: 10px; border: 1px solid #ddd; text-align: center;}
+
 .el-table__expand-icon{ display: inline-block}
 .roomBox{ margin: 0 15px 15px 0}
 .roomBox .icon{ cursor: pointer;}

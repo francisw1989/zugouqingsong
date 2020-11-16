@@ -91,9 +91,24 @@ let vbRouter = [
             },
             {
                 path: 'projectreport',
-                component: resolve => require(['../view/vb/report/project.vue'], resolve),
+                component: resolve => require(['../view/vb/report/projectreport.vue'], resolve),
                 meta: { title: '项目销售报表' },
             },
+            {
+                path: 'qudaoreport',
+                component: resolve => require(['../view/vb/report/qudaoreport.vue'], resolve),
+                meta: { title: '渠道分析报表' },
+            },
+            {
+                path: 'chongzhireport',
+                component: resolve => require(['../view/vb/report/chongzhireport.vue'], resolve),
+                meta: { title: '充值报表' },
+            },
+            {
+                path: 'tichengreport',
+                component: resolve => require(['../view/vb/report/tichengreport.vue'], resolve),
+                meta: { title: '员工提成报表' },
+            }
         ]
     },
 ]
