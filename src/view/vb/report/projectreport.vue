@@ -8,30 +8,42 @@
         </div>
         <div class="container">
             <div class=" clearfix">
-                <el-button type="primary" icon="el-icon-search" @click="Export()" class="right">导出</el-button>
-                <span class="">项目分类</span>
+                <el-button type="primary" icon="el-icon-search" @click="itemReportExport()" class="right">导出</el-button>
+                <span class="">项目名称</span>
                 <el-select class="left10"  clearable v-model="itemId" placeholder="请选择项目" filterable>
-                    <el-option v-for="(v, i) in itemList" :key='v.id' :label="v.itemName"  :value="v.id"></el-option>
+                    <el-option v-for="(v, i) in itemList" :key='v.id' :label="v.label"  :value="v.value"></el-option>
                 </el-select>
-                <span class="left20">开始时间</span>
-                <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="startData" type="date" placeholder="选择日期"></el-date-picker>
-                <span class="left20">结束时间</span>
-                <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="endData" type="date" placeholder="选择日期"></el-date-picker>
-
+                <span class="left20">请选择日期范围</span>
+                <el-date-picker class="left10"
+                    v-model="daterange"
+                    :clearable = 'false'
+                    :editable = 'false'
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="pickerOptions">
+                </el-date-picker>
                 <el-button type="primary" icon="el-icon-search" @click="search" class="left10">查询</el-button>
             </div>
             
             <el-table :data="list"  border class="table top20" ref="multipleTable">
-                <el-table-column prop="actualOrderTime" label="项目名称" ></el-table-column>
-                <el-table-column prop="user.userName" label="分钟单价" ></el-table-column>
-                <el-table-column prop="evaluateScore" label="总分钟数"></el-table-column>
-                <el-table-column prop="employeeName" label="数量（订单数）"></el-table-column>
-                <el-table-column prop="evaluateLabel" label="总金额（订单金额）"></el-table-column>
+                <el-table-column prop="itemName" label="项目名称" ></el-table-column>
+                <el-table-column prop="itemUnitPrice" label="分钟单价" >
+                    <template slot-scope="scope">
+                        {{(scope.row.itemUnitPrice).toFixed(2)}}
+				    </template>
+                </el-table-column>
+                <el-table-column prop="totalOrderTime" label="总分钟数"></el-table-column>
+                <el-table-column prop="totalOrderNum" label="数量（订单数）"></el-table-column>
+                <el-table-column prop="totalOrderPrice" label="总金额（订单金额）">
+                    <template slot-scope="scope">
+                        {{(scope.row.totalOrderPrice).toFixed(2)}}
+				    </template>
+                </el-table-column>
             </el-table>
-            <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"  :page-size='pageSize' :total="total">
-                </el-pagination>
-            </div>
         </div>
 
 
@@ -39,17 +51,58 @@
 </template>
 <script>
     import bus from '../../../bus';
-    import {orderService} from '../../../service/order';
     import {reportService} from '../../../service/report';
     export default {
         data() {
+            const t = this;
             return {
                 list: [],
-                startData: '',
-                endData: '',
-                total: 0,
-                pageSize: 10,
-                pageNumber: 1,
+                daterange: [],
+                pickerOptions: {
+                    disabledDate(time){
+                        let currentTime = new Date(t.daterange[0]);
+                        let threeMonths = 60*60*1000*24*92;
+                        if(currentTime){
+                            return time.getTime() >currentTime.getTime() + threeMonths || time.getTime() < currentTime.getTime() - threeMonths
+                        }
+                    },
+                    onPick({minDate,maxDate}){
+                        // 当第一时间选中才设置禁用
+                        if(minDate && !maxDate){
+                            t.daterange[0] = minDate;
+                        }
+                        if(maxDate){
+                            t.daterange[1] = maxDate;
+                        }
+                        console.log(minDate)
+                        console.log(maxDate)
+                    },
+                    shortcuts: [{
+                        text: '最近一周',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近一个月',
+                        onClick(picker) {
+                            const end = new Date();
+                            const start = new Date();
+                            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                            picker.$emit('pick', [start, end]);
+                        }
+                    }, {
+                        text: '最近三个月',
+                        onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                        picker.$emit('pick', [start, end]);
+                        }
+                    }]
+                },
                 itemList: [],
                 itemId: ''
             }
@@ -58,8 +111,13 @@
 			
         },
         methods:{
-            Export(){
-                
+            itemReportExport(){
+                const t = this;
+                let params = {
+                    startDate: new Date(t.daterange[0]).getTime(),
+                    endDate: new Date(t.daterange[1]).getTime(),
+                }
+                reportService.itemReportExport(params)
             },
             getItemList() {
 				const t = this;
@@ -68,8 +126,8 @@
 					pageSize: 100,
 					pageNumber: 1
 				}
-				orderService.getItemList(params).then((res) => {
-					t.itemList = res.records;
+				reportService.getItemList(params).then((res) => {
+					t.itemList = res;
 				})
 			},
             handleCurrentChange(val) {
@@ -83,28 +141,27 @@
             getlist(){
                 const t = this;
                 let params = {
-                    startData: t.startData,
-                    endData: t.endData,
-                    itemId: t.itemId,
-                    pageSize: t.pageSize,
-                    pageNumber: t.pageNumber
+                    startDate: new Date(t.daterange[0]).getTime(),
+                    endDate: new Date(t.daterange[1]).getTime(),
+                    itemId: t.itemId
                 }
-                console.log(params)
-                // report.list(params).then((res)=>{
-				// 	t.list = res.records;
-                //     for(const v of t.list){
-                //         v.actualOrderPrice = v.actualOrderPrice/100;
-				// 		v.evaluateLabel = v.evaluateLabel==""?'/':v.evaluateLabel;
-				// 		v.content = v.content==""?'/':v.content;
-                //     }
-                //     t.total = res.total
-                // });
+                reportService.itemReportList(params).then((res)=>{
+					t.list = res;
+                });
+            },
+            setDefauteDate(){
+                const t = this;
+                const end = new Date();
+                const start = new Date();
+                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                t.daterange = [start, end];
             }
         },
         watch:{
         },
         mounted(){
            const t = this;
+           t.setDefauteDate();
            t.getlist();
            t.getItemList();
         }

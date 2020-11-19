@@ -12,7 +12,7 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 充值总金额</span>
                 </div>
-                <p>212.00</p>
+                <p>{{totalRechargeAmout}}</p>
             </el-card>
         </el-col>
         <el-col :span="8">
@@ -20,7 +20,7 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 下卡总金额</span>
                 </div>
-                <p>212.00</p>
+                <p>{{orderAmout}}</p>
             </el-card>
         </el-col>
         <el-col :span="8">
@@ -28,36 +28,39 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 赠送总金额</span>
                 </div>
-                <p>212.00</p>
+                <p>{{totalGiveAmout}}</p>
             </el-card>
         </el-col>
     </el-row>
     <div class="container top10">
         <div class=" clearfix">
-            <el-button type="primary" icon="el-icon-search" @click="Export()" class="right">导出</el-button>
-            <span class="">开始时间</span>
-            <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="startData" type="date" placeholder="选择日期"></el-date-picker>
-            <span class="left20">结束时间</span>
-            <el-date-picker class="left10" style="width: 150px" value-format="yyyy-MM-dd" v-model="endData" type="date" placeholder="选择日期"></el-date-picker>
+            <el-button type="primary" icon="el-icon-search" @click="channelAnalysisReportExport()" class="right">导出</el-button>
+            <span class="">请选择日期范围</span>
+            <el-date-picker class="left10"
+                v-model.trim="daterange"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                :clearable = 'false'
+                :editable = 'false'
+                align="right"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="pickerOptions">
+            </el-date-picker>
             <el-button type="primary" icon="el-icon-search" @click="search" class="left10">查询</el-button>
-            <span class="left20 colblue pointer">最近一周</span>
-            <span class="left10 colblue pointer">本月</span>
-            <span class="left10 colblue pointer">上月</span>
         </div>
 
         <el-table :summary-method="getSummaries" show-summary :data="list" border class="table top20" ref="multipleTable">
             <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
-            <el-table-column prop="a" label="日期"></el-table-column>
-            <el-table-column prop="a" label="当天充值总金额"></el-table-column>
-            <el-table-column prop="a" label="当天赠送总金额"></el-table-column>
-            <el-table-column prop="a" label="当天下卡总金额"></el-table-column>
-            <el-table-column prop="a" label="充值笔数"></el-table-column>
-            <el-table-column prop="a" label="消费笔数"></el-table-column>
+            <el-table-column prop="date" label="日期"></el-table-column>
+            <el-table-column prop="totalRechargeAmout" label="当天充值总金额"></el-table-column>
+            <el-table-column prop="totalGiveAmout" label="当天赠送总金额"></el-table-column>
+            <el-table-column prop="orderAmout" label="当天下卡总金额"></el-table-column>
+            <el-table-column prop="rechargeNum" label="充值笔数"></el-table-column>
+            <el-table-column prop="consumerNum" label="消费笔数"></el-table-column>
         </el-table>
-        <div class="pagination">
-            <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :page-size='pageSize' :total="total">
-            </el-pagination>
-        </div>
     </div>
 
 </div>
@@ -70,23 +73,73 @@ import {
 } from '../../../service/report';
 export default {
     data() {
+        const t = this;
         return {
             list: [{a: 100}, {a: 100}, {a: 100}],
-            startData: '',
-            endData: '',
-            total: 0,
-            pageSize: 10,
-            pageNumber: 1,
+            daterange: [],
+            pickerOptions: {
+                disabledDate(time){
+                    let currentTime = new Date(t.daterange[0]);
+                    let threeMonths = 60*60*1000*24*92;
+                    if(currentTime){
+                        return time.getTime() >currentTime.getTime() + threeMonths || time.getTime() < currentTime.getTime() - threeMonths
+                    }
+                },
+                onPick({minDate,maxDate}){
+                    // 当第一时间选中才设置禁用
+                    if(minDate && !maxDate){
+                        t.daterange[0] = minDate;
+                    }
+                    if(maxDate){
+                        t.daterange[1] = maxDate;
+                    }
+                    console.log(minDate)
+                    console.log(maxDate)
+                },
+                shortcuts: [{
+                    text: '最近一周',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近一个月',
+                    onClick(picker) {
+                        const end = new Date();
+                        const start = new Date();
+                        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+                        picker.$emit('pick', [start, end]);
+                    }
+                }, {
+                    text: '最近三个月',
+                    onClick(picker) {
+                    const end = new Date();
+                    const start = new Date();
+                    start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+                    picker.$emit('pick', [start, end]);
+                    }
+                }]
+            },
             itemList: [],
-            itemId: ''
+            itemId: '',
+            orderAmout: '',
+            totalGiveAmout: '',
+            totalRechargeAmout: ''
         }
     },
     components: {
 
     },
     methods: {
-        Export() {
-
+        channelAnalysisReportExport() {
+            const t = this;
+            let params = {
+                startDate: new Date(t.daterange[0]).getTime(),
+                endDate: new Date(t.daterange[1]).getTime()
+            }
+            reportService.channelAnalysisReportExport(params)
         },
         handleCurrentChange(val) {
             this.pageNumber = val;
@@ -125,31 +178,38 @@ export default {
 
             return sums;
         },
+        rechargeStatistics(){
+            const t = this;
+            reportService.rechargeStatistics().then((res)=>{
+                t.orderAmout = res.orderAmout;
+                t.totalGiveAmout = res.totalGiveAmout;
+                t.totalRechargeAmout = res.totalRechargeAmout;
+            })
+        },
         getlist() {
             const t = this;
             let params = {
-                startData: t.startData,
-                endData: t.endData,
-                itemId: t.itemId,
-                pageSize: t.pageSize,
-                pageNumber: t.pageNumber
+                startDate: new Date(t.daterange[0]).getTime(),
+                endDate: new Date(t.daterange[1]).getTime()
             }
-            console.log(params)
-            // report.list(params).then((res)=>{
-            // 	t.list = res.records;
-            //     for(const v of t.list){
-            //         v.actualOrderPrice = v.actualOrderPrice/100;
-            // 		v.evaluateLabel = v.evaluateLabel==""?'/':v.evaluateLabel;
-            // 		v.content = v.content==""?'/':v.content;
-            //     }
-            //     t.total = res.total
-            // });
+            reportService.rechargeReportList(params).then((res)=>{
+            	t.list = res;
+            });
+        },
+        setDefauteDate(){
+            const t = this;
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            t.daterange = [start, end];
         }
     },
     watch: {},
     mounted() {
         const t = this;
+        t.setDefauteDate();
         t.getlist();
+        t.rechargeStatistics();
     }
 }
 </script>
