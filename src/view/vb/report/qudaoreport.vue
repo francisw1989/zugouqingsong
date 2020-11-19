@@ -51,7 +51,6 @@
 </template>
 
 <script>
-import data from '../../../../../admin/src/template/pdf/content';
 import bus from '../../../bus';
 import {
     reportService
