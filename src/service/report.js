@@ -99,7 +99,7 @@ let reportService = {
         return p;
     },
     // 充值报表导出
-    channelAnalysisReportExport(params){
+    rechargeReportExport(params){
         if(localStorage.sysRoute=='vb' && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;

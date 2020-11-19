@@ -34,7 +34,7 @@
     </el-row>
     <div class="container top10">
         <div class=" clearfix">
-            <el-button type="primary" icon="el-icon-search" @click="channelAnalysisReportExport()" class="right">导出</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="rechargeReportExport()" class="right">导出</el-button>
             <span class="">请选择日期范围</span>
             <el-date-picker class="left10"
                 v-model.trim="daterange"
@@ -145,13 +145,13 @@ export default {
 
     },
     methods: {
-        channelAnalysisReportExport() {
+        rechargeReportExport() {
             const t = this;
             let params = {
                 startDate: new Date(t.daterange[0]).getTime(),
                 endDate: new Date(t.daterange[1]).getTime()
             }
-            reportService.channelAnalysisReportExport(params)
+            reportService.rechargeReportExport(params)
         },
         handleCurrentChange(val) {
             this.pageNumber = val;
