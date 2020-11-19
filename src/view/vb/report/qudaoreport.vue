@@ -132,7 +132,7 @@ export default {
                 endDate: new Date(t.daterange[1]).getTime(),
                 terminalType: t.terminalType
             }
-            reportService.itemReportExport(params)
+            reportService.channelAnalysisReportExport(params)
         },
         handleCurrentChange(val) {
             this.pageNumber = val;
