@@ -51,22 +51,22 @@
                         <td v-if="i2 == 0" :rowspan="v1.list.length">{{v1.employeeName}}</td>
                         <td>{{v2.date}}</td>
                         <td>{{v2.onlineNum}}</td>
-                        <td>{{v2.onlinePay}}</td>
-                        <td>{{v2.onlineIncome}}</td>
+                        <td>{{(v2.onlinePay/100).toFixed(2)}}</td>
+                        <td>{{(v2.onlineIncome/100).toFixed(2)}}</td>
                         <td>{{v2.cashierNum}}</td>
-                        <td>{{v2.cashierPay}}</td>
-                        <td>{{v2.cashierIncome}}</td>
-                        <td>{{v2.allIncome}}</td>
+                        <td>{{(v2.cashierPay/100).toFixed(2)}}</td>
+                        <td>{{(v2.cashierIncome/100).toFixed(2)}}</td>
+                        <td>{{(v2.allIncome/100).toFixed(2)}}</td>
                     </tr>
                     <tr class="tr2" v-if="v1.total.onlineNum">
                         <td colspan="2">合计：</td>
                         <td>{{v1.total.onlineNum}}</td>
-                        <td>{{v1.total.onlinePay}}</td>
-                        <td>{{v1.total.onlineIncome}}</td>
+                        <td>{{(v1.total.onlinePay/100).toFixed(2)}}</td>
+                        <td>{{(v1.total.onlineIncome/100).toFixed(2)}}</td>
                         <td>{{v1.total.cashierNum}}</td>
-                        <td>{{v1.total.cashierPay}}</td>
-                        <td>{{v1.total.cashierIncome}}</td>
-                        <td>{{v1.total.allIncome}}</td>
+                        <td>{{(v1.total.cashierPay/100).toFixed(2)}}</td>
+                        <td>{{(v1.total.cashierIncome/100).toFixed(2)}}</td>
+                        <td>{{(v1.total.allIncome/100).toFixed(2)}}</td>
                     </tr>
                 </template>
                 

@@ -12,7 +12,7 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 充值总金额</span>
                 </div>
-                <p>{{totalRechargeAmout}}</p>
+                <p>{{(totalRechargeAmout/100).toFixed(2)}}</p>
             </el-card>
         </el-col>
         <el-col :span="8">
@@ -20,7 +20,7 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 下卡总金额</span>
                 </div>
-                <p>{{orderAmout}}</p>
+                <p>{{(orderAmout/100).toFixed(2)}}</p>
             </el-card>
         </el-col>
         <el-col :span="8">
@@ -55,9 +55,21 @@
         <el-table :summary-method="getSummaries" show-summary :data="list" border class="table top20" ref="multipleTable">
             <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
             <el-table-column prop="date" label="日期"></el-table-column>
-            <el-table-column prop="totalRechargeAmout" label="当天充值总金额"></el-table-column>
-            <el-table-column prop="totalGiveAmout" label="当天赠送总金额"></el-table-column>
-            <el-table-column prop="orderAmout" label="当天下卡总金额"></el-table-column>
+            <el-table-column prop="totalRechargeAmout" label="当天充值总金额">
+                <template slot-scope="scope">
+                    {{(scope.row.totalRechargeAmout/100).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="totalGiveAmout" label="当天赠送总金额">
+                <template slot-scope="scope">
+                    {{(scope.row.totalGiveAmout/100).toFixed(2)}}
+                </template>
+            </el-table-column>
+            <el-table-column prop="orderAmout" label="当天下卡总金额">
+                <template slot-scope="scope">
+                    {{(scope.row.orderAmout/100).toFixed(2)}}
+                </template>
+            </el-table-column>
             <el-table-column prop="rechargeNum" label="充值笔数"></el-table-column>
             <el-table-column prop="consumerNum" label="消费笔数"></el-table-column>
         </el-table>
@@ -170,6 +182,9 @@ export default {
                             return prev;
                         }
                     }, 0);
+                    if(index == 1 || index == 2 || index == 3){
+                        sums[index] = (sums[index]/100).toFixed(2)
+                    }
                     sums[index] += '';
                 } else {
                     sums[index] = '';

@@ -41,7 +41,7 @@
             <el-table-column prop="totalOrderNum" label="订单总数"></el-table-column>
             <el-table-column prop="totalOrderPrice" label="总金额（订单金额）">
                 <template slot-scope="scope">
-                    {{(scope.row.totalOrderPrice).toFixed(2)}}
+                    {{(scope.row.totalOrderPrice/100).toFixed(2)}}
                 </template>
             </el-table-column>
         </el-table>
@@ -160,6 +160,9 @@ export default {
                             return prev;
                         }
                     }, 0);
+                    if(index == 3){
+                        sums[index] = (sums[index]/100).toFixed(2)
+                    }
                     sums[index] += '';
                 } else {
                     sums[index] = '';

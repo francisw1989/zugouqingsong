@@ -33,14 +33,14 @@
                 <el-table-column prop="itemName" label="项目名称" ></el-table-column>
                 <el-table-column prop="itemUnitPrice" label="分钟单价" >
                     <template slot-scope="scope">
-                        {{(scope.row.itemUnitPrice).toFixed(2)}}
+                        {{(scope.row.itemUnitPrice/100).toFixed(2)}}
 				    </template>
                 </el-table-column>
                 <el-table-column prop="totalOrderTime" label="总分钟数"></el-table-column>
                 <el-table-column prop="totalOrderNum" label="数量（订单数）"></el-table-column>
                 <el-table-column prop="totalOrderPrice" label="总金额（订单金额）">
                     <template slot-scope="scope">
-                        {{(scope.row.totalOrderPrice).toFixed(2)}}
+                        {{(scope.row.totalOrderPrice/100).toFixed(2)}}
 				    </template>
                 </el-table-column>
             </el-table>
