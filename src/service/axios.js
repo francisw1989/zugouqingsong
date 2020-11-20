@@ -57,7 +57,9 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
                 if(res.response.data.msg){
                     alert(res.response.data.msg)
                 }else{
-                    alert('系统错误')
+                    if(window.location.href.includes('cashier')){
+                        window.location.href = '/#/login?vb'
+                    }
                 }
             }
             
