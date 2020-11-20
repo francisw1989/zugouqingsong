@@ -3,7 +3,7 @@ import {commonService} from './common.js';
 let orderService = {
     // 导出订单
     orderExport(params){
-        if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;
             params.storesId = userInfo.storesId;

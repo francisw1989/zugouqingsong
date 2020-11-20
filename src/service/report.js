@@ -3,7 +3,7 @@ import {commonService} from './common.js';
 let reportService = {
     // 项目销售列表导出
     itemReportExport(params){
-        if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;
             params.storesId = userInfo.storesId;
@@ -59,7 +59,7 @@ let reportService = {
     },
     // 渠道分析列表导出
     channelAnalysisReportExport(params){
-        if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;
             params.storesId = userInfo.storesId;
@@ -100,7 +100,7 @@ let reportService = {
     },
     // 充值报表导出
     rechargeReportExport(params){
-        if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;
             params.storesId = userInfo.storesId;
@@ -139,7 +139,7 @@ let reportService = {
     },
     // 员工提成报表导出
     employeeCoefficientReportExport(params){
-        if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
             let userInfo = JSON.parse(localStorage.userInfo);
             params.storeId = userInfo.storesId;
             params.storesId = userInfo.storesId;
