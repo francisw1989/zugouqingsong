@@ -10,7 +10,7 @@ axios.interceptors.request.use(function (config) {
 });
 
 let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText='loading...'}, otherData)=>{
-    if(localStorage.sysRoute=='vb' && localStorage.userInfo){
+    if((window.location.href.includes('vb') || window.location.href.includes('cashier')) && localStorage.userInfo){
         let userInfo = JSON.parse(localStorage.userInfo);
         params.storeId = userInfo.storesId;
         params.storesId = userInfo.storesId;
@@ -57,9 +57,7 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
                 if(res.response.data.msg){
                     alert(res.response.data.msg)
                 }else{
-                    if(window.location.href.includes('cashier')){
-                        window.location.href = '/#/login?vb'
-                    }
+                    alert('系统错误')
                 }
             }
             
