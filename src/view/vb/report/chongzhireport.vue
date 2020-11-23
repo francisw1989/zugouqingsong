@@ -28,7 +28,7 @@
                 <div slot="header" class="clearfix">
                     <span>截止今日 赠送总金额</span>
                 </div>
-                <p>{{totalGiveAmout}}</p>
+                <p>{{(totalGiveAmout/100).toFixed(2)}}</p>
             </el-card>
         </el-col>
     </el-row>
