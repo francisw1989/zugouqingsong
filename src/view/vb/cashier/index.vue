@@ -245,15 +245,16 @@
             </template>
         </div>
     </el-dialog>
-    <el-dialog title="分配房间" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="fpfjVisible" width="920px">
+    <el-dialog title="分配房间" :close-on-press-escape='false' :close-on-click-modal='false' :visible.sync="fpfjVisible" width="1300px">
         <el-tabs v-model="currentOrderItemIndex" class="" @tab-click="tab3Click">
             <el-tab-pane v-for='(v, i) in currentOrder.orderItems' :key="i" :name="i + ''" :label="v.itemName"></el-tab-pane>
         </el-tabs>
-        <div style="max-height: 350px; overflow: auto">
+        <div style="max-height: 500px; overflow: auto">
             <template v-for='(v1, i1) in currentOrder.orderItems'>
+            <!-- <template v-for='(v1, i1) in "11"'> -->
                 <el-radio-group v-model="v1.roomId" :key="i1" v-if="i1==currentOrderItemIndex" style="width: 100%">
                     <div class='clearfix'>
-                        <el-card :style="{'background':v.count>0?'rgba(255, 222, 0, 0.1)':'rgba(0, 180, 255, 0.1)'}" v-for="(v, i) in roomList" :key="i" shadow="hover" style="width: 200px;" class="left roomBox">
+                        <el-card :style="{'background':v.count>0?'rgba(255, 222, 0, 0.1)':'rgba(0, 180, 255, 0.1)'}" v-for="(v, i) in roomList" :key="i" shadow="hover" style="width: 290px;" class="left roomBox">
                             <div slot="header" class="clearfix">
                                 <div class="right ">
                                     <el-radio :label="v.id"><span></span></el-radio>
@@ -261,14 +262,14 @@
                                 <span><span class="col000 font16">{{v.name}}</span><span class="left10 col999 font12">{{v.count||0}}/{{v.peopleNum}}</span> </span>
                             </div>
                             <div class="col999">{{v.labels}}</div>
-                            <div style="height: 60px; overflow: auto">
-                                <div class="top10">
-                                    <el-tag class="tag" v-if="v.itemAccount[0].item_class_name != undefined" v-for="(item, i) in v.itemAccount" :key="i" >
-                                        {{item.item_class_name}}
-                                        <i class="el-icon-lx-friend"></i>
-                                        ({{item.total}})
-                                    </el-tag>
-                                    
+                            <div style="height: 100px; overflow: auto">
+                                <el-tag class="tag" v-if="v.itemAccount[0].item_class_name != undefined" v-for="(item, i) in v.itemAccount" :key="i" >
+                                    {{item.item_class_name}}
+                                    <i class="el-icon-lx-friend"></i>
+                                    ({{item.total}})
+                                </el-tag>
+                                <div class="font12 top10" v-if="v.technicians && v.technicians.length">
+                                    技师：<span v-for="(tv, ti) in v.technicians" :key="ti">{{tv.employeeName}}</span>
                                 </div>
                             </div>
                         </el-card>
@@ -1632,4 +1633,5 @@
   padding-left:10px;
   border-radius: 8%;
 }
+.roomBox .tag{ margin: 0 2px 2px 0;}
 </style>
