@@ -146,7 +146,7 @@
                     </el-form-item>
                     <el-form-item v-if='postGradeList' label="岗位等级" style="width: 50%"  class="left">
                         <el-select class="" v-model="form.grade" placeholder="" filterable clearable>
-                            <el-option v-for="(v) in postGradeList" :key="v.level" :label="v.gradeName" :value="v.level"></el-option>
+                            <el-option v-for="(v) in postGradeList" :key="v.id" :label="v.gradeName" :value="v.id"></el-option>
                         </el-select>
                     </el-form-item>
                 </div>
