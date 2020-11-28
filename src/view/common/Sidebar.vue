@@ -107,6 +107,11 @@ export default {
                             index: '/vb/tichengreport',
                             title: '员工提成报表',
                             id: 66
+                        },
+                        {
+                            index: '/vb/huizongreport',
+                            title: '提成汇总报表',
+                            id: 67
                         }
                     ],
                     show: true

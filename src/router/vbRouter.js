@@ -108,6 +108,11 @@ let vbRouter = [
                 path: 'tichengreport',
                 component: resolve => require(['../view/vb/report/tichengreport.vue'], resolve),
                 meta: { title: '员工提成报表' },
+            },
+            {
+                path: 'huizongreport',
+                component: resolve => require(['../view/vb/report/huizongreport.vue'], resolve),
+                meta: { title: '提成汇总报表' },
             }
         ]
     },

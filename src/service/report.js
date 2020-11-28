@@ -148,5 +148,30 @@ let reportService = {
             return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
         }).join("&"))
     },
+    employeeCoefficientCollectReportList(params){
+        let p = new Promise((resolve, reject)=>{
+            let data = {
+                method: 'get',
+                url: '/api/v1/storeArticleStock/employeeCoefficientCollectReportList',
+                params: params,
+                loading: true,
+            }
+            $axios(data).then((res)=>{
+                resolve(res)
+            })
+        })
+        return p;
+    },
+    // 员工提成报表导出
+    employeeCoefficientCollectReportExport(params){
+        if(window.location.href.includes('vb') && localStorage.userInfo){
+            let userInfo = JSON.parse(localStorage.userInfo);
+            params.storeId = userInfo.storesId;
+            params.storesId = userInfo.storesId;
+        }
+        window.open('/api/v1/storeArticleStock/employeeCoefficientCollectReportExport?' + Object.keys(params).map(function (key) {
+            return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
+        }).join("&"))
+    },
 }
 export { reportService }
