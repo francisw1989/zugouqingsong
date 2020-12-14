@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Loading } from 'element-ui';
+import { Loading, Message  } from 'element-ui';
 axios.interceptors.request.use(function (config) {
     // 在发起请求请做一些业务处理
     
@@ -35,7 +35,10 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
         }).then(res => {
             _loading && _loading.close();
             if(res.code){
-                alert('系统错误')
+                Message({
+                    message: '系统错误',
+                    type: 'warning'
+                })
             }else{
                 resolve(res.data)
             }
@@ -49,15 +52,24 @@ let $axios = ({method = 'get', params = {}, url = '', loading=true, loadingText=
                     window.location.reload();
                 }
                 if(res.response.data.msg){
-                    alert(res.response.data.msg)
+                    Message({
+                        message: res.response.data.msg,
+                        type: 'warning'
+                    })
                 }
             }else{
                 typeof(oLoading)!='undefined' && oLoading && oLoading.close();
                 reject(res.response.data)
                 if(res.response.data.msg){
-                    alert(res.response.data.msg)
+                    Message({
+                        message: res.response.data.msg,
+                        type: 'warning'
+                    })
                 }else{
-                    alert('系统错误')
+                    Message({
+                        message: '系统错误',
+                        type: 'warning'
+                    })
                 }
             }
             
