@@ -1436,6 +1436,7 @@
             doFpfj(v, i){
                 const t = this;
                 t.fpfjVisible = true;
+                t.getRoomList();
                 t.currentOrder = v;
                 t.currentOrderIndex = i;
                 t.currentOrderItemIndex = '0';

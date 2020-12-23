@@ -44,6 +44,16 @@
                 <el-form-item label="房间名称" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
+                <el-form-item label="关联项目分类" prop="name">
+                    <el-select v-model="form.itemClass" multiple placeholder="请选择" style="width: 100%">
+                        <el-option
+                            v-for="item in itemClassList"
+                            :key="item.id"
+                            :label="item.itemClassName"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="可容纳人数" prop="labels">
                     <el-input v-model="form.peopleNum"></el-input>
                 </el-form-item>
@@ -71,10 +81,12 @@
         id: '',
         name: '',
         labels: '',
-        peopleNum: ''
+        peopleNum: '',
+        itemClass: ''
     }
     import bus from '../../../bus';
     import {roomService} from '../../../service/room';
+    import {orderService} from '../../../service/order';
     import Detail from './detail';
     export default {
         data() {
@@ -101,7 +113,7 @@
                 bannerTypeSel: '技师',
                 viewVisible: false,
                 name: '',
-                
+                itemClassList: []
                 
             }
         },
@@ -112,6 +124,17 @@
             
         },
         methods:{
+            getItemClassList(){
+                const t = this;
+                t.list = [];
+                let params = {
+                    pageSize: 1000,
+                    pageNumber: 1
+                }
+                orderService.getItemClassList(params).then((res)=>{
+                    t.itemClassList = res.records;
+                })
+            },
             view(index, row){
                 const t = this;
                 t.viewVisible = true;
@@ -164,6 +187,7 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
+                        params.itemClass = params.itemClass.join(',')
                         if(t.idx!=-1){
                             roomService.editRoom(params).then((res)=>{
                                 this.$message.success('操作成功！');
@@ -209,6 +233,15 @@
                     name: t.name
                 }
                 roomService.getRoomList(params).then((res)=>{
+                    res.records.forEach(v=>{
+                        if(v.itemClass){
+                            v.itemClass = v.itemClass.split(',')
+                            v.itemClass.forEach(v2=>{
+                                v2 = Number(v2)
+                            })
+                        }
+                        
+                    })
                     t.list = res.records
                 })
             },
@@ -216,6 +249,7 @@
         
         mounted(){
            const t = this;
+           t.getItemClassList();
            t.getRoomList();
            roomService.list().then((res)=>{
                t.list = res;
