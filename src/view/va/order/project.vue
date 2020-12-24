@@ -98,6 +98,9 @@
 					<el-form-item label="是否推荐" prop="isRecommend" style="width: 50%" class="left">
 						<el-switch v-model="form.isRecommend" class=""></el-switch>
 					</el-form-item>
+					<el-form-item label="每分钟提成" prop="incomePrice" style="width: 50%" class="left">
+						<el-input v-model="form.incomePrice" placeholder=""></el-input>
+					</el-form-item>
 
 				</div>
 				<div class="clearfix">
@@ -195,7 +198,8 @@
 		crowd: '',
 		conditioningMethod: '',
 		conditioningProcess: '',
-		maintenanceMethod: ''
+		maintenanceMethod: '',
+		incomePrice: ''
 	}
 	export default {
 		data() {
@@ -254,6 +258,10 @@
 					imgs: [{
 						required: true,
 						message: '请上传项目图片'
+					}, ],
+					incomePrice: [{
+						required: true,
+						message: '请输入'
 					}, ],
 					imgListShow: [{
 						validator: imgListShowCheck

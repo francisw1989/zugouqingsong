@@ -45,7 +45,7 @@
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
                 <el-form-item label="关联项目分类" prop="name">
-                    <el-select v-model="form.itemClass" multiple placeholder="请选择" style="width: 100%">
+                    <el-select v-model="form.itemClassIds" multiple placeholder="请选择" style="width: 100%">
                         <el-option
                             v-for="item in itemClassList"
                             :key="item.id"
@@ -82,7 +82,7 @@
         name: '',
         labels: '',
         peopleNum: '',
-        itemClass: ''
+        itemClassIds: []
     }
     import bus from '../../../bus';
     import {roomService} from '../../../service/room';
@@ -133,6 +133,7 @@
                 }
                 orderService.getItemClassList(params).then((res)=>{
                     t.itemClassList = res.records;
+                    t.itemClassList.forEach(v=>{v.id = v.id.toString()})
                 })
             },
             view(index, row){
@@ -187,7 +188,7 @@
                         for(let key in Form){
                             params[key] = t.form[key]
                         }
-                        params.itemClass = params.itemClass.join(',')
+                        params.itemClassIds = params.itemClassIds.join(',')
                         if(t.idx!=-1){
                             roomService.editRoom(params).then((res)=>{
                                 this.$message.success('操作成功！');
@@ -234,9 +235,9 @@
                 }
                 roomService.getRoomList(params).then((res)=>{
                     res.records.forEach(v=>{
-                        if(v.itemClass){
-                            v.itemClass = v.itemClass.split(',')
-                            v.itemClass.forEach(v2=>{
+                        if(v.itemClassIds){
+                            v.itemClassIds = v.itemClassIds.split(',')
+                            v.itemClassIds.forEach(v2=>{
                                 v2 = Number(v2)
                             })
                         }

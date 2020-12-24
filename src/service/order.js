@@ -59,6 +59,7 @@ let orderService = {
                     v.threePrice = v.threePrice/100;
                     v.fivePrice = v.fivePrice/100;
                     v.tenPrice = v.tenPrice/100;
+                    v.incomePrice = v.incomePrice/100;
                     v.unitPrice = commonService.getFixed2(v.defaultPrice/v.defaultDuration);
                     v.defaultDurationShow = v.defaultDuration
                     v.num = 0;
@@ -75,6 +76,7 @@ let orderService = {
             params.threePrice = parseInt(parseFloat(params.threePrice) * 100);
             params.fivePrice = parseInt(parseFloat(params.fivePrice) * 100);
             params.tenPrice = parseInt(parseFloat(params.tenPrice) * 100);
+            params.incomePrice = parseInt(parseFloat(params.incomePrice) * 100);
             let data = {
                 method: 'post',
                 url: '/api/v1/item/' + params.id,
@@ -95,6 +97,8 @@ let orderService = {
             params.threePrice = parseInt(parseFloat(params.threePrice) * 100);
             params.fivePrice = parseInt(parseFloat(params.fivePrice) * 100);
             params.tenPrice = parseInt(parseFloat(params.tenPrice) * 100);
+            params.incomePrice = parseInt(parseFloat(params.incomePrice) * 100);
+
             let data = {
                 method: 'PATCH',
                 url: '/api/v1/item/' + params.id,
@@ -246,6 +250,7 @@ let orderService = {
 	                v.threePrice = v.threePrice/100;
 	                v.fivePrice = v.fivePrice/100;
 	                v.tenPrice = v.tenPrice/100;
+	                v.incomePrice = v.incomePrice/100;
 	                v.unitPrice = commonService.getFixed2(v.defaultPrice/v.defaultDuration);
 	                v.defaultDurationShow = v.defaultDuration
 	                v.num = 0;

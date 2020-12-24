@@ -101,8 +101,11 @@
                 <el-row style="height: 100%;">
                     <el-col style="height: 100%; padding: 5px 5px 5px 0" :span="tab1=='信息'?16:24">
                         <div class="area" >
-                            <div v-if="tab1=='检索'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">待服务({{appointList.length}})</div>
-                            <div v-if="tab1=='信息'" class="bor_btm_so font18 col000" style="padding-bottom: 15px">预约订单</div>
+                            <div  class="bor_btm_so " style="padding-bottom: 15px">
+                                <span v-if="tab1=='检索'" class="font18 col000">待服务({{appointList.length}})</span>
+                                <span v-if="tab1=='信息'" class="font18 col000">预约订单</span>
+                                <el-input class="left10" @change='getAppointList(seachOrderPhone)' clearable v-model="seachOrderPhone" style="width: 200px; display: inline-block" placeholder="请输入手机号"></el-input>
+                            </div>
                             <div style="height: 90%; overflow: auto" class="clearfix">
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
                                     <div class="pad10TB bor_btm_so clearfix col000">
@@ -566,6 +569,7 @@
     export default {
         data() {
             return {
+                seachOrderPhone: '',
 				sendAuthCode:true,
 				auth_time:0,
                 messageVisible: false,
@@ -766,10 +770,7 @@
         },
         methods:{
             removeOrder(obj, i){
-                this.$prompt('请输入取消理由', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                }).then(({ value }) => {
+                let _do = (value, allRefund)=>{
                     if(value.length > 256){
                         this.$message({
                             type: 'info',
@@ -782,14 +783,22 @@
                     let params = {
                         orderId: obj.id,
                         userId: obj.userId,
-                        reason: value
+                        reason: value,
+                        allRefund: allRefund
                     }
                     console.log(params);
                     cashierService.removeOrder(params).then(()=>{
                         t.appointList.splice(i, 1)
                     });
+                }
+                this.$prompt('请输入取消理由', '提示', {
+                    confirmButtonText: '全额退款',
+                    cancelButtonText: '正常取消',
+                }).then(({ value }) => {
+                    _do(value, 1)
                 }).catch(() => {
-                    console.log("取消预约");
+                    let value = document.querySelector('.el-message-box .el-input__inner').value;
+                    _do(value, 0)
                 });
             },
             check(i){
@@ -1164,11 +1173,12 @@
                 })
                 return p;
             },
-            getAppointList(){
+            getAppointList(seachOrderPhone){
                 const t = this;
                 cashierService.getAppointList({
                     pageSize: 100, 
-                    pageNumber: 1
+                    pageNumber: 1,
+                    phone: seachOrderPhone
                     // userId: window.userId
                 }).then((res)=>{
                     if(res.records.length){
