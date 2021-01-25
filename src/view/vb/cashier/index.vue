@@ -104,7 +104,7 @@
                             <div  class="bor_btm_so " style="padding-bottom: 15px">
                                 <span v-if="tab1=='检索'" class="font18 col000">待服务({{appointList.length}})</span>
                                 <span v-if="tab1=='信息'" class="font18 col000">预约订单</span>
-                                <el-input class="left10" @change='getAppointList(seachOrderPhone)' clearable v-model="seachOrderPhone" style="width: 200px; display: inline-block" placeholder="请输入手机号"></el-input>
+                                <el-input class="left10" @change='getAppointList()' clearable v-model="seachOrderPhone" style="width: 200px; display: inline-block" placeholder="请输入手机号"></el-input>
                             </div>
                             <div style="height: 90%; overflow: auto" class="clearfix">
                                 <div @click="appointListClick(v, i)" v-for="(v, i) in appointList" :key="i" style="border-bottom: 5px solid #ddd" class="top10">
@@ -1173,12 +1173,12 @@
                 })
                 return p;
             },
-            getAppointList(seachOrderPhone){
+            getAppointList(){
                 const t = this;
                 cashierService.getAppointList({
                     pageSize: 100, 
                     pageNumber: 1,
-                    phone: seachOrderPhone
+                    phone: t.seachOrderPhone
                     // userId: window.userId
                 }).then((res)=>{
                     if(res.records.length){
@@ -1207,6 +1207,10 @@
                                 
                             }
                         }, 100);
+                    }else{
+                        t.appointList = [];
+                        t.userForm = {};
+                        t.currentOrder = {}
                     }
                 });
             },
